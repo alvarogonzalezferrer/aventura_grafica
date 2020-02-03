@@ -4,6 +4,8 @@ Motor de aventura grafica + 2 aventuras, para MS-DOS, creado en 1998 en un 486 D
 
 Graphic adventure engine for MS-DOS, plust 2 adventures. 
 
+![Captura #1](SCREENSHOOT/captura-10.jpg)
+
 ## Informacion
 
 Programado en ASIC Basic y Assembler en 1998-1999

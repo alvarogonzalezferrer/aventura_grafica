@@ -1,0 +1,677 @@
+Guion de la aventura "Rock baby, Rock!"
+
+Empezado el 26 de Diciembre de 1998
+Copyright (c) 1998, AGF SOFT
+
+Historia:
+Una banda de motoristas rivales (Hell Raiders) mato a tus amigos  
+(de la banda Hampa).
+Tu misio es matar a los motoqueros.
+
+Presentacion: Imagen de un campamento de motos, tiroteo, fuego y muertos.
+Breve relato del argumento.
+
+Comienzo: llega el personaje principal al lugar de los hechos y encuentra todos
+muertos.
+
+[NOTA: Convenciones: @, [n] = numero localidad, F flag, G goto, etc ]
+NOTA: Los archivos AGM son asi A[n§ lugar].AGM p/mas facil de editar
+      Ej: A1.AGM para la escena del @,1
+------------------------------------------------------------------------------
+
+Episodio 1: Localizando a los bastardos
+
+Guion:
+@,1 : Campamento con amigos muertos
+
+Examinar muertos } Habilita agarrar llave
+Abrir caja       } Habilita agarrar escopeta
+
+Agarrar escopeta  } Necesarias para las peleas
+Agarrar llave    } Habilita usar moto
+
+Usar moto > G 2
+
+@,2 : Pueblo, plaza principal
+Ir al campamento      > G 1
+Ir al taller mecanico > G 3
+Ir a la armeria       > G 4
+Ir al bar             > G 5  
+        Solo si no uso la granada; [si F 1=0]
+
+Ir al Pink Shop    > G 7 
+        Solo si uso la granada en el bar y reviso cadaveres
+        [si F 1>=2]
+
+Ir a la zona sur de la ciudad > G, 8  
+        Solo si hablo en el Pink Shop [si F 2=1]
+
+@,3 : Taller mecanico
+Hablar c/el mecanico : 
+J: "No vio unos tipos en moto?"
+M:"unos motoqueros pasaron por aqui y me obligaron a reparar una de sus motos;
+hablaron de un escondite. Ten cuidado, estaban armados."
+Agarrar barra de metal } Sirve para abrir puerta en la fabrica de la zona sur.
+
+Ir a la plaza > G 2
+
+@,4 : Armeria [GUILLE]
+Hablar c/el veterano: 
+J: "Debo combatir contra muchos y no se como..."
+V:"Deja que tu furia te guie. Son muchos, pero podras 
+vencerlos si los cazas uno a uno. Toma si deseas una de mis granadas..."
+
+Agarrar granada. } sirve para tirar en el bar.
+
+Ir a la plaza > G 2
+
+@,5 : Fuera del Bar (lleno de motoqueros; 1/2 banda +/-)
+Mirar por la ventana : "Hay unos diez Hell Raiders bien armados"
+Entrar } Te matan a tiros los Hell Raides; fin del juego.
+Usar Granada { 
+        Matas algunos Hell Raiders
+        F 1= +1
+        GOTO 6 }
+
+Ir a la plaza > G 2
+
+@,6 : Interior del Bar destrozado por granada; cadaveres
+Revisar cadaveres: "Uno tiene una cajita de fosforos con la inscripcion 
+                    Pink Shop.Estos no son todos los Hell Raiders, aun faltan 
+                    muchos mas para completar mi venganza." 
+                    F 1= +1 } Habilita ir al Shop (al quedar F 1>=2)
+
+Tomar un trago : "Esta muy bueno"
+
+Si F 1>=2 habilita Ir a la plaza > G 2
+
+@, 7: Pink Shop [FLAVIA]
+Hablar con la dama que atiende:
+J: "No viste unos motoqueros?"
+F: "Si, algunos de ellos suelen venir a buscar mercaderia o hacerse tatuajes.
+Creo que viven en la zona sur de la ciudad, pero ten cuidado, es peligroso."
+   F 2=1
+   [habilita ir a la zona sur de la ciudad.]
+
+Ir a la plaza > G 2
+
+@, 8 : Zona Sur de la Ciudad
+Ir al cabaret     > G 9
+Ir al bar         > G 10
+Ir al MAGO     > G 11
+Ir al sex shop    > G 12
+
+Ir a los suburbios  > G 13 
+        Solo si fue a todos los lados anteriores
+        [Si F 3>=4]
+
+Revisar basura 
+        Agarras alambre que te sirve para acogotar al guardia, de lo contrario,
+        te escuchan y te limpian.
+
+@, 9 Cabaret
+F 3= +1 } Habilita ir los suburbios (cuando F 3>=4)
+Hablar con prostituta 
+J: "No viste unos tipos en moto?"
+P:"Esos tipos suelen venir por aqui. Capturaron algunas 
+chicas y se las llevaron. Toma mi pa¤uelo para la buena suerte." 
+[te da un pa¤uelo, para armar la molotov]
+
+Pelear > Te matan a golpes - Fin juego
+
+Salir del cabaret > G 8
+
+@, 10 Bar
+F 3= +1 } Habilita ir los suburbios (cuando F 3>=4)
+Hablar con cantinero
+J: "Sabes algo de los Hell Raiders?"
+C: "No se nada; solo que son muchos y se esconden en una fabrica"
+
+Pelear > Te matan a golpes - Fin juego
+
+Salir del bar > G 8
+
+@, 11 MAGO (Kronos)
+F 3= +1 } Habilita ir los suburbios (cuando F 3>=4)
+J: "Iluminame con tu sabiduria"
+M:"Debes confiar en tu destreza si quieres vencerlos. Te superan en numero y
+armamento. Quiza debas pensar en cazarlos uno a uno."
+
+Salir de lo del MAGO > G 8
+
+@, 12 Sex Shop 
+Hablar 
+J: "Busco a los Hell Raiders"
+T:"Solo puedo decirte que el escondite esta en los suburbios de la ciudad."
+"Es aun mas peligroso que esta zona. Espero que tengas una buena pistola."
+"Adios..."
+
+Salir del Sex Shop > G 8
+
+
+@, 13 Suburbios
+        SI F 4=0
+        {
+Usar escopeta con los matones
+        Habilita todas las demas opciones, de lo contrario, al intentar
+        avanzar, los matones nos disparan a nosotros
+        F 4=1
+        }
+        Si F 4=1 
+        {
+        Ir al desarmadero > G 14
+        Ir a la fundicion > G 15
+
+        Si F 4=1 y F 6=1 => Ir al puerto > G 16
+        
+        }
+
+@, 14 Desarmadero
+Hablar tipo 
+J: "No viste nada raro hoy?"
+T:"Buena moto... He visto unas cuantas de esas por aqui; las montaban
+unos tipos con campera de cuero."
+
+Agarrar Botella [sirve para armar una Molotov junto con la nafta y el pa¤uelo]
+
+Volver a los Suburbios > G 13
+
+@, 15 Fundicion
+Hablar tipo 
+J: "Busco una banda de motos..."
+T: "Vi unos cuantos en moto; pasaron por aqui; se esconden en la 
+    fabrica abandonada cerca del puerto."
+F 6=1
+Volver a los Suburbios > G 13
+
+@, 16  Puerto
+Si F 5=0
+{
+Usar escopeta con los marineros
+        Habilita todas las demas opciones, de lo contrario, al intentar
+        avanzar, los marineros nos golpean a nosotros
+        F 5=1
+}
+Si F 5=1
+{
+Usar barra de metal en puerta fabrica F7=1 } La agarras en el taller
+Entrar Fabrica } Si uso barra entra (f7=1), si no "Esta trabada" G > 17
+}
+
+@, 17 Fabrica (un guardia de espaldas)
+        
+Usar alambre en guardia  } Lo acogota y habilita pasar G > 18
+
+Usar escopeta  } Matas al guardia pero los demas te escuchan y te cagan a tiros
+
+
+@, 18 Dentro Fabrica (mina colgada de la pared)
+Hablar Mina 
+J: "Hola preciosa... donde estan los que te raptaron?"
+M:"Los escuche decir que iban al proximo pueblo. Partieron hace solo unos minutos."
+"Gracias por rescatarme. "
+
+Ir tras ellos > G Episodio II ; F 100=1 (Habilita jugar el episodio II)
+
+
+========Resumen FLAGS episodio 1=========
+1  Uso de la granada; 0=no; 2=uso y reviso cadaveres
+2  si hablo en el Pink Shop  F 2=1
+3  Si fue a todos lados en la zona sur F 3>=4
+4  Si mato a los tipos de los suburbios F 4=1
+5  Si mato a los tipos del puerto F 5=1
+6  Si fue a la fundicion F 6=1 (para poder ir al puerto)
+7  Si uso la barra en la puerta
+8  Si mato al tipo de la fabrica 1=si
+100 Habilita jugar al episodio II si es = 1
+
+========Resumen OBJETOS episodio 1=========
+1 ESCOPETA
+2 GRANADA
+3 BARRA DE METAL
+4 ALAMBRE
+5 PA¥UELO
+6 BOTELLA [sirve para armar una Molotov junto con la NAFTA y el pa¤uelo]
+          [la nafta se agarra en el episodio 2]
+7 LLAVE MOTO
+====IMAGENES ADICIONALES (aparte de los escenarios)====
+PRESENTACION con tres imagenes (1 y2 muertos los amigos, 3 escondido) 
+EXPLOSION para cuando tira la granada en el bar  (@, 5)
+GOLPEADO para las escenas en bar, cabaret y puerto cuando peleas y perdes
+ASESINADO para cuando nos matan los matones
+DISPARANDO para cuando matamos a los matones
+ACOGOTANDO al guardia con el alambre @, 17
+DISPARANDO al guardia  @, 17
+ACRIBILLADO por los otros al disparar al guardia @, 17
+VIAJANDO para ir del campo al pueblo y a la z. sur y a suburbios
+HABLANDO para todas las charlas (cuando pregunta)
+-------------------------------------------------------------------------------
+Episodio II: Cobrando venganza
+Poner las banderas 1 a 8 a 0; objetos 2,3,4,7 a 0.
+
+@, 1 Estacion de servicio [afuera]
+Usar surtidor con botella > la llena de nafta
+Usar botella llena con pa¤uelo > crea molotov
+Usar molotov con encendedor > escena explosion, G > 3
+Usar encendedor con surtidor > escena explosion, te moris vos tambien
+Usar escopeta con surtidor > escena explosion, te moris vos tambien
+Si F 1=1 Huir > G > 3
+Entrar al mini super G > 2
+Ir al ba¤o > "No tengo ganas..."
+
+@, 2 Estacion de servicio [dentro]
+Si F 1=0 {
+Viejo con escopeta "Tus amigos me robaron! Quedate donde estas o te mato"
+"Ya llame a la policia!"
+Si usa Escopeta (si hace otra cosa, el viejo te mata)
+{
+Yo: "Viejo inutil... me confundio con los Hell Raides; 
+la policia no tarda; mejor escapo!"
+         F 1 = 1 'para saber que mate al viejo
+}
+
+Examinar viejo > Agarrar encendedor 
+Salir > G > 1
+
+@, 3 Escapando en la moto te atrapa la policia
+F 1 = 0 ;Poner a 0 para evitar errores mas adelante 
+Entregarte; Te saca todos los objetos; G > 4
+Avanzar } Te matan
+Disparar a esos pajeros } te matan
+Usar escopeta } Te matan
+
+@, 4 Comisaria (celda y milico sentado en silla dormido)
+Examinar Colchon > Agarra alambre
+Usar alambre con candado > Abre la puerta G > 5
+
+@, 5 
+Agarrar escopeta
+Usar escopeta con milico > Escena TIROTEO CON MILICOS "mejor escapo" G > 6
+Examinar, hablar, usar milico > MILICO DESPIERTA Y TE MATA
+
+@, 6 Deposito comisaria 
+Usar moto "la llave esta puesta!" G > 7
+Escapar corriendo > "ESTAS LOCO, ME ATRAPARIAN ENSEGUIDA!"
+
+@, 7 Calle #1 pueblo [carro panchos, heladeria]
+Comer pancho
+        "No, no le cambio el agua y las salchichas no son diet!"
+Hablar con hombre del carrito
+"Viste a unos motoqueros?"
+"Si; los veo todos los dias. Siempre me cobran por `proteccion'"
+Entrar heladeria G > 11
+Seguir caminando G > 8
+
+@, 8 Calle #2 pueblo [funebrera, TIENDA DE ANTIGUEDADES]
+Entrar funebrera G > 12
+Entrar TIENDA DE ANTIGUEDADES    G > 13
+Seguir caminando G > 9
+Volver G > 7
+
+@, 9 Calle #3 pueblo [kiosco, verduleria]
+Comprar golosinas
+        "No tiene Sugus Masticables?"
+        "No querido, no me quedan..."
+        "Y para cuanto me alcanza?"
+        "Cuanto tenes nene?"
+        "Diez centavos..."
+        "Para cuatro bolitas..."
+        "No gracias... tienen gusto a jabon."
+
+Hablar kioskero 
+        "Pasaron por aqui los Hell Raiders?"
+        "Esos tipos siempre me cobra para no destrozar mi local"
+        "Por que no los denuncia?"
+        "Hay cosas que tu no entiendes amigo..."
+
+Entrar verduleria
+        "Ya es muy tarde. Esta cerrado."
+Seguir caminando G > 10
+Volver G > 8
+
+@, 10 Calle #4 pueblo [taberna]
+Si F 1 = 0 Entrar taberna G > 14
+Si F 1 = 1 Ir a zona roja G > 15
+Volver G > 9
+
+@, 11 Heladeria
+Tomar helado "Deme uno de granizado y crema del cielo..."
+             "En tacita o cucurucho?"
+             "En cucurucho, y rapido sino te reviento!" (apunta con escopeta)
+             "Aca tenes..."
+             "Es envasado, no me gusta... dame uno artesanal... AHORA!"
+             "No tenemos!"
+             "Me agarraste de buen humor, que si no destrozo todo..."
+
+Hablar empleada
+        "Hola; sabes algo de los Hell Raiders?"
+        "Si; esos andan en algo muy malo; suelen cobrarnos para `protegernos'"
+Salir a la calle G > 7
+
+@, 12 FUNEBRERA
+Examinar cajon "Se ve bastante duro el fiambre este...
+                Lastima que no tiene la billetera..."
+
+Hablar con funebrero "Disculpe; busco a unos motoqueros"
+                     "Oh Si... Je Je siempre me dan trabajo; gracias a ellos
+                     mi negocio crece dia a dia..."
+Salir a la calle G > 8
+
+@, 13 TIENDA ANTIGUEDADES
+Examinar discos "Vaya... Elvis; Jerry Lee Lewis, Chuck Berry... estos si son 
+                 capos... quiza podria agarrar alguno para mi coleccion..."
+Agarrar disco "Me llevare el single Jailhouse Rock..." 
+              (sirve para voltear a la negra)
+
+Hablar con anciano "Conoce a los Hell Raiders?"
+                   "Esos malditos estan protegidos por la policia; siempre
+                   vienen a cobrar coima o robar mercaderia..."
+                   "Tiene muy buenas cosas aqui..."
+                   "Si, hay algunos discos que no me gustan, si los queres
+                   llevatelos..."
+                   "Lo tomare en cuenta... gracias..."
+
+Salir a la calle G > 8
+
+@, 14 Taberna
+Hablar Cantinero
+        "Quiero informacion de los Hell Raiders..."
+        "No pienso decirte nada!"
+        Lo Agarra del cuello: 
+        "Dije que quiero informacion Ahora!"
+        "Estan metidos con la policia y el alcalde; ve a la zona roja, 
+         las chicas los conocen mejor! Ahora dejame en paz!"
+         F 1 = 1: Sale a la calle; Habilita ir a la zona roja.
+
+Armar una pelea> Nos matan
+Si F 1 = 1 Salir a la calle G > 10
+
+@, 15 Zona Roja 
+Hablar con Marica
+"Hola..."
+"Hola, soy Pompi; mis amigos me dicen Cacho..."
+"No viste a unos motoqueros?"
+"Si, suelen venir. Son muy fuertes, como vos papi..."
+"Humm bueno, donde se esconden?"
+"Sabes que no se, bueno, suelen hablar de una mansion..."
+
+Hablar con prostituta #1
+"Hola nena, que bien te ves..."
+"Gracias, por ser vos son 100 U$S"
+"Bueno, quiza luego; ahora decime; conoces a los Hell Raiders?"
+"Son mis mejores clientes, siempre pagan bien y nunca se quejan..."
+"Aja, bien, y no sabes donde viven..."
+"Mira, mis amigas estan dentro de la disco, ellas armaron una 
+fiesta la semana pasada, y fueron a su casa."
+"Ok, nos vemos..."
+ Habilita entrar al Bar F 1=2
+
+Hablar con prostituta #2
+"Nena, charlamos?
+"Bueno, linda moto nene, podemos dar una vuelta?"
+"Bueno, quiza luego; hablame de los Hell Raiders?"
+"Son sucios, feos, pero pagan bien y nunca hay problemas..."
+"Donde viven?"
+"No se, preguntale a mi amiga"
+"Ok, adios..."
+
+Si F 1=2 Entrar A la Disco; F 100=2
+
+
+;-----------------------------------------------------------------------------
+A partir de aqui se ejecuta GAME3.AGC para aumentar la velocidad de juego.
+El episodio sigue siendo II
+F 100=2 para poder jugar a GAME3.AGC
+;-----------------------------------------------------------------------------
+
+@, 16 Disco entrada dentro (con muchas putas en jaulas, etc)
+Ir a la barra  G > 17
+Armar una pelea > Nos matan
+Ir al ba¤o > Nos violan };)
+
+@, 17 Disco Barra
+Hablar con barman
+        "Hola viejo... quiero ver a una chica..."
+        "Hey, aqui hay para todos los gustos... se mas especifico..."
+        "Bueno, las amigas de las nenas de afuera..."
+        "Esta en la mesa contra la pared; para que la necesitas?"
+        "Quiero saber algo de los Hell Raiders..."
+        "Tene cuidado... son muy peligrosos..."
+F 1=3
+
+Tomar un trago "Hey man... dame un Semen de Pitufo..."
+               [primer plano tomando]
+               "Es el mejor trago que existe... ;)"
+               F 2 + 1
+               Si F 2> 3 "Estas borracho... " FIN
+
+Si F 1=3 Sentarse con la chica
+
+@, 18 Disco Mesa con puta
+F 2=0 ;ya no se necesita mas esta bandera
+Hablar Prostituta 
+        "Hola, conoces a los Hell Raiders?"
+        "Son mis mejores clientes, siempre pagan bien y nunca se quejan..."
+        "Aja, bien, y no sabes donde viven..."
+        "Si, tuve una fiesta en su casa; es en el barrio rico;
+        la mansion del... " [un disparo la mata] F 1 = 4
+Si F 1 = 4                        
+        Usar escopeta > Nos matan
+        Escapar por la salida de emergencia G > 19
+
+@, 19 Escena escape del boliche
+F 1=0 ;ya no se necesita
+[Sale corriendo baleado por un callejon]
+[Salta y se sube a un auto y pisa al tipo]
+[Se baja del auto] 
+Examinar cadaver > "Tiene algunos cartuchos para mi escopeta"
+Volver a buscar moto G > 20
+
+@, 20 
+"Agarras tu moto y te diriges al barrio rico de la ciudad cuando..."
+"...Un camion de aspecto sospechoso se te pone a la par..."
+[camion a la par de la moto]
+Dejarlo pasar > "El camion te paso... sobre tu cabeza" FIN
+Acelerar > "El camion acelero tambien... sobre tu espalda" FIN
+Frenar > "El camion te paso por encima" FIN
+Usar escopeta > "Le diste al conductor... el camion se aleja de la ruta y..."
+                 [explosion] G > 21
+
+@, 21 "Sigues conduciendo y te quedas sin nafta..."
+Hacer dedo > Te junta una camioneta G> 22
+Caminar > "No tengo ganas..."
+
+@, 22 Mina negra en overoll "Hola, voy hacia el ghetto..."
+      "Bueno, llevame a donde pueda cargar nafta..."
+      "Ok... en el bar del ghetto podras encontrar ayuda..."
+[Ghetto - Bar - Musicos tocando - mesas con gente negra]
+Usar discos Elvis con mesera 
+"Gracias flaco; me encanta Elvis...acompa¤ame a mi habitacion..."
+"(Yea!)" [escena cama con sabanas y un bulto abajo de las sabanas que se
+         mueve (fuck)] };)
+
+Hablar con cantinero "Hola..."
+                     "Hola amigo, no te parece que estas en un barrio
+                      que no es tuyo..."
+                     "Bueno, en realidad busco a los Hell Raiders..."
+                     "Esos idiotas viven en la mansion del alcalde, en
+                     el barrio rico. Trabajan para el." 
+                     Esos malditos dominan la ciudad". F 1 = 5
+
+Hablar con motoquero #1 "Hola..."
+                       "Hey... soy un Black Panther y no hablo con 
+                       blanquitos imbeciles..."
+Si F 1 = 5 {
+Hablar con motoquero #2 
+"Hola..."
+"Que buscas en este lugar imbecil; es solo para los Blacks..."                       
+"Bueno, busco a los Hell Raiders para matarlos..."
+"Ah si, son enemigos nuestros tambien..."
+"Bueno, entonces tu pandilla podria ayudarme"
+"A cambio de que?"
+"Dime una cosa... que hicieron ayer?"
+"Estuvimos aqui..."
+"Y anteayer?"
+"Estuvimos aca tambien..."
+"Y la semana pasada? Y hoy?"
+"Hemos estado aca jugando al pool, poker; tomando..."
+"Bueno, la proxima vez que un imbecil como yo te pregunte podras
+decir que tu pandilla ayudo a un loco a tomar una fortaleza y patearle el
+trasero a los Hell Raiders..."
+"No se, no me convence..."
+"Vamos, no se jactan del `black power', o los Black Panthers son unos
+gatitos mimosos en vez de panteras negras?"
+"Esta bien, hablare con el jefe... espera..."
+[pausa...]
+"Ok... vamos a ayudarte; ya llamamos al resto de la pandilla"
+
+[escena de muchos motoqueros en la ruta; todos negros menos yo]
+"En cuestion de minutos se ubican frente a la mansion del alcalde..."
+GOTO 23
+}
+
+Usar escopeta/usar escopeta con xxx/pelear > nos matan
+
+@, 23
+[entrada mansion]
+Atacar por la entrada principal > Nos matan
+Saltar la pared > Nos Matan
+Usar escopeta > Nos matan
+Hablar a Black Panthers 
+"Bien... que hacemos?"
+"Vos tuviste la idea... envianos a la victoria!"
+Ir a la derecha  > G 24
+Ir a la izquierda > G 26
+
+@, 24 
+[costado derecho]
+Saltar la pared > nos matan
+Volver a la entrada G > 23
+Ir a la parte trasera G > 25
+
+@,25
+[atras]
+Usar enredadera [entramos al patio] G > 27
+Ir a la derecha de la casa G > 24
+Ir a la izquierda de la casa G > 26
+
+@, 26
+[costado izquierdo]
+Saltar la pared > nos matan
+Volver a la entrada G > 23
+Ir a la parte trasera G > 25
+
+@, 27
+[patio trasero]
+Usar enredadera > Salimos > G 25
+Usar Puerta > Nos matan adentro
+Ir a la derecha  > G 28
+Ir a la izquierda > G 30
+
+@, 28
+[derecha patio - perros]
+Nos comen los perros - FIN
+
+@, 29
+[delante patio - casilla vigia - porton - entrada a casa]
+Entrar casilla G > 31
+Usar Porton > "Esta cerrado con un mecanismo electrico."
+Entrar a la casa > Nos matan
+Entrar a la casilla > G > 31
+
+@, 30
+[izquierda patio]
+Ir a patio trasero G > 27
+Ir a patio delantero G > 30
+
+@, 31
+[casilla vigia]
+Usar palanca > Se abre el porton G 32
+Usar boton > Activaste la alarma - nos matan
+Usar cables > Nos electrocutamos
+
+@, 32 
+Negro "Perfecto! El porton esta abierto! Al ataque!"
+Animacion de los negros a los tiros con todos.
+Subis las escaleras y matas al jefe
+Jefe:"Te estaba esperando... quiza podamos llegar a un acuerdo.
+     "Yo domino la ciudad... Unete a mi o moriras como tus amigos!"
+Yo:"Yo tengo el arma imbecil..."
+"De rodillas gusano... " [le dispara en las rodillas]
+"Nos vemos en el infierno... " [le dispara en el pecho]
+[malo sangrando] "solo me duele... cuando me rio... " [se muere]
+Grita el negro "El jefe de los Hell Raiders se escapa corriendo por
+el porton" - Yo: "Es mio" [agarra la moto y una cadena y se la pone
+en la espalda] [cae] "Vamos a dar un paseo, insecto!"
+[lo ata a la moto y lo arrastra]
+"Muy bien, vamonos antes de que llegue la policia"
+"Si, vamos al bar a festejar!" 
+G 33
+
+@, 33 [bar del 22] 
+Bailar [escena escenario bailando como Elvis]
+Tomar  [toma algo,F 2+1 si pasa de 3 borracho] G > 36
+Hablar con motoqueros
+        "Les dimos duro a esos imbeciles!"
+        "Si, fue una gran noche!"
+        "Ahora a divertirnos!"
+Salir del bar G 34
+
+@, 34 [rubia arreglando auto en el exterior]
+Entrar G 33
+Hablar Rubia > Charla [escena tipo Marilyn con vestido que vuela]
+               "Hola preciosa..."
+               "Hola, mi auto no quiere arrancar..."
+               "Hum, quiza yo pueda hacer algo..."
+               Habilita arreglar auto
+Arreglar Auto G > 35
+Usar Moto > [escena que te vas hacia el amanecer] G > 36
+
+@, 35 [arregla auto y se van juntos]
+"Muy bien, creo que esta listo...Probemos arrancarlo"
+"Gracias... vamos a dar un paseo?"
+"Genial! Quiero ver que tan buena es esta amortiguacion... "
+[imagen auto movil en la ruta]
+"-Buscas un lugar alejado para estacionar"
+
+"Hum! Buen lugar para estacionar baby..."
+"Que buena amortiguacion nena... Sacate la ropa y prende la radio jejeje..."
+"rock baby... rock 'n roll"
+"hum yea oh yea baby"
+"mas si oh ah yea "
+"je je je hum tengo cosquillas ja ja"
+
+[auto estacionado moviendose para los costados FUCK! };) ]
+G 36
+
+@, 36 [fin del juego]
+"Es tiempo de unas vacaciones..."
+[presenta imagen de fin]
+[agradecimientos]
+[foto mia y de Guille]
+[Fin - por ahora!]
+
+========Resumen FLAGS episodio 2=========
+1  Bandera temporal sirve para:
+   Saber si mato al viejo en la estacion de servicio = 1
+   Si puede ir a la zona roja = 1
+   Si puede entrar al bar de la z. roja = 2
+   Si puede sentarse en la mesa con las chicas = 3
+   Si mataron a la mina = 4
+   Si sabe donde es la mansion del alcalde = 5
+2  Temporal para saber:
+   Si estas borracho > 3
+========Resumen OBJETOS episodio 2=========
+;Marcados con * son multiproposito (objetos temporales)
+;el numero al lado del objeto indican donde aparecen; 
+
+1 ESCOPETA 5
+2 DISCO 13 < (este se lo queda)
+*4 ENCENDEDOR 2(lo tiene el viejo); ALAMBRE (al examinar colchon)
+*5 PA¥UELO (ep 1)
+*6 BOTELLA (ep 1)
+*7 BOTELLA LLENA 1; COLCHON 4; MILICO 5; PANCHERO 7; KIOSKERO 9; 
+   EMPLEADA 11; ANCIANO 13; MARICA 15
+*8 MOLOTOV 1; CANDADO 4; CAJON 12; FUNEBRERO 12; CANTINERO 14; PUTA 15
+*9 SURTIDOR 1 ; PUTA2 15
+10 y > personajes temporales

@@ -1,0 +1,270 @@
+;archivo con animaciones del episodio II
+;por AGF - (c) 98-99
+;born to be wild!
+usando la nueva funcion ANIMA
+ANIMA, COGE
+
+ANIMA, MOTO
+CLs
+usando la nueva funcion ANIMA
+ANIMA, AUTO
+
+ANIMA, MARY1
+
+SALIR
+;patea moto
+GLOAD, B34_8
+wait, 4
+GLOAD, B34_9
+wait, 4
+GLOAD, B34_10
+wait, 7
+GLOAD, B34_8
+wait, 4
+GLOAD, B34_9
+wait, 4
+GLOAD, B34_10
+wait, 7
+
+GLOAD, B34_8
+wait, 4
+GLOAD, B34_9
+wait, 4
+GLOAD, B34_10
+wait, 7
+
+;salir
+@, 11
+;fuck with mary
+GLOAD, B35_0
+wait, 2
+GLOAD, B35_1
+wait, 2
+GLOAD, B35_2
+wait, 2
+GLOAD, B35_1
+wait, 2
+
+FLAG,5,+,N,1
+       FLAGCMP, 5,<,N,5
+       {
+        goto, 11
+       }
+
+;SALIR
+
+@,10
+;marilyn
+GLOAD, B34_0
+wait, 5
+GLOAD, B34_1
+wait, 3
+GLOAD, B34_2
+wait, 3
+GLOAD, B34_3
+wait, 3
+GLOAD, B34_4
+wait, 3
+GLOAD, B34_3
+wait, 3
+GLOAD, B34_2
+wait, 3
+GLOAD, B34_3
+wait, 3
+GLOAD, B34_4
+wait, 3
+GLOAD, B34_3
+wait, 3
+GLOAD, B34_2
+wait, 3
+GLOAD, B34_3
+wait, 3
+GLOAD, B34_4
+wait, 3
+GLOAD, B34_3
+wait, 3
+GLOAD, B34_2
+wait, 3
+GLOAD, B34_3
+wait, 3
+GLOAD, B34_4
+wait, 3
+GLOAD, B34_3
+wait, 3
+GLOAD, B34_1
+wait, 5
+GLOAD, B34_0
+wait, 3
+
+FLAG,5,+,N,1
+       FLAGCMP, 5,<,N,5
+       {
+        goto, 10
+       }
+
+;SALIR
+FLAG,5,=,N,0
+
+;Jefe:"Te estaba esperando... quiza podamos llegar a un acuerdo.
+;     "Yo domino la ciudad... Unete a mi o moriras como tus amigos!"
+;Yo:"Yo tengo el arma imbecil..."
+;"De rodillas gusano... " [le dispara en las rodillas]
+;"Nos vemos en el infierno... " [le dispara en el pecho]
+;[malo sangrando] "solo me duele... cuando me rio... " [se muere]
+;Grita el negro "El jefe de los Hell Raiders se escapa corriendo por
+;el porton" - Yo: "Es mio" [agarra la moto y una cadena y se la pone
+;en la espalda] [cae] [lo ata a la moto y lo arrastra]
+;"Muy bien, vamonos antes de que llegue la policia"
+;"Si, vamos al bar a festejar!" 
+
+;final a TIROS
+@, 10
+GLOAD, B32_90
+mensaje, 19, 0, 0
+{
+Te estaba esperando;podemos entendernos
+yo domino la ciudad; £nete o moriras
+como tus amigos...
+
+}
+GLOAD, B32_80
+mensaje, 19, 0, 0
+{
+Yo tengo el arma...
+De rodillas gusano!
+
+}
+GLOAD, B32_81
+WAIT, 1
+GLOAD, B32_82
+WAIT, 1
+GLOAD, B32_80
+WAIT, 1
+GLOAD, B32_901
+WAIT, 3
+GLOAD, B32_91
+WAIT, 10
+
+GLOAD, B32_80
+WAIT, 1
+GLOAD, B32_81
+WAIT, 1
+GLOAD, B32_82
+WAIT, 1
+GLOAD, B32_10
+WAIT, 5
+GLOAD, B32_11
+WAIT, 10
+
+GLOAD, B32_80
+mensaje, 19, 0, 0
+{
+Nos vemos en el infierno...
+}
+GLOAD, B32_81
+WAIT, 1
+GLOAD, B32_82
+WAIT, 1
+GLOAD, B32_80
+WAIT, 1
+GLOAD, B32_81
+WAIT, 1
+GLOAD, B32_82
+WAIT, 1
+GLOAD, B32_80
+WAIT, 1
+GLOAD, B32_81
+WAIT, 1
+GLOAD, B32_82
+WAIT, 1
+GLOAD, B32_80
+WAIT, 1
+
+GLOAD, B32_12
+WAIT, 2
+GLOAD, B32_13
+WAIT, 2
+GLOAD, B32_14
+WAIT, 2
+GLOAD, B32_15
+WAIT, 18
+
+
+
+
+;salir
+
+;fuck
+FLAG,5,=,N,0
+
+@, 1
+GLOAD, B22_7
+WAIT, 2
+GLOAD, B22_8
+WAIT, 2
+GLOAD, B22_9
+WAIT, 2
+
+FLAG,5,+,N,1
+       FLAGCMP, 5,<,N,5
+       {
+        goto, 1
+       }
+
+;;salir
+
+;animacion camion explo
+GLOAD, B20_2
+WAIT, 5
+GLOAD, B20_3
+WAIT, 5
+GLOAD, B20_4
+WAIT, 5
+GLOAD, B20_5
+WAIT, 7
+
+;;salir
+cls
+;animacion mata milicos
+GLOAD, B5_1
+WAIT, 18
+GLOAD, B5_2
+WAIT, 18
+CLS
+COLOR, 15
+MENSAJE, 8, 0, 30
+{
+               Maldicion!
+            Vienen refuerzos
+}
+PRINT, Duro con esos idiotas!
+GLOAD, B5_3
+WAIT, 18
+GLOAD, B5_5
+WAIT, 18
+GLOAD, B5_4
+WAIT, 18
+cls
+;animacion explosion de gas service!
+
+GLOAD, VIAJA2
+mensaje, 19, 0, 18
+{
+Rapidamente escapas y...
+
+}
+GLOAD, B1_2
+WAIT, 5
+GLOAD, B1_3
+WAIT, 5
+GLOAD, B1_4
+WAIT, 5
+GLOAD, B1_5
+WAIT, 5
+gloAD, DEAD7
+WAIT,7
+CLS
+
+
+
+;;salir

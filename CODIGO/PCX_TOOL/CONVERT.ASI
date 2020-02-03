@@ -1,0 +1,257 @@
+REM RUTINA QUE SALVA EL CONTENIDO DE LA MEMORIA DE VIDEO
+REM EN EL DISCO MEDIANTE EL COMANDO BSAVE!
+REM POR ALVARO - 30/10/98 - 31-12-98
+REM POR AHORA SOLO FUNCIONA EN MODO 13h
+REM La extension es AGM o sea Alvaro Gonzalez Memoria
+
+REM ESTA ES UNA NUEVA VERSION, QUE ADEMAS, AJUSTA LA PALETA,
+REM Y AHORRA ESPACIO EN DISCO CON IMAGENES PEQUE¥AS!
+REM LA RUTINA BLOAD FUE MODIFICADA PARA TOLERAR ESTE NUEVO FORMATO
+REM ============================
+REM Almacenaje de la paleta de colores
+DIM R1(255)
+DIM G1(255)
+DIM B1(255)
+
+DIM R2(255)
+DIM G2(255)
+DIM B2(255)
+REM ============================
+
+a$=COMMAND$
+a$=ucase$(a$)
+x=instr(a$,".")
+if x>0 then        
+        z=x-1
+        a$=left$(a$,z)
+endif
+        if a$<>"" then
+                archi$=a$
+                archi$=archi$+".AGM"
+        endif
+        archi$=ucase$(Archi$)
+        archi$=ltrim$(Archi$)
+        archi$=rtrim$(Archi$)
+
+        if archi$="" then 
+                SCREEN 0
+                PRINT "Llamar con DO.BAT, y especificar archivo!"
+                END
+        endif
+
+REM ===============================
+
+REM Posicion de memoria de la placa de video
+DEFSEG = &HexA000
+
+REM RUTINA QUE SCANEA LA PANTALLA PARA BUSCAR EXTREMO INFERIOR 
+y& = 0&
+Y1& = 0&
+FOR x1 = 0 TO 320
+
+FOR Y1& = Y2& TO 200&
+        d = POINT(Y1&, X1)
+        IF d > 0 THEN
+        IF Y1& > y& THEN
+                y& = Y1&
+        ENDIF
+        ENDIF
+NEXT Y1&
+        Y2& = y&
+NEXT x1
+REM Tama¤o pantalla
+y& = y& + 1&
+IF y& > 200& THEN 
+        y& = 200&
+ENDIF
+IF y& < 1& THEN 
+
+SCREEN 0
+        PRINT "Hubo un error; la imagen tiene 0 largo!"
+END
+
+ENDIF
+
+TAM& = 320& * y&
+rem ==========
+
+REM Altera la paleta
+GOSUB CARGAPALETA:
+
+REM  Comienzo; buscar el color mas brillante 
+BRILLO1=0
+COL1=15
+
+FOR A=0 TO 255
+        X=R1(a)+G1(a)
+        X=X+B1(a)
+        IF X>BRILLO1 THEN
+                BRILLO1=X
+                COL1=A
+        ENDIF
+NEXT a
+                R2(15)=R1(COL1)
+                G2(15)=G1(COL1)
+                B2(15)=B1(COL1)
+                
+                R2(COL1)=R1(15)
+                G2(COL1)=G1(15)
+                B2(COL1)=B1(15)
+
+
+REM  buscar el segundo color mas brillante 
+BRILLO2=0
+COL2=7
+
+FOR A=0 TO 255
+        X=R1(a)+G1(a)
+        X=X+B1(a)
+        IF X>BRILLO2 THEN
+        IF X<BRILLO1 THEN
+                BRILLO2=X
+                COL2=A
+        ENDIF
+        ENDIF
+
+NEXT a
+                
+                R2(7)=R1(COL2)
+                G2(7)=G1(COL2)
+                B2(7)=B1(COL2)
+                
+                R2(COL2)=R1(7)
+                G2(COL2)=G1(7)
+                B2(COL2)=B1(7)
+
+
+REM  buscar el color mas oscuro
+BRILLO3=BRILLO2
+COL3=0
+
+FOR A=0 TO 255
+        X=R1(a)+G1(a)
+        X=X+B1(a)
+        IF X<BRILLO3 THEN
+                BRILLO3=X
+                COL3=A
+        ENDIF
+NEXT a
+                
+                R2(0)=R1(COL3)
+                G2(0)=G1(COL3)
+                B2(0)=B1(COL3)
+                
+                R2(COL3)=R1(0)
+                G2(COL3)=G1(0)
+                B2(COL3)=B1(0)
+
+GOSUB AJUSTAPALETA:
+
+REM Ahora, reemplazar en la imagen los colores para mantenerla
+REM color 15 con COL1, color 7 con COL2, color 0 con COL3
+FOR X=0 to 319
+FOR Y=0 to 199
+        F=POINT(y,x)
+IF F=15 THEN
+        PSET(y,x),COL1
+ENDIF
+IF F=COL1 THEN
+        PSET(y,x),15
+ENDIF
+
+IF F=7 THEN
+        PSET(y,x),COL2
+ENDIF
+IF F=COL2 THEN
+        PSET(y,x),7
+ENDIF
+
+IF F=0 THEN
+        PSET(y,x),COL3
+ENDIF
+IF F=COL3 THEN
+        PSET(y,x),0
+ENDIF
+
+NEXT y
+NEXT x
+
+rem ===============================
+
+BSAVE archi$ 0 TAM&
+
+REM Salva la paleta de 256 colores
+OPEN "R",1,ARCHI$
+IF ERROR<>0 THEN
+        PRINT "ERROR ";
+        PRINT ERROR
+        END
+ENDIF
+FOR colors&=0& TO 255&
+        C&=colors&*7&
+        C&=C&+TAM&
+        C&=C&+1&
+        P&=FILEPOS(1,C&)
+        OUT &HEX3C7, colors&
+        R= INP &HEX3C9
+        G= INP &HEX3C9
+        B= INP &HEX3C9
+        R=R
+        G=G
+        B=B
+
+        r$=str$(r)
+        g$=str$(g)
+        b$=str$(b)
+
+        PRINT# 1, R
+        PRINT# 1, G
+        PRINT# 1, B
+NEXT  colors&
+CLOSE 1
+SCREEN 0
+PRINT "VERSION CONVERSION 2.00 - AHORRA ESPACIO Y AJUSTA PALETA..."
+PRINT "Listo ";
+PRINT ARCHI$
+END
+
+REM --------------------------------------------------------------------
+CARGAPALETA:
+
+REM carga la paleta de pantalla en matrices de memoria
+
+FOR T&=0& to 255&
+        REM lee de memoria
+        OUT &HEX3C7, T&
+        R=INP &HEX3C9
+        G=INP &HEX3C9
+        B=INP &HEX3C9
+        REM Salva los atributos        
+        REM Rojo
+        R1(T&)=R
+        R2(T&)=R
+        REM Verde
+        G1(T&)=G
+        G2(T&)=G
+        REM Azul        
+        B1(T&)=B
+        B2(T&)=B
+
+
+NEXT t&
+
+RETURN
+
+AJUSTAPALETA:
+
+REM Ajusta la paleta contenida en matrices R2, G2, B2
+
+FOR T&=0& to 255&
+        OUT &HEX3C8, t&
+        OUT &HEX3C9, R2(T&)
+        OUT &HEX3C9, G2(T&)
+        OUT &HEX3C9, B2(T&)
+
+NEXT t&
+
+RETURN

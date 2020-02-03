@@ -1,0 +1,527 @@
+REM Setup de GAIPLUS - CREA EL ARCHIVO ROCK.BAT CORRESPONDIENTE
+REM Requiere TEST.ANM y SUS ARCHIVOS CORRESPONDIENTES
+REM re-editado febrero 2020 - lanzamiento open source
+DIM bufer$(100)
+DIM PALABRA$(30)
+CODI=82
+cantipals = 0
+maximopalabras = 30
+COMA$=","
+RUTA$="TEST.ANM"
+
+        ENTER$=CHR$(13)
+        D$=CHR$(10)
+        ENTER$=ENTER$+D$
+
+AGM$=ruta$
+SCREEN 0
+COLOR 15, 1
+D$=SPACE$(80)
+FOR A=0 TO 24
+PRINT D$
+NEXT A
+LOCATE 0,0
+PRINT "                               ÚÄÄÄÄÄÄÄ¿                               "
+PRINT "                            ÉÍÍµ SETUP ÆÍÍ»                            "
+PRINT "                            º  ÀÄÄÄÄÄÄÄÙ  º                            "
+PRINT "              ÉÍÍÍÍÍÍÍÍÍÍÍÍÍÊÍÍÍÍÍÍÍÍÍÍÍÍÍÊÍÍÍÍÍÍÍÍÍÍÍÍÍÍ»             "
+PRINT "              ºCopyright (c) 1999, Alvaro Gonzalez Ferrerº             "
+PRINT "              º      Todos los derechos reservados.      º             "
+PRINT "              º       Programa hecho en Argentina        º             "
+PRINT "ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÐÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÐÄÄÄÄÄÄÄÄÄÄÄÄ¿"
+PRINT "³                 Este es el programa SETUP del juego.                ³"
+PRINT "³Sirve para configurar la velocidad del juego y la localizacion de los³"
+PRINT "³archivos temporales.                                                 ³"
+PRINT "³            Para m s informaci¢n, lea el archivo LEAME.TXT           ³"
+PRINT "³                                                                     ³"
+PRINT "³Release Febrero 2020                                                 ³"
+PRINT "ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ"
+PRINT "                                ³     ³                                "
+PRINT "                        ÚÄÄÄÄÄÄÄÁÄÄÄÄÄÁÄÄÄÄÄÄÄ¿                        "
+PRINT "                        ³Presione una tecla...³                        "
+PRINT "                        ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ                        "
+PRINT "VERSION OPEN SOURCE FEBRERO 2020 ! 1998, 1999 original                 "
+D$=""
+WHILE D$=""
+D$=INKEY$
+WEND
+REM Busca archivo Temporal
+GOSUB TAKEARCH:
+FALLO1:
+CLS
+COLOR 15,0
+PRINT "El directorio temporal a usarse ser : "
+PRINT "(Debe tener al menos 2 Megabytes libres en ese lugar)"
+COLOR 14, 0
+PRINT
+PRINT TEMP$
+PRINT
+COLOR 15,0
+PRINT "Es correcto S/N?"
+D$=""
+WHILE D$=""
+        D$=INKEY$
+        D$=UCASE$(D$)
+IF D$="N" THEN
+PRINT "Escriba directorio para archivos temporales."
+INPUT D$
+D$=UCASE$(D$)
+D$=LTRIM$(D$)
+D$=RTRIM$(D$)
+        IF D$="" THEN
+                PRINT "Incorrecto!"
+                BEEP
+                BEEP
+                GOTO FALLO1:
+        ELSE
+                TEMP$=D$
+                Z$=RIGHT$(TEMP$,1)
+                IF Z$<>"\" THEN
+                        TEMP$=TEMP$+"\"
+                ENDIF
+                GOTO FALLO1:
+        ENDIF
+ENDIF
+
+        IF D$<>"S" THEN
+                D$=""
+        ENDIF
+
+WEND
+
+
+SCREEN 13
+LOCATE 19,0
+COLOR 15, 0
+PRINT "Ajuste la velocidad de la animaci¢n"
+PRINT "[+] ¢ [*] Va m s lento"
+PRINT "[-] ¢ [/] Va m s r pido"
+PRINT "Presione la [BARRA] cuando sea correcto."
+GOSUB ANIMA:
+REM SACA EL DELAY AGREGADO
+DELAYMOV=DELAYMOV-DELAYT
+SCREEN 0
+COLOR 15, 1
+D$=SPACE$(80)
+FOR A=0 TO 24
+PRINT D$
+NEXT A
+LOCATE 0,0
+PRINT "Se termino de realizar los ajustes del programa."
+PRINT "Quedaron asi: "
+PRINT
+PRINT
+PRINT "Delay ";
+COLOR 14, 1
+PRINT DELAYMOV
+COLOR 15, 1
+PRINT
+PRINT "Directorio temporal al cual se setea la variable TEMP de DOS: "
+COLOR 14, 1
+PRINT
+PRINT TEMP$
+COLOR 15, 1
+PRINT
+PRINT "Desea crear el programa ROCK.BAT para ejecutar el juego ";
+COLOR 15, 9
+PRINT "S/N?"
+COLOR 15, 1
+D$=""
+WHILE D$=""
+        D$=INKEY$
+        D$=UCASE$(D$)
+IF D$="S" THEN
+OPEN "O",1,"ROCK.BAT"
+D$="@ECHO OFF"
+D$=D$+ENTER$
+PRINT #1, D$ NONULL
+
+D$="SET TEMP="
+D$=D$+TEMP$
+D$=D$+ENTER$
+PRINT #1, D$ NONULL
+
+
+D$="ROCKBABY /D"
+A$=STR$(DELAYMOV)
+D$=D$+A$
+D$=D$+ENTER$
+PRINT #1, D$ NONULL
+CLOSE 1
+PRINT "Configuracion salvada!"
+D$="N"
+ENDIF
+
+IF D$<>"N" THEN
+        D$=""
+ENDIF
+WEND
+
+
+COLOR 7, 0
+PRINT
+PRINT
+END
+REM -----------------------------
+ANIMA:
+REM ESTA RUTINA FUE MODIFICADA EXCLUSIVAMENTE PARA ESTE PROGRAMA
+REM NO ES LA RUTINA STANDARD. NO USARLA EN OTROS PROGRAMAS!
+REM TIENE EL AGREGADO DE DELAYT
+REM Hace la animacion v0.1á
+REM Ejecuta el `script' especificado en AGM$
+
+REM Cantidad de frames
+FRAMES=0
+
+REM Abre el archivo
+
+a=instr(AGM$,".")
+if a=0 then
+        AGM$=AGM$+".ANM"
+endif
+
+OPEN "I",3,AGM$
+E=ERROR
+IF E>0 THEN
+        GOSUB ERRORHANDLER:
+ENDIF
+INPUT #3, ANIMA
+INPUT #3, DELAYMOV
+INPUT #3, VECES
+
+REM VAR TEMPORAL PARA SACAR EL TIME AGREGADO AL DELAY ORIGINAL
+REM CON FORMULA DELAYMOV-DELAYT
+DELAYT=DELAYMOV
+
+WHILE E=0
+        INPUT #3, A$
+        E=ERROR
+        IF E=0 THEN
+                FRAMES=FRAMES+1
+        ENDIF
+
+                REM DECODIFICA
+                Z=LEN(A$)
+                BUFER$(FRAMES)=""
+                WHILE Z>1
+                        K$ = MID$(A$,Z,1)
+                        R = ASC(K$)
+                        R = R - CODI
+                        IF R < 0 THEN
+                                R = R + 255
+                        ENDIF
+                        K$ = CHR$(R)
+                        BUFER$(FRAMES) = BUFER$(FRAMES) + K$
+                        Z=Z-1
+                WEND
+
+WEND
+REM si no, pone una de mas!
+FRAMES=FRAMES-1
+CLOSE 3
+IF FRAMES=0 THEN
+        RETURN
+ENDIF
+
+REM Direccion de la animacion 1 o -1
+SUMA=1
+REM Grafico actual
+ACTUAL=1
+
+REM Si la animacion es ciclica, hacer todo el ciclo
+IF ANIMA=1 THEN
+IF VECES=0 THEN
+        VECES=1
+ELSE
+        REM tiene que hacer el doble-1 para complementar los ciclos
+        VECES=VECES+VECES
+        VECES=VECES-1
+ENDIF
+ENDIF
+
+REM Loop de animacion
+DOMOVIE:
+REM Carga el grafico actual
+AGM$=bufer$(ACTUAL)
+GOSUB LOADAGM:
+
+REM Hace la pausa
+IF delaymov>0 THEN
+        T1&=TIMER
+        T2&=0&
+        WHILE T2&< delaymov
+                T2&=TIMER
+                T2&=T2&-T1&
+        D$=INKEY$
+        d$=ucase$(d$)
+        IF D$="+" THEN
+                DELAYMOV=DELAYMOV+1
+        D$=""
+        ENDIF
+        IF D$="-" THEN
+                DELAYMOV=DELAYMOV-1
+        D$=""
+        ENDIF
+        IF D$="*" THEN
+                DELAYMOV=DELAYMOV+5
+                D$=""
+        ENDIF
+        IF D$="/" THEN
+                DELAYMOV=DELAYMOV-5
+                D$=""
+        ENDIF
+
+        IF D$=" " THEN ENDOMOVIE:
+        WEND
+ELSE
+        D$=INKEY$
+        d$=ucase$(d$)
+        IF D$="+" THEN
+                DELAYMOV=DELAYMOV+1
+                D$=""
+        ENDIF
+        IF D$="-" THEN
+                DELAYMOV=DELAYMOV-1
+                D$=""
+        ENDIF
+        IF D$="*" THEN
+                DELAYMOV=DELAYMOV+5
+                D$=""
+        ENDIF
+        IF D$="/" THEN
+                DELAYMOV=DELAYMOV-5
+                D$=""
+        ENDIF
+        IF D$=" " THEN ENDOMOVIE:
+
+
+ENDIF
+
+ACTUAL=ACTUAL+SUMA
+
+IF ANIMA=1 THEN
+REM loop
+        IF ACTUAL<1 THEN
+                SUMA=-SUMA
+                ACTUAL=2
+
+        IF VECES=0 THEN ENDOMOVIE:
+        VECES=VECES-1
+
+        ENDIF
+        IF ACTUAL>FRAMES THEN
+                SUMA=-SUMA
+                ACTUAL=FRAMES-1
+
+        IF VECES=0 THEN ENDOMOVIE:
+        VECES=VECES-1
+
+        ENDIF
+        GOTO DOMOVIE:
+ENDIF
+IF ANIMA=2 THEN
+        REM adelante
+        IF ACTUAL>FRAMES THEN
+                ACTUAL=1
+
+        IF VECES=0 THEN ENDOMOVIE:
+        VECES=VECES-1
+
+        ENDIF
+        GOTO DOMOVIE:
+ENDIF
+
+ENDOMOVIE:
+RETURN
+REM -----------------------------
+LOADAGM:
+        REM V2.00 (31/D/1998)
+        REM Abre un archivo AGM (grafico)
+        REM La pantalla debe estar en SCREEN 13
+        REM Llamar con AGM$=ARCHIVO
+REM Si TAM&=0, calcula automaticamente el tama¤o, de lo contrario,
+REM usa TAM& (Util para cargar juegos salvados, que incluyen info extra)
+REM Luego de usar la rutina, coloca TAM& a 0 de vuelta
+AGM$=LTRIM$(AGM$)
+AGM$=RTRIM$(AGM$)
+
+REM Posicion de memoria de la placa de video
+DEFSEG = &HexA000
+IF AGM$="" THEN
+        RETURN
+ENDIF
+
+a=instr(AGM$,".")
+if a=0 then
+        AGM$=AGM$+".AGM"
+endif
+IF TAM&<=0& THEN
+        REM Tama¤o de pantalla
+        TAM&=FILELEN(AGM$)
+                IF ERROR>0 THEN
+                        GOSUB errorhandler:
+                ENDIF
+        REM Quita el espacio de datos de la paleta (1792 bytes)
+        TAM&=TAM&-1792&
+ENDIF
+REM Lee la paleta de 256 colores
+OPEN "R",3,AGM$
+                IF ERROR>0 THEN
+                        GOSUB errorhandler:
+                ENDIF
+
+FOR t&=0& TO 255&
+
+        C&=T&*7&
+        C&=C&+TAM&
+        C&=C&+1&
+
+        P&=FILEPOS(3,C&)
+        INPUT# 3, R
+        INPUT# 3, G
+        INPUT# 3, B
+
+        OUT &HEX3C8, t&
+        OUT &HEX3C9, r
+        OUT &HEX3C9, g
+        OUT &HEX3C9, b
+
+NEXT T&
+CLOSE 3
+
+BLOAD AGM$ 0 TAM&
+TAM&=0&
+RETURN
+REM -----------------------------
+ERRORHANDLER:
+REM Maneja los errores de INPUT
+IF ERROR=18 THEN
+        ERROR=96
+ENDIF
+
+IF ERROR<>96 THEN
+
+        SCREEN 0
+        PRINT "WOOPS!"
+        PRINT "ERROR ";
+        PRINT ERROR
+        FALLA=ERROR
+        PRINT RUTA$
+        IF ERROR=1 THEN
+                PRINT "APPEND invalidado"
+        ENDIF
+        IF ERROR=2 THEN
+                PRINT "Archivo no encontrado"
+        ENDIF
+        IF ERROR=4 THEN
+                PRINT "Archivo no encontrado"
+        ENDIF
+        IF ERROR=3 THEN
+                PRINT "Path no encontrado"
+        ENDIF
+        IF ERROR=5 THEN
+                PRINT "Acceso a archivo denegado"
+        ENDIF
+        IF ERROR=98 THEN
+                PRINT "Archivo no fue abierto"
+        ENDIF
+        IF ERROR=255 THEN
+                PRINT "Disco lleno"
+        ENDIF
+        IF ERROR=97 THEN
+                PRINT "Archivo no es posible abrirlo"
+        ENDIF
+END
+ELSE
+        REM Una linea de mas de 80 letras
+        ERROR=0
+ENDIF
+RETURN
+REM -----------------------------
+
+TAKEARCH:
+REM Esta rutina es de inicializacion del programa
+REM Lee la variable de DOS TEMP para usar los archivos temporales
+REM la coloca en TEMP$
+REM Si no existe la variable TEMP, Usa COMSPEC (y si no C:\)
+Z$=COMA$
+COMA$="="
+TEMP$="C:\"
+B=0
+FOR A=1 to 10
+        FRASE$=ENVIRON$(a)
+        GOSUB RECONOCER:
+PALABRA$(1)=UCASE$(PALABRA$(1))
+PALABRA$(1)=LTRIM$(PALABRA$(1))
+PALABRA$(1)=RTRIM$(PALABRA$(1))
+IF PALABRA$(1)="TEMP" THEN
+        A=10
+        TEMP$=PALABRA$(2)
+        B=1
+ENDIF
+NEXT a
+REM No encontro la TEMP
+IF b=0 THEN
+        FOR A=1 to 10
+                FRASE$=ENVIRON$(a)
+                GOSUB RECONOCER:
+        PALABRA$(1)=UCASE$(PALABRA$(1))
+        PALABRA$(1)=LTRIM$(PALABRA$(1))
+        PALABRA$(1)=RTRIM$(PALABRA$(1))
+        IF PALABRA$(1)="COMSPEC" THEN
+                A=10
+                TEMP$=LEFT$(PALABRA$(2),3)
+                B=1
+        ENDIF
+        NEXT a
+ENDIF
+
+COMA$=Z$
+Z$=RIGHT$(TEMP$,1)
+IF Z$<>"\" THEN
+        TEMP$=TEMP$+"\"
+ENDIF
+
+REM ----
+RETURN
+REM -----------------------------
+RECONOCER:
+REM Rutina que separa las palabras contenidas en frase$
+REM Utiliza como separador solo la contenida en COMA$;
+REM Sirve para separar las lineas de comando.
+REM El DEFAULT DE COMA$ es la COMA ","
+REM por AGF - Revision del 25/11/1998 - Almacena las palabras en
+REM la matriz PALABRA$. Puede almacenar hasta 30 palabras
+REM NO PASA A MAYUSCULAS.
+REM COLOCA LA CANTIDAD DE PALABRAS EN "CANTIPALS"
+pal$ = ""
+CANTIPALS = 0
+REM si esto no esta, no lee la ultima palabra
+FRASE$ = FRASE$ + COMA$
+p2 = LEN(frase$)
+
+FOR dummy1 = 1 TO p2
+   a$ = MID$(frase$, dummy1, 1)
+   IF A$=COMA$ THEN
+           REM encontro el fin de una palabra
+           pal$ = LTRIM$(pal$)
+           pal$ = RTRIM$(pal$)
+        IF pal$ <> "" THEN
+                CANTIPALS = CANTIPALS + 1
+                IF CANTIPALS > maximopalabras THEN
+                        REM aborta el FOR, demasiadas palabras
+                        p2 = 0
+                        CANTIPALS = 0
+                ELSE
+                        PALABRA$(CANTIPALS) = pal$
+                ENDIF
+        ENDIF
+        pal$ = ""
+   ELSE
+        pal$ = pal$ + a$
+   ENDIF
+
+NEXT dummy1
+
+RETURN
+REM -----------------------------

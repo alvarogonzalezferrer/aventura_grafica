@@ -1,0 +1,104 @@
+REM RUTINA QUE LEE EL CONTENIDO DE LA MEMORIA DE VIDEO
+REM EN EL DISCO MEDIANTE EL COMANDO BLOAD!
+REM POR ALVARO - 30/10/98
+REM POR AHORA SOLO FUNCIONA EN MODO 13h
+REM La extension es AGM o sea Alvaro Gonzalez Memoria
+REM Version 2.00 que calcula el tama¤o del archivo (para poder salvar imagenes
+REM chicas ahorrando espacio en disco)
+REM ============================
+SCREEN 13
+a$=COMMAND$
+a$=ucase$(a$)
+x=instr(a$,".")
+if x>0 then        
+        z=x-1
+        a$=left$(a$,z)
+endif
+        if a$<>"" then
+                archi$=a$
+                archi$=archi$+".AGM"
+        endif
+        archi$=ucase$(Archi$)
+        archi$=ltrim$(Archi$)
+        archi$=rtrim$(Archi$)
+
+        if archi$="" then 
+                SCREEN 0
+                PRINT "Especifique archivo AGM"
+                END        
+        endif
+
+REM ===============================
+
+
+REM Posicion de memoria de la placa de video
+DEFSEG = &HexA000
+
+REM Tama¤o de pantalla
+TAM&=FILELEN(ARCHI$)
+IF ERROR>0 THEN
+        PRINT "ERROR ";
+        PRINT ERROR
+        END
+ENDIF
+REM Quita el espacio de datos de la paleta (1792 bytes)
+TAM&=TAM&-1792&
+
+REM Lee la paleta de 256 colores
+OPEN "R",1,ARCHI$
+IF ERROR<>0 THEN
+        SCREEN 0
+        PRINT "ERROR ";
+        PRINT ERROR
+        END
+ENDIF
+FOR colors&=0& TO 255&
+        C&=colors&*7&
+        C&=C&+TAM&
+        C&=C&+1&        
+        P&=FILEPOS(1,C&)
+        INPUT# 1, R
+        INPUT# 1, G
+        INPUT# 1, B
+
+        OUT &HEX3C8, colors&
+        OUT &HEX3C9, r
+        OUT &HEX3C9, g
+        OUT &HEX3C9, b
+        R=R
+        G=G
+        B=B
+
+NEXT  colors&
+CLOSE 1
+
+BLOAD ARCHI$ 0 TAM&
+
+while d$=""
+d$=inkey$
+d$=ucase$(d$)
+
+if d$="P" then
+        locate 0,0
+REM Dibuja la paleta
+for b=0 to 15
+for a=0 to 15
+
+COLOR a, b
+PRINT "Û";
+c=c+1
+if c>39 then
+print
+c=0
+endif
+next a
+next b
+PRINT
+
+d$=""
+
+endif
+
+wend
+
+END

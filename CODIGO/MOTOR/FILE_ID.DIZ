@@ -1,0 +1,16 @@
+Esta es la version PLUS de G.A.I
+(Generador Aventuras Interativas)
+No es para distribuir al publico.
+Es de uso interno. Esta optimizado.
+Soporta ambos formatos AGC y GAI
+en un solo programa.
+Interface mejorada, etc.
+Leer MANUAL.TXT para mas info.
+GAIPLUS contiene mas comandos que GAI y GAICODE
+Compilar con COMPLUS.
+
+
+/////
+info febrero 2020
+
+los archivos "*.asi" se compilan con ASIC BASIC

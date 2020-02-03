@@ -1,0 +1,1636 @@
+;ROCK BABY! - EPISODIO I
+;POR ALVARO D.C GONZALEZ FERRER
+;(C) 1998-99 AGF SOFT
+;21/E/1999 - 16:04 - 24/E/1999 - 19:23 - 8/F/99 - 18:08
+       ;se fija si uso primero el menu, si no, lo llama
+       FLAGCMP, 100,<>,N,-1
+       {
+        RUN, menu
+       }
+RESET
+CLEAR
+CLS
+;descripcion larga siempre
+LARGA ON
+color,15
+;AQUI SE DEFINEN LOS OBJETOS 
+;Los objetos entre 8 y > los uso para los personajes(solo en este episodio)
+DEFINEOBJ
+{
+        1,  0, Escopeta, Es una itaca recortada
+        2,  4, Granada, Es una MK51 de fragmentacion
+        3,  3, Barra de metal, Es fuerte y puede ser util
+        4,  0, Alambre, Es de cobre y filoso
+        5,  0, Pa¤uelo, Tiene perfume de mujer
+        6, 14, Botella, Es de cerveza y esta vacia
+        7,  0, Llave, Es la llave de la moto
+        30, 1, Cadaveres, Son mis amigos
+        31, 1, Caja, Es una caja de metal
+        32, 1, Moto, Es la moto de mi amigo
+}
+
+;AQUI LAS ACCIONES: NUMERO, PARAMETROS, DESCRIPCION
+;Dejo las 10 primeras libres para las salidas de los lugares
+;De esta forma no defino todas cada vez que cambio de lugar.
+DEFINEACC
+{
+        10, 1, Usar 
+        11, 2, Usar OBJ1 con OBJ2
+        12, 1, Agarrar, 2 
+        13, 1, Examinar 
+        14, 1, Hablar a..., 2
+        15, 0, Descripcion General
+        16, 0, DEBUG
+;       17, 0, Mirar mis cosas (inventario)
+        18, 0, Salvar juego
+        19, 0, Cargar juego
+        20, 0, Salir del juego
+        21, 0, Reiniciar el juego
+}
+;-------------------------------
+
+@,1
+
+DEFINEACC
+{
+        1, -1, OFF
+        2, -1, OFF
+        3, -1, OFF
+        4, -1, OFF
+        5, -1, OFF
+}
+;campo 
+DEJAOBJ, 32
+GLOAD, A1
+INPUT
+
+IFAC,13,30,0
+{
+        MENSAJE, 19,0,0
+        {
+Encontre una llave en el bolsillo
+        
+        }
+        COGEOBJ, 7
+        MATAOBJ,30
+}
+
+IFAC,13,31,0
+{
+        MENSAJE, 19,0,0
+        {
+Encontre una escopeta y 
+varios cartuchos
+        
+        }
+        COGEOBJ, 1
+        MATAOBJ,31
+}
+
+IFAC, 10, 32, 0
+{
+IFON, 7,=,999
+{
+PRINT, Decides ir al pueblo...
+ANIMA, VIAJA1
+ANIMA, VIAJA1
+PRINT
+GOTO, 2
+}
+
+IFON, 7,<>,999
+{
+MENSAJE, 19, 0, 0
+{
+No tengo la llave!
+
+}
+}
+}
+
+
+IFAC, 14, 30, 0
+{
+MENSAJE, 19, 0, 0
+{
+Estan muertos gil!
+
+}
+}
+
+IFAC, 10, 7, 0
+{
+MENSAJE, 19, 0, 0
+{
+Mejor uso la moto
+
+}
+}
+
+IFAC, 11, 7, -1
+{
+MENSAJE, 19, 0, 0
+{
+Mejor uso la moto
+
+}
+}
+
+GOSUB, standard
+GOTO,1
+;-------------------------------
+@,2
+;plaza 
+COLOR,15
+DEFINEACC
+{
+        1, 0, Ir al campamento
+        2, 0, Ir al taller
+        3, 0, Ir a la armeria
+        4, -1, OFF
+        5, -1, OFF
+}
+       
+;Ir al bar             > G 5  
+;        Solo si no uso la granada; [si F 1=0]
+       FLAGCMP, 1,=,N,0
+       {
+       DEFINEACC
+       {
+                4, 0, Ir al bar
+       }
+       }
+
+;Ir al Pink Shop    > G 7 
+;        Solo si uso la granada en el bar y reviso cadaveres
+       FLAGCMP, 1,>=,N,2
+       {
+       DEFINEACC
+       {
+                5, 0, Ir al Pink Shop
+       }
+       }
+
+;Ir a la zona sur de la ciudad > G, 8  
+       FLAGCMP, 2,=,N,1
+       {
+       DEFINEACC
+       {
+                6, 0, Ir a la zona sur de la ciudad
+       }
+       }
+
+
+;pone la moto
+DEJAOBJ, 32
+
+GLOAD, A2
+INPUT
+
+;volver al campo
+IFAC, 1, 0, 0
+{
+        CLS
+ANIMA, VIAJA2
+        CLS
+        GOTO, 1
+}
+;bar
+IFAC, 4, 0, 0
+{
+        CLS
+        GOTO, 5
+}
+
+;pink shop
+IFAC, 5, 0, 0
+{
+        CLS
+        GOTO, 7
+}
+
+;zona sur
+IFAC, 6, 0, 0
+{
+        CLS
+        GOTO, 8
+}
+
+;taller
+IFAC, 2, 0, 0
+{
+        CLS
+        GOTO, 3
+}
+;armeria
+IFAC, 3, 0, 0
+{
+        CLS
+        GOTO, 4
+}
+
+;Usar moto
+IFAC,10,32,0
+{
+        CLS
+PRINT, Decides volver al campo en la moto...
+ANIMA, VIAJA2
+ANIMA, VIAJA2
+        
+        CLS
+        GOTO, 1
+}
+
+
+GOSUB, standard
+GOTO,2
+;-------------------------------
+@,3
+;taller mecanico
+DEFINEACC
+{
+        1, 0, Ir a la plaza
+        2, -1, OFF
+        3, -1, OFF
+        4, -1, OFF
+        5, -1, OFF
+}
+
+;personaje temporal
+;objetos 8-10 sirven para esto
+DEFINEOBJ
+{
+        8,  3, Mecanico, Esta muy engrasado 
+}
+
+GLOAD, A3
+INPUT
+
+;Hablar
+IFAC,14,8,0
+{
+        COLOR, 15
+        MENSAJE,1,0,0
+        {
+No vio unos tipos en moto?
+
+        }
+        COLOR, 7
+        MENSAJE,10,0,0
+        {
+Unos motoqueros pasaron por aqui y me
+obligaron a arreglar una de sus motos.
+Hablaron de un escondite. 
+Tene cuidado, estaban armados.
+Si queres llevate mi barra metalica;        
+puede servirte y yo ya no la uso...
+
+        }
+COGEOBJ, 3
+COLOR, 15
+}
+
+;agarrar barra metal
+IFAC,12,3,0
+{
+        MENSAJE, 19, 0,0
+        {
+Ok; es fuerte y parece util...
+
+        }
+        COGEOBJ, 3
+}
+
+;plaza
+IFAC,1,0,0
+{
+GOTO,2
+}
+
+GOSUB, standard
+GOTO,3
+;-------------------------------
+@,4  
+;Armeria [GUILLE]
+
+;taller mecanico
+DEFINEACC
+{
+        1, 0, Ir a la plaza
+        2, -1, OFF
+        3, -1, OFF
+        4, -1, OFF
+        5, -1, OFF
+}
+
+;personaje temporal
+;objetos 8-10 sirven para esto
+DEFINEOBJ
+{
+        8,  4, Guerrillero, Es el que trafica las armas
+}
+
+GLOAD, A4
+INPUT
+
+;Hablar
+IFAC,14,8,0
+{
+        GTSAVE
+        GLOAD, HABLA
+        COLOR, 15
+        MENSAJE,19,0,0
+        {
+Disculpe...
+Debo combatir contra muchos 
+y no se como...
+
+        }
+        GTLOAD
+        COLOR, 7
+        MENSAJE,18,0,0
+        {
+Deja que tu furia te guie. 
+Son muchos, pero podras vencerlos 
+Toma si deseas una de mis granadas...
+
+        }
+COLOR, 15
+}
+
+;agarrar granada
+IFAC,12,2,0
+{
+        MENSAJE, 19,0,0
+        {
+Guardo una granada en mi bolsillo
+        
+        }
+        COGEOBJ, 2
+}
+
+;plaza
+IFAC,1,0,0
+{
+GOTO,2
+}
+
+GOSUB, standard
+GOTO,4
+;-------------------------------
+@,5  
+;Bar por fuera
+
+DEFINEACC
+{
+        1, 0, Ir a la plaza
+        2, 0, Entrar al bar
+        3, -1, OFF
+        4, -1, OFF
+        5, -1, OFF
+}
+
+DEFINEOBJ
+{
+        8,  5, Ventana, Da al interior del bar
+}
+
+GLOAD, A5_0
+INPUT
+
+IFAC,13,8,0
+{
+        MENSAJE, 19, 0,0
+        {
+Hay unos diez Hell Raiders 
+y estan muy bien armados
+
+        }
+}
+
+;usar granada
+IFAC,10,2,0
+{
+        MENSAJE, 19, 0, 0
+        {
+La tiro por la ventana?
+        
+        }
+}
+
+;usar granada en ventana
+IFAC,11,2,8
+{
+        GLOAD, A5_1        
+        FLAG, 1,+,N,1
+        WAIT, 15
+        PRINT, Mueran malditos!
+        WAIT, 10
+        CLS
+        MENSAJE, 5, 0, 25
+        {
+Entras al bar a disfrutar la masacre
+        
+        }
+        MATAOBJ, 2
+        GOTO, 6
+}
+
+IFAC,2,0,0
+{
+        CLS
+        GLOAD, DEAD2
+        MENSAJE, 19, 0, 35
+{
+Argh!!! Y la p...!
+}
+        GLOAD, DEAD1
+        MENSAJE, 19, 0, 0
+{
+Estas muerto...
+Los muchachos te golpearon muy duro...
+
+}
+        RUN, menu
+}
+
+;plaza
+IFAC,1,0,0
+{
+GOTO,2
+}
+
+GOSUB, standard
+GOTO,5
+;-------------------------------
+@, 6
+;Interior del Bar
+
+DEFINEACC
+{
+        1, -1, OFF
+        2, 0, Tomar un trago
+        3, -1, OFF
+        4, -1, OFF
+        5, -1, OFF
+}
+
+;Si F 1>=2 habilita Ir a la plaza > G 2
+       FLAGCMP, 1,>=,N,2
+       {
+       DEFINEACC
+       {
+                1, 0, Ir a la plaza
+       }
+       }
+
+DEFINEOBJ
+{
+        8,  6, Cadaveres, Parecen hamburguesas quemadas...
+}
+
+GLOAD, A6
+INPUT
+
+IFAC,13,8,0
+{
+        MENSAJE, 16, 0, 0
+        {
+Uno tiene una cajita de fosforos 
+con la inscripcion Pink Shop.
+Estos no son todos los Hell Raiders.
+Faltan muchos mas para completar 
+mi venganza. 
+        
+        }
+        FLAG,1,+,N,1
+}
+
+IFAC, 14, 8, 0
+{
+MENSAJE, 19, 0, 0
+{
+Los muertos no hablan!
+
+}
+}
+
+
+IFAC, 2, 0,0
+{
+        MENSAJE,19,0,20
+        {
+Esta caliente; es bebida de maricones!
+
+        }
+}
+IFAC, 1, 0 ,0
+{
+        GOTO, 2
+}
+
+GOSUB, standard
+GOTO, 6
+;-------------------------------
+@,7 
+;Pink Shop [FLAVIA]
+DEFINEACC
+{
+        1,  0, Ir a la plaza
+        2, -1, OFF
+        3, -1, OFF
+        4, -1, OFF
+        5, -1, OFF
+        6, -1, OFF
+}
+DEFINEOBJ
+{
+        8,  7, Empleada, Es muy simpatica...
+}
+GLOAD, A7
+INPUT
+
+;Hablar
+IFAC,14,8,0
+{
+        GTSAVE
+        GLOAD, HABLA
+        COLOR, 15
+        MENSAJE,19,0,0
+        {
+No viste unos motoqueros?
+        
+        }
+        GTLOAD
+        
+        MENSAJE,18,0,0
+        {
+Si; algunos de ellos suelen venir a 
+hacerse tatuajes o contratar mis 
+servicios. Creo que viven en la zona 
+sur de la ciudad; es peligrosa...
+
+        }
+   FLAG,2,=,N,1
+}
+
+
+IFAC, 1, 0,0
+{
+        GOTO, 2
+}
+
+GOSUB, standard
+GOTO, 7
+;-------------------------------
+@,8 
+;Zona Sur
+DEFINEACC
+{
+        1,  0, Ir al cabaret
+        2,  0, Ir a la cantina
+        3,  0, Ir a ver al Demoledor
+        4,  0, Ir al Sex Shop
+        5, -1, OFF
+        6, -1, OFF
+}
+
+FLAGCMP, 3,>=,N,4
+{
+DEFINEACC
+{
+        5,  0, Ir a los suburbios
+}
+}
+IFON, 4,=,0
+{
+DEFINEOBJ
+{
+        8,  8, Bolsa de Basura, Quiza tenga algo util dentro
+}
+}
+GLOAD, A8
+INPUT
+
+IFAC,1,0,0
+{
+FLAG, 3,+,N,1
+GOTO, 9
+}
+IFAC,2,0,0
+{
+FLAG, 3,+,N,1
+GOTO, 10
+}
+IFAC,3,0,0
+{
+FLAG, 3,+,N,1
+GOTO, 11
+}
+IFAC,4,0,0
+{
+FLAG, 3,+,N,1
+GOTO, 12
+}
+IFAC,5,0,0
+{
+;me fijo si no agarro el alambre
+IFON,4,<>,999
+{
+MENSAJE, 19, 0, 0
+{
+Quiza deberia examinar la basura...
+Puede tener algo util...
+
+}
+        GOTO, 8
+}
+;si lo agarro sigo
+PRINT, Vas en tu moto cuando...
+ANIMA, VIAJA2
+ANIMA, VIAJA2
+PRINT
+GLOAD, A13_0
+MENSAJE, 19, 0, 0
+{
+Te vamos a aplastar imbecil!
+
+}
+WAIT, 18
+CLS
+GOTO, 13
+}
+
+IFAC,13,8,0
+{
+MENSAJE, 19,0,0
+{
+Encontre un alambre...
+Quiza sea util...
+
+}
+COGEOBJ, 4
+MATAOBJ, 8
+}
+
+GOSUB, standard
+GOTO, 8
+;-------------------------------
+@,9 
+;Cabaret
+DEFINEACC
+{
+        1,  0, Volver a la zona sur
+        2,  0, Entrar al Cabaret
+        3,  0, Pegarle al idiota del traje
+        4, -1, OFF
+        5, -1, OFF
+}
+
+DEFINEOBJ
+{
+        8,  9, Prostituta, Es muy barata para mi
+}
+GLOAD, A9
+INPUT
+IFAC,12, 8, 0
+{
+MENSAJE, 19, 0, 0
+{
+No me alcanza la plata
+
+}
+}
+
+IFAC,13, 8, 0
+{
+MENSAJE, 19, 0, 0
+{
+No se deja en publico :)
+
+}
+}
+
+IFAC, 2, 0, 0
+{
+        COLOR, 7
+        MENSAJE,0,0,0
+        {
+Disculpe...
+No se permiten homosexuales aqui...
+Ja Ja Ja Ja!
+        
+        }
+        COLOR, 15
+        MENSAJE,19,0,0
+        {
+(Creo que el gay es el!)        
+(Mira su traje rosa...)
+        }
+}
+
+
+IFAC,3,0,0
+{
+        CLS
+        GLOAD, DEAD3
+        MENSAJE, 19, 0, 35
+{
+Oops!
+Cometi un err.. arghhahh!
+}
+        GLOAD, DEAD1
+        MENSAJE, 19, 0, 0
+{
+Eso si fue duro!
+Ese tipo te mato!
+
+}
+        RUN, menu
+}
+
+IFAC, 14, 8,0
+{
+        COLOR, 15
+        MENSAJE,15,0,0
+        {
+Hola nena...
+No viste unos tipos en moto?
+
+        }
+        COLOR, 7
+        MENSAJE,0,0,0
+        {
+Esos tipos suelen venir por aqui. 
+Raptaron a una amiga mia.
+Toma mi pa¤uelo para la buena suerte.
+        
+        }
+COLOR, 15
+COGEOBJ, 5
+}
+
+
+IFAC,1,0,0
+{
+GOTO, 8
+}
+
+GOSUB, standard
+GOTO, 9
+;-------------------------------
+@, 10 
+;Cantina
+DEFINEACC
+{
+        1,  0, Volver a la zona sur
+        2,  0, Pegarle a estos imbeciles
+        3, -1, OFF
+        4, -1, OFF
+        5, -1, OFF
+}
+DEFINEOBJ
+{
+        8, 10, Cantinero, Este tipo huele a basura
+        9, 10, Gente, Son una manga de borrachos
+}
+GLOAD, A10_0
+INPUT
+
+IFAC, 14, 8,0
+{
+        COLOR, 15
+        MENSAJE,15,0,0
+        {
+Que sabes de los Hell Raiders?
+
+        }
+        COLOR, 7
+        MENSAJE,0,0,20
+        {
+        No se nada... 
+        }
+        
+        MENSAJE,0,0,20
+        {
+mmm; quiza...          
+        }
+GLOAD, A10_1
+        COLOR, 15
+        MENSAJE,5,0,0
+        {
+Insisto gusano!
+Que sabes de los Hell Raiders?
+
+        }
+        COLOR, 7
+        
+        MENSAJE,0,0,0
+        {
+Bueno, solo que son muchos 
+y se esconden en una fabrica
+        
+        }
+        COLOR, 15
+        MENSAJE,5,0,18
+        {
+Asi esta mejor...
+        }
+GLOAD, A10_0
+}
+
+IFAC, 14, 9,0
+{
+        COLOR, 15
+        MENSAJE,15,0,0
+        {
+Disculpen...
+Que saben de los Hell Raiders?
+
+        }
+        COLOR, 7
+        MENSAJE,10,0,20
+        {
+Callate idiota!
+        }
+        COLOR, 8
+        MENSAJE,10,20,20
+        {
+Desaparece infeliz!    
+        }
+        
+        MENSAJE,15,0,20
+        {
+Hacete un enema!        
+        }
+COLOR, 15
+}
+
+IFAC,1,0,0
+{
+GOTO, 8
+}
+
+IFAC,2,0,0
+{
+        CLS
+        GLOAD, DEAD2
+        MENSAJE, 19, 0, 35
+{
+Ouch! Eso duele!
+}
+        GLOAD, DEAD1
+        MENSAJE, 19, 0, 0
+{
+No seas tonto...
+Eres muy malo con los pu¤os...
+
+}
+        RUN, menu
+}
+GOSUB, standard
+GOTO, 10
+;-------------------------------
+@, 11 
+;Demoledor (Kronos)
+DEFINEACC
+{
+        1,  0, Volver a la zona sur
+        2, -1, OFF
+        3, -1, OFF
+        4, -1, OFF
+        5, -1, OFF
+}
+DEFINEOBJ
+{
+        8, 11, Demoledor, Sus musculos son increibles
+}
+
+GLOAD, A11
+INPUT
+;Examinarlo (Truco del juego)
+IFAC,13,8,0
+{
+        COLOR, 8
+        MENSAJE,19,0,18
+        {
+(Este tipo me parece el programador 
+de este juego!)
+        }
+        COLOR, 15
+}
+;Hablar
+IFAC,14,8,0
+{
+        GTSAVE
+        GLOAD, HABLA
+        COLOR, 15
+        MENSAJE,19,0,0
+        {
+Oh! Noble guerrero...
+Iluminame con tu sabiduria
+
+        }
+        GTLOAD
+        COLOR, 7
+        MENSAJE,18,0,0
+        {
+Debes confiar en tu destreza si 
+quieres vencerlos. 
+Te superan en numero y armamento. 
+Quiza debas cazarlos uno a uno.
+
+        }
+COLOR, 15
+}
+
+IFAC,1,0,0
+{
+GOTO, 8
+}
+GOSUB, standard
+GOTO, 11
+;-------------------------------
+@, 12 
+;Sex Shop
+DEFINEACC
+{
+        1,  0, Volver a la zona sur
+        2, -1, OFF
+        3, -1, OFF
+        4, -1, OFF
+        5, -1, OFF
+}
+DEFINEOBJ
+{
+        8, 12, Empleado, Tiene cara de satiro...
+}
+
+GLOAD, A12
+INPUT
+
+;Hablar
+IFAC,14,8,0
+{
+        COLOR, 15
+        MENSAJE,19,0,0
+        {
+Busco a los Hell Raiders...
+
+        }
+        COLOR, 7
+        MENSAJE,16,0,0
+        {
+Solo puedo decirte que el escondite 
+esta en los suburbios de la ciudad.
+Es aun mas peligroso que esta zona. 
+Espero que tengas una buena arma...
+Adios...
+
+        }
+COLOR, 15
+}
+
+IFAC,1,0,0
+{
+GOTO, 8
+}
+GOSUB, standard
+GOTO, 12
+;-------------------------------
+@, 13 
+;Suburbios
+DEFINEACC
+{
+        1,  0, Ir al desarmadero 
+        2,  0, Ir a la fundicion 
+        3, -1, OFF
+        4, -1, OFF
+        5, -1, OFF
+}
+       
+       FLAGCMP, 4,=,N,0
+       {
+       GLOAD, A13_1
+       DEFINEOBJ
+       {
+       8, 13, Matones, Son feos y estupidos
+       }
+       }
+       FLAGCMP, 4,=,N,1
+       {
+       GLOAD, A13_3
+       
+       FLAGCMP, 6,=,N,1
+       {
+        DEFINEACC
+        {
+                3,  0, Ir al puerto 
+        }       
+       }
+       }
+
+INPUT
+IFAC, 10, 1, 0
+{
+MENSAJE, 5, 0, 0
+{
+¨A que le disparo?
+}
+
+}
+
+IFAC,1,0,0
+{
+       
+       FLAGCMP, 4,=,N,0
+       {
+        GLOAD, A13_4
+        MENSAJE, 19, 0, 35
+{
+Argh!!!
+}
+        GLOAD, DEAD4
+        MENSAJE, 19, 0, 0
+{
+Estas muerto...
+Los muchachos te golpearon muy duro...
+
+}
+        RUN, menu
+        }
+
+GOTO, 14
+}
+IFAC,2,0,0
+{
+       
+       FLAGCMP, 4,=,N,0
+       {
+        GLOAD, A13_4
+        MENSAJE, 19, 0, 35
+{
+No!!!
+}
+        GLOAD, DEAD4
+        MENSAJE, 19, 0, 0
+{
+Estas muerto...
+Te rompieron ... los huesos
+
+}
+        RUN, menu
+        }
+
+GOTO, 15
+}
+IFAC,3,0,0
+{
+PRINT, Vas manejando y de pronto...
+ANIMA, VIAJA2
+ANIMA, VIAJA2
+PRINT
+GLOAD, A16_0
+MENSAJE, 19, 0, 0
+{
+Dame la billetera y todo lo que 
+traigas encima!
+
+}
+WAIT, 18
+CLS
+GOTO, 16
+}
+
+;disparar
+IFAC, 11, 1, 8
+{
+GLOAD, A13_2
+WAIT, 18
+GLOAD, A13_3
+MENSAJE, 0, 0, 0
+{
+Los otros se asustaron y corrieron 
+al ver correr sangre...
+(maricones!)
+
+}
+FLAG, 4,=,N,1
+MATAOBJ, 8
+}
+GOSUB, standard
+GOTO, 13
+;-------------------------------
+@, 14 
+;Desarmadero
+DEFINEACC
+{
+        1,  0, Volver a los suburbios
+        2, -1, OFF
+        3, -1, OFF
+        4, -1, OFF
+        5, -1, OFF
+}
+DEFINEOBJ
+{
+        8, 14, Empleado, Que pantalon ridiculo tiene!
+}
+
+GLOAD, A14
+INPUT
+IFAC,12,6,0
+{
+        MENSAJE,19,0,20
+        {
+La agarre... esta vacia...
+        }
+COGEOBJ, 6
+}
+
+;Hablar
+IFAC,14,8,0
+{
+        COLOR, 15
+        MENSAJE,19,0,0
+        {
+No viste nada raro hoy?
+(aparte de ese pantalon ridiculo)
+
+        }
+        COLOR, 7
+        MENSAJE,10,0,0
+        {
+Buena moto... Vi unas cuantas 
+de esas por aqui; las montaban
+unos tipos con campera de cuero.
+
+        }
+COLOR, 15
+}
+
+IFAC,1,0,0
+{
+GOTO, 13
+}
+GOSUB, standard
+GOTO, 14
+;-------------------------------
+@, 15 
+;Fundicion
+DEFINEACC
+{
+        1,  0, Volver a los suburbios
+        2, -1, OFF
+        3, -1, OFF
+        4, -1, OFF
+        5, -1, OFF
+}
+DEFINEOBJ
+{
+        8, 15, Empleado, Esta colorado por el calor
+}
+
+GLOAD, A15
+INPUT
+
+;Hablar
+IFAC,14,8,0
+{
+        COLOR, 15
+        MENSAJE,19,0,0
+        {
+Busco una banda de motos...
+
+        }
+        COLOR, 7
+        MENSAJE,10,0,0
+        {
+Vi unos cuantos en moto; pasaron 
+por aqui; se esconden en la 
+fabrica abandonada cerca del puerto.
+
+        }
+FLAG, 6,=,N,1
+COLOR, 15
+}
+
+IFAC,1,0,0
+{
+GOTO, 13
+}
+GOSUB, standard
+GOTO, 15
+;-------------------------------
+@, 16 
+;Puerto
+DEFINEACC
+{
+        1,  0, Entrar a la fabrica
+        2, -1, OFF
+        3, -1, OFF
+        4, -1, OFF
+        5, -1, OFF
+}
+       
+       FLAGCMP, 5,=,N,0
+       {
+       GLOAD, A16_1
+       DEFINEOBJ
+       {
+       8, 16, Marinos, Huelen a pescado muerto
+       }
+       }
+       
+       FLAGCMP, 5,=,N,1
+       {
+       FLAGCMP, 7,=,N,0
+        {
+       GLOAD, A16_3
+       DEFINEOBJ
+       {
+       9, 16, Candado, Traba la puerta de la fabrica
+        }
+        }
+       
+       FLAGCMP, 7,=,N,1
+        {
+                GLOAD, A16_5
+        }
+       }
+
+
+INPUT
+
+IFAC, 11, 3, 9
+{
+       GLOAD, A16_5
+        MENSAJE, 19,0,0
+{
+La destrabe!
+
+}
+        MATAOBJ, 9
+        FLAG, 7,=,N,1
+}
+
+IFAC, 10, 1, 0
+{
+        MENSAJE, 5, 0, 0
+{
+¨A que le disparo?
+}
+}
+
+IFAC, 10, 3, 0
+{
+        MENSAJE, 5, 0, 0
+{
+En que la uso?
+}
+}
+
+IFAC,1,0,0
+{
+       
+       FLAGCMP, 5,=,N,0
+       {
+        GLOAD, A16_4
+        MENSAJE, 19, 0, 35
+{
+Argh!!!
+}
+        GLOAD, DEAD5
+        MENSAJE, 19, 0, 0
+{
+Los marinos hicieron sushi...
+(y te robaron la billetera)
+
+}
+        RUN, menu
+        }
+       
+       FLAGCMP, 7,=,N,1
+       {
+        GOTO, 17
+       }
+       
+       FLAGCMP, 7,=,N,0
+       {
+        MENSAJE, 19, 0, 0
+        {
+Esta cerrado con un candado...
+Quiza si tuviera algo de metal...
+
+        }
+       }
+
+
+}
+
+;disparar
+IFAC, 11, 1, 8
+{
+GLOAD, A16_2
+WAIT, 18
+GLOAD, A16_3
+MENSAJE, 0, 0, 0
+{
+El resto se asusto y huyo al ver
+tu hermosa itaca humeante...
+(ladrones de cuarta)
+
+}
+FLAG, 5,=,N,1
+MATAOBJ, 8
+}
+
+GOSUB, standard
+GOTO, 16
+;-------------------------------
+@, 17 
+;Fabrica
+
+DEFINEACC
+{
+        1,  0, Avanzar
+        2, -1, OFF
+        3, -1, OFF
+        4, -1, OFF
+        5, -1, OFF
+}
+       
+       FLAGCMP, 8,=,N,0
+       {
+       GLOAD, A17_0
+       DEFINEOBJ
+       {
+       8, 17, Motoquero, Tiene un arma en la mano
+       }
+       
+       }
+       
+       FLAGCMP, 8,=,N,1
+       {
+       GLOAD, A17_2
+       }
+
+INPUT
+
+IFAC, 11, 4, 8
+{
+       GLOAD, A17_1
+MENSAJE, 22,0,20
+{
+Muere bastardo!
+
+}
+WAIT, 20
+MATAOBJ, 8
+FLAG, 8,=,N,1
+CLS
+}
+
+IFAC, 10, 1, 0
+{
+MENSAJE, 19, 0, 0
+{
+¨A que le disparo?
+}
+}
+
+IFAC,1,0,0
+{
+       
+       FLAGCMP, 8,=,N,0
+       {
+        GLOAD, A17_3
+        MENSAJE, 19, 0, 35
+{
+Argh!!!
+}
+        GLOAD, DEAD6
+        MENSAJE, 19, 0, 0
+{
+Ese tipo te asesino...
+Crees en la reencarnacion?
+
+}
+        RUN, menu
+        }
+       
+       FLAGCMP, 8,=,N,1
+       {
+       GOTO, 18
+       }
+}
+
+;disparar
+IFAC, 11, 1, 8
+{
+        GLOAD, A17_3
+        MENSAJE, 19, 0, 35
+{
+Argh!!!
+}
+        GLOAD, DEAD6
+        MENSAJE, 19, 0, 0
+{
+Ese tipo disparo primero!
+Mala suerte! (o mala leche?)
+
+}
+        RUN, menu
+}
+
+GOSUB, standard
+GOTO, 17
+;-------------------------------
+@, 18 
+;Dentro Fabrica 
+
+DEFINEACC
+{
+        1,  0, Rescatar a la mujer
+        2, -1, OFF
+        3, -1, OFF
+        4, -1, OFF
+        5, -1, OFF
+}
+DEFINEOBJ
+{
+        8, 18, Mina, Esta desnuda! Oh Yea!
+}
+
+GLOAD, A18_0
+INPUT
+
+IFAC,12, 8, 0
+{
+MENSAJE, 19, 0, 0
+{
+Tendria que bajarla primero
+
+}
+}
+
+IFAC,13, 8, 0
+{
+MENSAJE, 19, 0, 0
+{
+Es linda; me gustaria verla en 
+privado para mayor detalle...
+
+
+}
+}
+
+;Hablar
+IFAC,14,8,0
+{
+        GTSAVE
+        GLOAD, HABLA
+        COLOR, 15
+        MENSAJE,19,0,0
+        {
+Hola nena! 
+Que tal si nos divertimos?
+
+        }
+        GTLOAD
+        COLOR, 7
+        MENSAJE,19,0,0
+        {
+Mejor descolgame y despues vemos...
+
+        }
+COLOR, 15
+}
+
+IFAC,1,0,0
+{
+        GLOAD, HABLA
+        COLOR, 15
+        MENSAJE,19,0,0
+        {
+Hola preciosa... 
+Donde estan los que te raptaron?
+(y donde hay un motel...)
+
+        }
+        GLOAD, A18_1
+        COLOR, 7
+        MENSAJE,19,0,0
+        {
+Los escuche decir que iban al proximo
+pueblo. Partieron hace solo unos
+minutos. Gracias por rescatarme.
+
+        }
+WAIT, 18
+COLOR, 15
+TEXTO,19,0
+        {
+Decides ir tras ellos...
+(te hubieras quedado con la chica!)
+
+        }
+ANIMA, VIAJA2
+ANIMA, VIAJA2
+TEXTO,19,0
+        {
+
+
+
+        }
+
+FLAG, 100,=,N,1
+RUN, GAME2
+}
+GOSUB, standard
+GOTO, 18
+;-------------------------------
+
+
+;-------------------------------
+
+SUB, standard
+;Esta rutina procesa las acciones estandar
+;tales como mirar, salir, inventario, etc
+
+;Descripcion general de objetos en habitacion y personaje
+IFAC,15, 0, 0
+{
+     VERLARGA
+}
+
+;Ver el lugar
+; IFAC,16, 0, 0
+; {
+;     DESC
+; }
+
+;Inventario del personaje
+; IFAC,17, 0, 0
+; {
+;     INV
+; }
+;Salvar juego
+IFAC,18, 0, 0
+{
+     SAVE
+}
+;Cargar juego
+IFAC,19, 0, 0
+{
+     LOAD
+}
+
+;Salir
+IFAC,20, 0, 0
+{
+     SALIR
+}
+
+;Reiniciar juego (CUIDADO!)
+IFAC, 21,0,0
+{
+        RUN, MENU
+}
+
+;Hablar
+IFAC, 14, -1, -1
+{
+     MENSAJE, 19, 0, 0
+     {
+No me contesta...
+
+     }
+}
+;Al examinar coloca esto
+IFAC,13, -1, -1
+{
+MENSAJE, 19, 0, 0
+{
+No veo nada interesante...
+
+}
+}
+
+;DEBUG
+IFAC,16, -1, -1
+{
+DEBUG
+}
+
+;---------------
+;Accion en caso de errarle, ALTERNATE Debe estar luego de cualquier IFAC
+ALTERNATE
+{
+MENSAJE, 19, 0, 0
+{
+No puedo...
+}
+}
+;volver al juego
+RETURN
+;---------------

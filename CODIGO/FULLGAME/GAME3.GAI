@@ -1,0 +1,1707 @@
+;ROCK BABY! - EPISODIO III
+;POR ALVARO D.C GONZALEZ FERRER
+;(C) 1998-99 AGF SOFT
+;24/ABRIL/1999 - 22:10 
+       
+       ;comprueba si jugo primero el episodio II, sino, llama al menu
+       FLAGCMP, 100,<>,N,2
+       {
+        RUN, menu
+       }
+;limpia solo el buffer! (no los objetos)
+CLEAR
+CLS
+COLOR,15
+FLAG, 100,=,N,2
+FLAG, 1,=,N,0
+;aqui defino los objetos
+DEFINEOBJ
+{
+        1,999, Escopeta, Es una itaca recortada
+}
+;quitar esto luego del debug (de lo contrario, lo agarra aunque no lo tenga)
+DEFINEOBJ
+{
+        2,999, Disco, Es el single Jailhouse Rock
+}
+
+;descripcion larga siempre
+LARGA ON
+color,15
+;AQUI LAS ACCIONES: NUMERO, PARAMETROS, DESCRIPCION
+;Dejo las 10 primeras libres para las salidas de los lugares
+;De esta forma no defino todas cada vez que cambio de lugar.
+DEFINEACC
+{
+        10, 1, Usar 
+        11, 2, Usar OBJ1 con OBJ2
+        12, 1, Agarrar, 2 
+        13, 1, Examinar 
+        14, 1, Hablar a..., 2
+        15, 0, Descripcion General
+        18, 0, Salvar juego
+        19, 0, Cargar juego
+        20, 0, Salir del juego
+        21, 0, Reiniciar el juego
+}
+;-------------------------------
+
+;----------------------
+@, 16
+;Disco entrada dentro (con muchas putas en jaulas, etc)
+DEFINEACC
+{
+        1,0,Ir a la barra
+        2,0,Armar una pelea
+        3,0,Ir al ba¤o
+        4,-1, O
+        5, -1, O
+}
+
+GLOAD, B16_0
+INPUT
+
+IFAC,1, 0,0 
+{
+GOTO, 17
+}
+
+IFAC,2, 0,0 
+{
+        GLOAD, B16_1
+        MENSAJE,19,0,0
+        {
+Karate Kid te bail¢ malambo en la cabeza
+
+        }
+        RUN, MENU 
+}
+
+IFAC,3, 0,0 
+{
+        GLOAD, B16_2
+        MENSAJE,19,0,0
+        {
+El grandote te pregunta: ¨Tenes sed?
+
+        }
+        RUN, MENU 
+}
+
+GOSUB, standard
+GOTO, 16
+;-----------------------------
+@, 17 
+;Disco Barra
+DEFINEACC
+{
+        1,-1,O
+        2, 0, Tomar un trago
+        3,-1,O
+        4,-1,O
+}
+       
+FLAGCMP, 1,=,N,3
+{
+        DEFINEACC
+        {
+1, 0, Sentarse con la chica
+        }
+}
+
+DEFINEOBJ
+{
+        4,17, Barman, Este tipo es un banana
+}
+
+GLOAD, B17_0
+INPUT
+
+;Hablar
+IFAC,14,4,0
+{
+        MENSAJE,19,0,0
+        {
+Hola viejo... 
+Quiero ver a una chica...
+        
+        }
+        MENSAJE,10,0,0
+        {
+Hey, aqui hay para todos los gustos...
+Se mas especifico...
+        
+        }
+        MENSAJE,19,0,0
+        {
+Bueno, la amiga de las nenas de afuera.
+        
+        }
+        MENSAJE,10,0,0
+        {
+Esta en la mesa contra la pared.
+Para que la necesitas?
+        
+        }
+        MENSAJE,19,0,0
+        {
+Quiero saber algo de los Hell Raiders.
+        
+        }
+        MENSAJE,10,0,0
+        {
+Tene cuidado... son muy peligrosos...
+
+        }
+        ;habilita hablar con la mina
+        FLAG,1,=,N,3
+}
+
+IFAC,2, 0,0 
+{
+        MENSAJE,19,0,0
+        {
+Hey man... dame un Semen de Pitufo...
+        
+        }
+GLOAD, B17_1
+        MENSAJE,19,0,0
+        {
+Es el mejor trago que existe... ;)
+        
+        }
+;para ponerse en pedo, 3 tragos
+        FLAG,2,+,N,1
+        FLAGCMP,2,>,N,2
+        {
+        GLOAD, B17_2
+        MENSAJE,19,0,0
+        {
+Te afecto el alcohol...
+Mejor te vas a dormir...
+
+        }
+        RUN, menu
+        }
+
+}
+
+IFAC,1,0,0 
+{
+FLAG,2,=,N,0
+GOTO, 18
+}
+
+GOSUB, standard
+GOTO, 17
+;-----------------------------
+@, 18 
+;Disco Mesa con puta
+DEFINEACC
+{
+        1,-1,O
+        2,-1,O
+        3,-1,O
+        4,-1,O
+}
+       
+FLAGCMP, 1,=,N,4
+{
+        DEFINEACC
+        {
+1, 0,Escapar por la salida de emergencia
+        }
+;mina muerta
+GLOAD, B18_2
+}
+
+FLAGCMP, 1,<>,N,4
+{
+        GLOAD, B18_0
+}
+
+DEFINEOBJ
+{
+4,18, Chica, Amo esta clase de mujeres
+}
+
+INPUT
+
+;Hablar
+IFAC,14,4,0
+{
+        MENSAJE,19,0,0
+        {
+Hola, conoces a los Hell Raiders?
+        
+        }
+        MENSAJE,10,0,0
+        {
+Son mis mejores clientes, siempre pagan
+bien y nunca se quejan...
+        
+        }
+        MENSAJE,19,0,0
+        {
+Aja, bien, y no sabes donde viven...
+        
+        }
+        MENSAJE,10,0,0
+        {
+Si, tuve una fiesta en su casa; es en
+el barrio rico; la mansion del...
+        }
+        FLAG,1,=,N,4
+GLOAD,B18_1
+PRINT, Diablos!
+WAIT, 10
+GLOAD,B18_2
+PRINT
+}
+FLAGCMP,1,=,N,4
+{
+        
+        ;Usar escopeta > Nos matan
+IFAC,10,1,0
+        {
+                GLOAD, DEAD6
+                MENSAJE,19,0,0
+                {
+Alguien disparo primero...
+
+                }
+                RUN, MENU
+        }
+IFAC,1,0,0
+        {
+;Escapar por la salida de emergencia
+FLAG,1,=,N,0
+GLOAD,B19_0
+PRINT, Malditos cabrones [BANG! BANG!]
+WAIT, 25
+GLOAD,B19_1
+PRINT, Arriba tigre!
+WAIT, 25
+GLOAD,B19_2
+PRINT, Pure de punky! Oh Yea!
+WAIT, 30
+PRINT
+GOTO,19
+        }
+}
+GOSUB, standard
+GOTO, 18
+;-------------------------------
+@, 19
+;Escena escape del boliche
+DEFINEACC
+{
+        1,0,Volver a buscar la moto
+        2,-1,O
+        3,-1,O
+        4,-1,O
+}
+DEFINEOBJ
+{
+4,19, Punk Muerto, Estos giles siempre quieren matarme
+}
+GLOAD,B19_3
+INPUT
+
+IFAC,13,4,0
+{
+        MENSAJE,19,0,0
+        {
+Su peinado es horrible.
+Tiene algunos cartuchos para escopeta.
+        }
+}
+IFAC,1,0,0
+{
+        TEXTO,19,0
+        {
+Agarras tu moto y te diriges al 
+barrio rico de la ciudad cuando...
+        }
+        ANIMA, VIAJA2
+TEXTO,19,0
+{
+
+
+}
+        GLOAD, B20_0
+        MENSAJE,19,0,0
+        {
+        Un camion de aspecto sospechoso
+        se te pone a la par...
+        }
+        GOTO, 20
+}
+GOSUB, standard
+GOTO, 19
+;-------------------------------
+@, 20 
+;escena del camion
+
+DEFINEACC
+{
+        1,0,Correrte y dejarlo pasar
+        2,0,Acelerar y perderlo
+        3,0,Frenar en el costado derecho
+        4,-1,O
+}
+DEFINEOBJ
+{
+4,20, Camionero, Lo veo por la ventanilla
+}
+GLOAD,B20_0
+INPUT
+IFAC,1,0,0                
+        {
+                GLOAD, DEAD9
+                MENSAJE,19,0,0
+                {
+El camion te paso...sobre tu cabeza
+                
+                }
+                RUN, MENU
+        }
+IFAC,2,0,0                
+        {
+                GLOAD, DEAD9
+                MENSAJE,19,0,0
+                {
+El camion acelero tambien...
+Arriba de tu espalda!
+                
+                }
+                RUN, MENU
+        }
+
+IFAC,3,0,0                
+        {
+                GLOAD, DEAD9
+                MENSAJE,19,0,0
+                {
+El camion freno en tus costillas...
+                
+                }
+                RUN, MENU
+        }
+
+IFAC,11,1,4
+        {
+        GLOAD,B20_1
+        MENSAJE,19,0,0
+        {
+Le diste al conductor... 
+el camion se aleja de la ruta y...
+        
+        }       
+        ANIMA,CAMION
+        TEXTO,19,0
+        {
+Sigues conduciendo y te quedas 
+sin nafta...
+        }
+ANIMA, VIAJA1
+ANIMA, VIAJA1
+TEXTO,19,0
+{
+
+
+}
+        GOTO, 21
+        }
+
+GOSUB, standard
+GOTO, 20
+;-------------------------------
+@, 21 
+;ruta - dedo
+DEFINEACC
+{
+        1,0,Caminar
+        2,0,Hacer dedo
+        3,-1,O
+        4,-1,O
+}
+GLOAD,B21
+INPUT
+IFAC,2,0,0                
+{
+        MENSAJE,19,0,0
+        {
+Haces dedo durante unos minutos
+
+        }
+        GLOAD, B22_0
+        MENSAJE,19,0,0
+        {
+Una camioneta se detiene
+
+        }
+        MENSAJE,0,0,0        
+        {
+Hola, voy hacia el ghetto...
+        
+        }        
+        MENSAJE,19,0,0        
+        {
+Bueno, llevame a donde pueda 
+cargar nafta...
+
+        }        
+        MENSAJE,0,0,0
+        {
+Ok... en el bar del ghetto podras 
+encontrar ayuda...
+
+        }        
+        GLOAD, B22_1
+        WAIT, 30
+        GLOAD, B22_2
+        MENSAJE,19,0,0        
+        {
+Arribas al bar del ghetto
+        
+        }
+        GOTO, 22
+}
+IFAC,1,0,0
+{
+;Caminar
+                GLOAD, DEAD9
+                MENSAJE,19,0,0
+                {
+Caminar por la ruta es peligroso
+En la noche los autos no te ven                
+y te pueden pasar por arriba...
+
+                }
+                RUN, MENU
+}
+
+GOSUB, standard
+GOTO, 21
+;-------------------------------
+@, 22
+;bar del ghetto 
+DEFINEACC
+{
+        1,-1,O
+        2,-1,O
+        3,-1,O
+        4,-1,O
+}
+DEFINEOBJ
+{
+4,22, Mesera,Le gustan los discos de rock 'n roll
+5,22,Cantinero,Su remera es horrible
+6,22,Motoquero #1,Se ve bastante rudo
+7,22,Motoquero #2,Parece el jefe de la banda
+}
+
+GLOAD, B22_3
+INPUT
+IFAC,11,2,4
+{
+;Usar discos Elvis con mesera 
+        GLOAD, B22_4
+        MATAOBJ,2
+        MENSAJE,19,0,0
+        {
+Gracias flaco; me encanta Elvis...
+Acompa¤ame a mi habitacion...
+
+        }
+        PRINT, Oh! Yea! Yum Yum Baby!
+        ANIMA, mesera
+        PRINT
+}
+
+IFAC,14,4,0
+{
+;habla mesera 
+        GLOAD, B22_4
+        MENSAJE,19,0,0
+        {
+Hola bebe, me encanta tu look...
+Sos muy parecido al rey Elvis...
+
+        }
+}
+
+IFAC,14,5,0
+{
+        ;habla cantinero
+        MENSAJE,19,0,0
+        {
+Hola...
+        
+        }
+        MENSAJE,3,0,0
+        {
+Hola amigo, no te parece que estas en 
+un barrio que no es tuyo...
+        
+        }
+        MENSAJE,19,0,0
+        {
+Bueno, en realidad busco 
+a los Hell Raiders...
+        
+        }
+        MENSAJE,3,0,0
+        {
+Esos idiotas viven en la mansion 
+del alcalde, en el barrio rico. 
+Trabajan para el. 
+Esos malditos dominan la ciudad
+        
+        }
+        MENSAJE,19,0,0
+        {
+Gracias por la informacion, me va a
+ser muy util para encontrarlos...
+        
+        }
+        ;habilita atacar la fortaleza
+        FLAG,1,=,N,5
+}
+        
+IFAC,14,6,0        
+{
+        MENSAJE,19,0,0
+        {
+Hola... 
+        
+        }
+        MENSAJE,15,0,0
+        {
+Hey... soy un Black Panther y no 
+hablo con  blanquitos imbeciles...
+        
+        }
+}
+
+IFAC,14,7,0        
+{
+        FLAGCMP,1,=,N,5
+        {
+        ;si ya hablo con el cantinero
+        GOSUB, HABLA1
+        GOTO, 23
+        }
+
+        FLAGCMP,1,<>,N,5
+        {
+        ;si NO hablo con el cantinero
+        GOSUB, HABLA2
+        }
+}
+
+;Usar escopeta/usar escopeta con xxx/pelear > nos matan
+IFAC,10,1,0
+{
+        GLOAD, DEAD1
+        MENSAJE,19,0,0
+        {
+Solo un tonto amenaza a los muchachos
+en su propio territorio...
+
+        }
+        RUN, Menu
+}
+IFAC,11,1,-1
+{
+        GLOAD, DEAD1
+        MENSAJE,19,0,0
+        {
+Solo un tonto amenaza a los muchachos
+en su propio territorio...
+
+        }
+        RUN, Menu
+}
+
+GOSUB, standard
+GOTO, 22
+;-------------------------------
+@, 23
+;entrada de la mansion
+DEFINEACC
+{
+        1,0, Atacar por la entrada principal
+        2,0, Saltar la pared
+        3,0, Ir a la derecha de la mansion
+        4,0, Ir a la izquierda de la mansion
+        5, -1, O
+}
+
+DEFINEOBJ
+{
+        4,23, Black Panthers, Solo desean violencia y rock 'n roll
+}
+
+GLOAD, B23_1
+INPUT
+
+IFAC,1,0,0
+{
+        GLOAD, DEAD10
+        MENSAJE,19,0,0
+        {
+Te olvidaste de los guardias... 
+A cualquiera le pasa!
+        
+        }
+        RUN, MENU
+}
+IFAC,2,0,0
+{
+        GLOAD, B28
+        MENSAJE,19,0,0
+        {
+Lindo perrito... Lindo lindo perrito..
+(lastima que se ve feo cuando 
+te mastica un ojo)
+        
+        }
+        RUN, MENU
+}
+IFAC,11,1,-1
+{
+        GLOAD, DEAD10
+        MENSAJE,19,0,0
+        {
+Alguien disparo primero... 
+(Billy The Kid quiza...)
+        
+        }
+        RUN, MENU
+}
+IFAC,10,1,0
+{
+        GLOAD, DEAD10
+        MENSAJE,19,0,0
+        {
+Hey Rambo!
+Alguien disparo primero... 
+        
+        }
+        RUN, MENU
+}
+
+IFAC,14,4,0
+{
+;hablar a blacks
+        GLOAD, B31_2
+        MENSAJE,19,0,0
+        {
+Bien... que hacemos?
+Vos tuviste la idea... 
+Envianos a la victoria!
+        
+        }
+}
+;derecha
+IFAC,3,0,0
+{
+        GOTO,24
+}
+;izquierda
+IFAC,4,0,0
+{
+        GOTO, 26
+}
+GOSUB, standard
+GOTO, 23
+;-------------------------------
+@, 24 
+;parte derecha
+DEFINEACC
+{
+        1,0, Saltar la pared
+        2,0, Volver a la entrada principal
+        3,0, Ir a la parte trasera
+        4,-1, O
+        5,-1, O
+}
+GLOAD, B24
+INPUT
+
+IFAC,1,0,0
+{
+        GLOAD, B28
+        MENSAJE,19,0,0
+        {
+Lindo perrito... Lindo lindo perrito..
+(lastima que se ve feo cuando 
+te mastica un ojo)
+        
+        }
+        RUN, MENU
+}
+IFAC,2,0,0
+{
+        GOTO, 23
+}
+IFAC,3,0,0
+{
+        GOTO,25
+}
+GOSUB, standard
+GOTO, 24
+;-------------------------------
+
+@, 25
+DEFINEACC
+{
+        1,0, Trepar La Enredadera
+        2,0, Ir a la derecha de la mansion
+        3,0, Ir a la izquierda de la mansion
+        4,-1, O
+        5,-1, O
+}
+
+GLOAD, B25_0
+INPUT
+
+IFAC,1,0,0
+{
+        GLOAD, B25_1
+        MENSAJE,19,0,0
+        {
+Perfecto... 
+No hay nada peligroso a la vista
+        
+        }
+        GOTO, 27
+}
+IFAC,2,0,0
+{
+        GOTO, 24
+}
+IFAC,3,0,0
+{
+        GOTO,26
+}
+GOSUB, standard
+GOTO, 25
+;-------------------------------
+@, 26
+;costado izquierdo
+DEFINEACC
+{
+        1,0, Saltar la pared
+        2,0, Volver a la entrada principal
+        3,0, Ir a la parte trasera
+        4,-1, O
+        5,-1, O
+}
+GLOAD, B26
+INPUT
+
+IFAC,1,0,0
+{
+        GLOAD, B28
+        MENSAJE,19,0,0
+        {
+Lindo perrito... Lindo lindo perrito..
+(lastima que se ve feo cuando 
+te mastica un ojo)
+        
+        }
+        RUN, MENU
+}
+IFAC,2,0,0
+{
+        GOTO, 23
+}
+IFAC,3,0,0
+{
+        GOTO,25
+}
+GOSUB, standard
+GOTO, 26
+;-------------------------------
+@, 27
+;patio trasero
+DEFINEACC
+{
+        1,0,Ir a la derecha
+        2,0,Ir a la izquierda
+        3,-1,O
+        4,-1,O
+        5,-1,O
+}
+DEFINEOBJ
+{
+        4,27, Enredadera, Puedo usarla para salir
+        5,27, Puerta, Escucho voces dentro
+}
+GLOAD, B27
+INPUT
+IFAC,10,4,0
+{
+        GOTO, 25
+}
+IFAC,10,5,0
+{
+        GLOAD, DEAD1
+        MENSAJE,19,0,0
+        {
+Te dispararon dentro de la casa...
+Mas cuidado la proxima amigo...
+
+        }
+        RUN, menu
+}
+IFAC,1,0,0
+{
+;derecha patio - perros
+        GLOAD, B28
+        MENSAJE,19,0,0
+        {
+Oops... quiza a la izquierda era mejor
+Los perros no perdonan...        
+
+        }
+        RUN, MENU
+
+}
+IFAC,2,0,0
+{
+        GOTO, 30
+}
+GOSUB, standard
+GOTO, 27
+;-------------------------------
+@, 29
+;[delante patio - casilla vigia - porton - entrada a casa]
+DEFINEACC
+{
+        1,0,Entrar a la casa
+        2,0,Entrar a la casilla
+        3,0,Abrir porton
+        4,-1,O
+        5,-1,O
+}
+DEFINEOBJ
+{
+        4,29, Porton, Es fuerte y esta cerrado.
+}
+GLOAD, B29
+INPUT
+IFAC,1,0,0
+{
+        GLOAD, DEAD10
+        MENSAJE,19,0,0
+        {
+Adentro hay gente...
+Y estan armados...
+        
+        }
+        RUN, MENU
+}
+IFAC,2,0,0
+{
+        GOTO,31
+}
+IFAC,3,0,0
+{
+        MENSAJE,19,0,0
+        {
+Esta cerrado con un mecanismo electrico
+        }
+}
+
+IFAC,10,4,0
+{
+        MENSAJE,19,0,0
+        {
+Esta cerrado con un mecanismo electrico
+        }
+}
+GOSUB, standard
+GOTO, 29
+;-------------------------------
+
+@, 30
+;[izquierda patio]
+DEFINEACC
+{
+        1,0,Ir al patio trasero
+        2,0,Ir al patio delantero
+        3,-1,O
+        4,-1,O
+        5,-1,O
+}
+GLOAD, B30
+INPUT
+IFAC,1,0,0
+{
+        GOTO,27
+}
+IFAC,2,0,0
+{
+        GOTO,29
+}
+GOSUB, standard
+GOTO, 30
+;-------------------------------
+
+@, 31
+;[casilla vigia]
+DEFINEACC
+{
+        1,0,Salir al patio
+        2,-1,O
+        3,-1,O
+        4,-1,O
+        5,-1,O
+}
+DEFINEOBJ
+{
+        4,31, Palanca, No tengo ni idea para que sirve
+        5,31, Boton, Es rojo y no se que diablos hace
+        6,31, Cables, Estan algo pelados
+}
+GLOAD, B31_0
+INPUT
+IFAC,1,0,0
+{
+        GOTO, 29
+}
+IFAC,10,4,0
+{
+        ;abre porton
+        GLOAD,B31_2
+        MENSAJE,19,0,0
+        {
+Genial! El porton se abre!
+Vamos a patear traseros!
+
+        }
+        GOTO,32
+}
+IFAC,10,5,0
+{
+        ;Usar boton > Activaste la alarma - nos matan
+        GLOAD, DEAD10
+        MENSAJE,19,0,0
+        {
+Activaste la alarma...
+Eso fue tonto...
+
+        }
+        RUN,menu
+}
+IFAC,10,6,0
+{
+        ;Usar cables > Nos electrocutamos
+        GLOAD, B31_1
+        WAIT,18
+        GLOAD, DEAD8
+        MENSAJE,19,0,0
+        {
+Ese peinado electrico es genial...
+Lastima que quemo tus neuronas...
+
+        }
+        RUN,menu
+}
+GOSUB, standard
+GOTO, 31
+;-------------------------------
+@, 32 
+;Animacion de los negros a los tiros con todos.
+;Subis las escaleras y matas al jefe
+GOSUB, MATAMALO
+GLOAD,B22_2
+WAIT, 10
+FLAG,2,=,N,0
+GOTO, 33
+;-------------------------------
+@, 33 
+;[bar del 22] 
+DEFINEACC
+{
+        1,0,Subir al escenario
+        2,0,Tomar alcohol
+        3,0,Salir del bar
+        4,-1,O
+        5,-1,O
+}
+DEFINEOBJ
+{
+4,33, Mesera,Le gustan los discos de rock 'n roll
+5,33, Motoqueros, Estan felices (y algo borrachos)
+}
+
+GLOAD, B22_3
+INPUT
+IFAC,11,2,4
+{
+;Usar discos Elvis con mesera 
+        GLOAD, B22_4
+        MATAOBJ,2
+        MENSAJE,19,0,0
+        {
+Gracias flaco; me encanta Elvis...
+Acompa¤ame a mi habitacion...
+
+        }
+        PRINT, Oh! Yea! Yum Yum Baby!
+        ANIMA, mesera
+        PRINT
+}
+
+IFAC,14,4,0
+{
+;habla mesera 
+        GLOAD, B22_4
+        MENSAJE,19,0,0
+        {
+Hola bebe, me encanta tu look...
+Sos muy parecido al rey Elvis...
+
+        }
+}
+
+IFAC,14,5,0
+{
+;habla motoquero
+        GLOAD, B22_5
+        MENSAJE,19,0,0
+        {
+Les dimos duro a esos imbeciles!
+Es una gran noche! 
+Ahora a divertirnos!
+
+        }
+}
+IFAC,2,0,0
+{
+;tomar
+        GLOAD, B33_7
+        MENSAJE,19,0,0
+        {
+Esto quema... Oh si!
+        
+        }
+        FLAG,2,+,N,1
+        FLAGCMP,2,>=,N,3
+        {
+                GLOAD,B33_8
+                MENSAJE,19,0,0
+                {
+A dormir una siesta hasta ma¤ana...
+Eso si que era fuerte...
+
+                }
+        GOTO, 36
+        }
+}
+IFAC,1,0,0
+{
+        GOSUB, ROCKROLL
+}
+IFAC,3,0,0
+{
+        GOTO, 34
+}
+GOSUB, standard
+GOTO, 33
+;-------------------------------
+@, 34
+;fuera del bar
+;[rubia arreglando auto en el exterior]
+DEFINEACC
+{
+        1,0,Entrar al bar
+        2,-1,O
+        3,-1,O
+        4,-1,O
+}
+DEFINEOBJ
+{
+4,34, Rubia Sexy,Creo que la vi en el cine
+5,34, Mi Moto,Es mi fierro caliente y corrosivo
+6,34, Auto Sport,Es el auto de la rubia sexy
+}
+
+GLOAD, B34_0
+INPUT
+IFAC,1,0,0
+{
+;Entrar G 33
+GOTO, 33
+}
+IFAC,14,4,0
+{
+        ;hablar con rubia
+        ;Charla [escena tipo Marilyn con vestido que vuela]
+        PRINT, Oops... Se levanto viento...
+        ANIMA, MARY1
+        PRINT
+        GLOAD, B34_6               
+        MENSAJE,0,0,0
+        {               
+Hola preciosa...
+
+        }               
+        GLOAD,B34_5               
+        WAIT, 5
+        MENSAJE,0,0,0
+        {               
+Hola, mi auto no quiere arrancar...
+
+        }               
+        GLOAD, B34_6               
+        MENSAJE,0,0,0
+        {               
+Hum, quiza yo pueda hacer algo...
+
+        }        
+        DEFINEACC
+        {
+                5,0,Arreglar el auto
+        }
+CLS
+}
+IFAC,5,0,0
+{
+        ;Arreglar Auto G > 35
+        GOTO, 35
+}
+IFAC,10,6,0
+{
+        GLOAD, B34_6
+        MENSAJE,19,0,0
+        {
+Primero hablo con la dama
+y luego podre arreglarlo...
+
+        }
+CLS
+}
+
+IFAC,10,5,0
+{
+        ;Usar Moto > [escena que te vas hacia el amanecer] G > 36
+        PRINT, Ok... Enciende amiga... 
+        ANIMA, MOTO2
+        PRINT
+        GOTO, 36
+}
+GOSUB, standard
+GOTO, 34
+;-------------------------------
+@, 35 
+;[arregla auto y se van juntos]
+        GLOAD, B34_7
+        MENSAJE, 19,0,0
+        {
+Ella: Que buen mecanico que sos
+Yo:   Gracias... 
+
+        }        
+GLOAD, B34_6
+MENSAJE,0,0,0
+{
+Muy bien, creo que esta listo...
+Probemos arrancarlo...
+}
+GLOAD, B34_5
+MENSAJE,0,0,0
+{
+Gracias... vamos a dar un paseo?
+}
+GLOAD, B34_6
+MENSAJE,0,0,0
+{
+Genial! 
+Quiero ver que tan buena
+es esta amortiguacion... 
+}
+CLS
+;[imagen auto movil en la ruta]
+PRINT, Buscas un lugar alejado para estacionar
+ANIMA, AUTO1
+PRINT
+GLOAD, B35_1
+MENSAJE,19,0,0
+{
+-Buen lugar para estacionar baby...
+-Que buena amortiguacion nena... 
+ Sacate la ropa y prende la radio...
+
+}
+
+PRINT, Rock Baby... Rock 'N Roll
+ANIMA, AUTO2
+PRINT, Hum Yea Oh Yea Baby
+ANIMA, AUTO2
+PRINT, Mas si Oh Ah Yea!
+ANIMA, AUTO2
+PRINT
+GLOAD, B34_5
+MENSAJE,0,0,0
+{
+Estuviste genial...
+Nos vemos...
+}
+GLOAD, B34_6
+MENSAJE,0,0,0
+{
+Adios nena...
+Nos mantenemos en contacto...
+}
+        GOTO, 36
+;-------------------------------
+
+@, 36 
+;[fin del juego]
+        GLOAD, B34_13
+        MENSAJE,0,0,0
+        {
+Es tiempo de volver a la carretera...
+Ya esta amaneciendo...
+
+        }
+        ANIMA, MOTO1
+CLS
+;FIN DEL JUEGO
+GOSUB, FINAL
+;-------------------------------
+
+;-------------------------------
+
+SUB, standard
+;Esta rutina procesa las acciones estandar
+;tales como mirar, salir, inventario, etc
+
+;Descripcion general de objetos en habitacion y personaje
+IFAC,15, 0, 0
+{
+     VERLARGA
+}
+
+;Salvar juego
+IFAC,18, 0, 0
+{
+     SAVE
+}
+;Cargar juego
+IFAC,19, 0, 0
+{
+     LOAD
+}
+
+;Salir
+IFAC,20, 0, 0
+{
+     SALIR
+}
+
+;Reiniciar juego (CUIDADO!)
+IFAC, 21,0,0
+{
+        RUN, MENU
+}
+
+;Hablar
+IFAC, 14, -1, -1
+{
+     MENSAJE, 19, 0, 0
+     {
+No me contesta...
+
+     }
+}
+;Al examinar coloca esto
+IFAC,13, -1, -1
+{
+MENSAJE, 19, 0, 0
+{
+No veo nada interesante...
+
+}
+}
+;---------------
+;Accion en caso de errarle, ALTERNATE Debe estar luego de cualquier IFAC
+ALTERNATE
+{
+MENSAJE, 19, 0, 0
+{
+No puedo...
+}
+}
+;volver al juego
+RETURN
+;---------------
+;-----------------------------
+SUB, HABLA1
+;rutina que hace la charla con el jefe black Panthers
+GLOAD, B22_6
+MENSAJE,19,0,0
+{
+Hola...
+Tu pandilla podria ayudarme
+a matar a los Hell Raiders?
+
+}
+GLOAD, B22_5
+MENSAJE,19,0,0
+{
+A cambio de que?
+
+}
+GLOAD, B22_6
+MENSAJE,19,0,0
+{
+Decime una cosa... 
+Que hicieron ayer?
+
+}
+GLOAD, B22_5
+MENSAJE,19,0,0
+{
+Estuvimos aca...
+
+}
+GLOAD, B22_6
+MENSAJE,19,0,0
+{
+Y anteayer?
+
+}
+GLOAD, B22_5
+MENSAJE,19,0,0
+{
+Estuvimos aca tambien...
+
+}
+GLOAD, B22_6
+MENSAJE,19,0,0
+{
+Y la semana pasada? Y hoy?
+
+}
+GLOAD, B22_5
+MENSAJE,19,0,0
+{
+Hemos estado aca jugando 
+al pool, poker; tomando...
+
+}
+GLOAD, B22_6
+MENSAJE,16,0,0
+{
+Bueno, la proxima vez que un imbecil 
+como yo te pregunte podras decir que 
+tu pandilla ayudo a un loco a tomar 
+una fortaleza y patearle el trasero 
+a los Hell Raiders...
+
+}
+GLOAD, B22_5
+MENSAJE,19,0,0
+{
+No se, no me convence...
+
+}
+GLOAD, B22_6
+MENSAJE,19,0,0
+{
+Vamos, no se jactan del `black power' 
+o los Black Panthers son unos gatitos 
+mimosos en vez de panteras negras?
+
+}
+GLOAD, B22_5
+MENSAJE,19,0,0
+{
+Ok... vamos a ayudarte; llamo al resto
+de la pandilla y partimos...
+
+}
+GLOAD, B23_0
+MENSAJE,19,0,0
+{
+Los motoqueros van en busca de venganza
+
+}
+GLOAD, B23_1
+MENSAJE,19,0,0
+{
+En cuestion de minutos se ubican
+frente a la mansion del alcalde...
+
+}
+RETURN
+;-----------------------------
+SUB, HABLA2
+;rutina que hace la charla con el jefe black Panthers cuando
+;NO HABLO CON EL CANTINERO
+GLOAD, B22_6
+MENSAJE,19,0,0
+{
+Hola...
+
+}
+GLOAD, B22_5
+MENSAJE,19,0,0
+{
+Que buscas en este lugar imbecil; 
+es solo para los Blacks...                       
+
+}
+GLOAD, B22_6
+MENSAJE,19,0,0
+{
+Bueno, busco a los Hell Raiders
+para matarlos...
+
+}
+GLOAD, B22_5
+MENSAJE,19,0,0
+{
+Ah si, son enemigos nuestros tambien..
+
+}
+GLOAD, B22_6
+MENSAJE,19,0,0
+{
+Bueno, entonces tu pandilla 
+podria ayudarme
+
+}
+GLOAD, B22_5
+MENSAJE,19,0,0
+{
+No sabemos donde viven...
+Y vos?
+
+}
+GLOAD, B22_6
+MENSAJE,19,0,0
+{
+Yo tampoco... 
+
+}
+GLOAD, B22_5
+MENSAJE,19,0,0
+{
+Preguntale a los muchachos...
+Quiza alguno de ellos sepa...
+Luego hablamos...
+
+}
+GLOAD, B22_6
+MENSAJE,19,0,0
+{
+Ok... Apenas sepa donde viven
+te hablo...
+
+}
+GLOAD, B22_5
+MENSAJE,19,0,0
+{
+Perfecto...
+
+}
+RETURN
+;-----------------------------
+SUB, MATAMALO
+GLOAD, B32_0
+PRINT, A aplastar cabezas!
+WAIT, 30
+GLOAD, B32_1
+PRINT, Argh!
+WAIT, 25
+GLOAD, B32_2
+PRINT, Waargh! [Spluk!]
+WAIT, 25
+GLOAD, B32_3
+PRINT, Malditos negros!
+WAIT, 25
+GLOAD, B32_4
+PRINT, Demonios!
+WAIT, 25
+GLOAD, B32_5
+PRINT, Busquen al alcalde!
+WAIT, 25
+GLOAD, B32_6
+PRINT, Imbecil! Ve al infierno!
+WAIT, 25
+GLOAD, B32_7
+PRINT, Voy por vos estupido! 
+WAIT, 35
+PRINT
+GLOAD, B32_90
+mensaje, 19, 0, 0
+{
+Te estaba esperando;podemos entendernos
+yo domino la ciudad; £nete o moriras
+como tus amigos...
+
+}
+GLOAD, B32_80
+mensaje, 19, 0, 0
+{
+Yo tengo el arma...
+De rodillas gusano!
+
+}
+ANIMA, shoot
+GLOAD, B32_901
+WAIT, 3
+GLOAD, B32_91
+WAIT, 10
+
+ANIMA, shoot
+GLOAD, B32_10
+WAIT, 5
+GLOAD, B32_11
+PRINT,Solo me duele cuando me rio...
+WAIT, 18
+PRINT
+GLOAD, B32_80
+mensaje, 19, 0, 0
+{
+Nos vemos en el infierno...
+
+}
+ANIMA, shoot
+ANIMA, shoot
+ANIMA, shoot
+
+GLOAD, B32_12
+WAIT, 2
+GLOAD, B32_13
+WAIT, 2
+GLOAD, B32_14
+WAIT, 2
+GLOAD, B32_15
+WAIT, 18
+GLOAD, B31_2
+MENSAJE,19,0,0
+{
+El jefe de los Hell Raiders se
+escapa corriendo por el porton
+}
+GLOAD, B32_16
+MENSAJE,19,0,0
+{
+Es mio!
+
+}
+ANIMA, golpe
+
+GLOAD, B31_2
+MENSAJE,19,0,0
+{
+Muy bien, vamonos antes de 
+que llegue la policia!
+Vamos al bar a festejar! 
+
+}
+GLOAD, B32_18
+MENSAJE,19,0,0
+{
+Vamos a dar un paseo insecto!
+
+}
+RETURN
+;-----------------------------
+SUB, ROCKROLL
+;bailando [escena larga con Blue Suede Shoes]
+GLOAD, B33_3
+PRINT, Hola! El rock llego para quedarse
+ANIMA, ROCK2
+PRINT, Uno Dos... Un Dos Tres Cuatro
+ANIMA, ROCK2
+PRINT, Is One For the Money
+ANIMA, ROCK2
+ANIMA, ROCK1
+PRINT, Two For The Show
+ANIMA, ROCK2
+ANIMA, ROCK4
+PRINT, Three Get Ready
+ANIMA, ROCK2
+ANIMA, ROCK1
+PRINT, And Go Go Go But Don't You
+ANIMA, ROCK2
+ANIMA, ROCK3
+PRINT, Step On My blue Suede Shoes
+ANIMA, ROCK2
+ANIMA, ROCK1
+PRINT, Blue Blue Blue Suede Shoes
+ANIMA, ROCK2
+ANIMA, ROCK3
+PRINT, Don't Step On My Blue Suede Shoes
+ANIMA, ROCK2
+ANIMA, ROCK4
+ANIMA, ROCK3
+PRINT, Gracias!
+ANIMA, ROCK2
+PRINT, No pisen mis zapatos de gamuza azul!
+ANIMA, ROCK2
+ANIMA, ROCK2
+ANIMA, ROCK3
+PRINT
+RETURN
+;-----------------------------
+SUB, FINAL
+;[presenta imagen de fin]
+;[agradecimientos]
+;[foto mia y de Guille]
+;[Fin - por ahora!]
+;EJECUTA EL MENU
+COLOR, 15
+GLOAD, FINAL
+MENSAJE,0,0,0
+{
+Bien hecho!
+Lograste tu objetivo...
+Demostraste ser un tipo duro...
+
+}
+MENSAJE,0,0,0
+{
+Tus enemigos estan bien muertos
+y todas las chicas te aman...
+
+}
+
+MENSAJE,0,0,0
+{
+Quiza puedas tomarte unas vacaciones...
+
+}
+MENSAJE,0,0,0
+{
+O volver a jugar e intentar descubrir
+todas las cosas graciosas y alguno de
+los muchos posibles finales...
+
+Solo intenta hacer cosas distintas a 
+las que hiciste, y tendras una nueva
+historia...
+
+Que te diviertas!
+
+}
+MENSAJE,0,0,0
+{
+Proximamente ROCK BABY! II...
+No te lo pierdas!
+
+}
+WAIT, 0
+CLEAR
+RUN, MENU
+;----------------------------

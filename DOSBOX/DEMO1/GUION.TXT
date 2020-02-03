@@ -1,0 +1,98 @@
+                    Guion de la primera aventura para GAI
+
+Por Alvaro D.C Gonzalez Ferrer
+Comenzado el 28/11/1998 - 15:42
+
+
+Titulo:
+
+
+Desarrollo:
+
+[Garage] @,1
+[Conecta con patio, calle]
+
+Usar herramientas con Cadillac > Arregla cadillac, habilita subirse
+Subirse Cadillac > Va a [dentro cadillac]
+Entrar puerta > Va al [patio]
+Ir a la calle > Va a la [calle]
+
+[Dentro Cadillac] @,2
+[Conecta con garage, casa de Flavia]
+
+Bajarse Cadillac > volver a [garage]
+Ir a casa de Flavia [Casa de Flavia]
+
+[Patio] @,3
+[Conecta con Garage, Cocina]
+Ir a Garage
+Ir a Cocina
+Examinar patio > agarra una rosa
+
+[Cocina] @,4
+[Conecta con Patio]
+Examinar cajones > agarra cuchillo
+
+[Calle] @,5
+[conecta con garage]
+Caminar > "no tengo ganas; usemos el auto"
+Examinar basura > "no hay nada interesante"
+
+[Casa Flavia] @,6
+[Conecta con Dentro Casa Flavia, Cadillac]
+Subir Cadillac > vuelve al garage
+Golpear puerta > va a Dentro casa Flavia
+
+[Dentro Casa Flavia] @,7
+[Conecta con Casa Flavia]
+Salir > ir a [Casa Flavia]
+Dar Rosa a Flavia > Habilida dar una vuelta
+Invitar Flavia dar una vuelta > Si dio la rosa Ir a Vuelta,sino, Rebote
+Usar cuchillo Flavia > Va a Preso
+Violar Flavia > Va a Golpes
+
+[Vuelta] @,8
+Invitar Flavia a tomar helado > Va a tomar Helado
+Invitar Flavia a casa > Va a Rebote
+Propasarse con Flavia > Va a Rebote
+Correr Picada > Va a Picada
+Usar cuchillo Flavia > Va a Preso
+Violar Flavia > Va a Golpes
+
+
+[Rebote] @,9
+Flavia te echa
+Fin del juego
+SALIR
+
+
+[Helado] @,10
+[Flavia dice gracias]
+Invitar Flavia a Casa mia > Va a Casa
+Invitar Flavia a charlar en la ruta > Va Ruta
+Propasarse con Flavia > Va a rebote
+Usar cuchillo Flavia > Va a Preso
+Violar Flavia > Va a Golpes
+
+[Casa] @,11
+Invitar una copa > va a SI
+Charlar un rato > no hace nada, una conversacion y listo
+Encararsela > Va a rebote
+Usar cuchillo Flavia > Va a Preso
+Violar Flavia > Va a Golpes
+
+[Si] @,12
+Flavia Acepta
+Fin juego
+
+[picada] @,13
+Gana la picada pero los captura la policia
+Fin Juego
+
+[preso] @,14
+Es encarcelado por asesinato
+Fin juego
+
+[golpes] @,15
+Flavia te mata a patadas, se baja del auto y se va.
+Fin juego

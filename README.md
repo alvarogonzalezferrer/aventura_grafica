@@ -19,3 +19,18 @@ Que lo disfruten!!
 Para jugarlo, usar MS-DOS, o un emulador como DOSBOX... hay binarios compilados y dos aventuras graficas, una demo corta, y una aventura grafica completa para jugar!
 
 
+## Estructura
+
+dentro de DOSBOX/ estan los juegos listos para jugar en DOSBOX
+
+dentro de CODIGO/ esta el codigo fuente original
+
+## Herramientas necesarias
+
+Se compila con ASIC BASIC 
+
+Se comprime con UPX para MS DOS
+
+El instalador se hizo con RAR 2.5
+
+Todas herramientas para MS DOS

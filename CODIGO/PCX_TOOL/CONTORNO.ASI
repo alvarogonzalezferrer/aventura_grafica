@@ -1,0 +1,206 @@
+REM PROGRAMA QUE SIRVE PARA EXTRAER EL CONTORNO DE UN DIBUJO
+REM LUEGO SE PUEDE SALVAR USANDO NEOGRAB O SIMILAR
+PRINT "PROGRAMA QUE SIRVE PARA EXTRAER EL CONTORNO DE UN DIBUJO"
+PRINT "LUEGO SE PUEDE SALVAR USANDO NEOGRAB O SIMILAR"
+PRINT "--PRESIONE UNA TECLA--"
+WHILE D$=""
+D$=INKEY$
+WEND
+PRINT "Color Fondo 0-255";
+INPUT FONDO
+PRINT "Color Contorno 0-255";
+INPUT LINEA
+SCREEN 13
+a$=COMMAND$
+a$=ucase$(a$)
+x=instr(a$,".")
+if x>0 then        
+        z=x-1
+        a$=left$(a$,z)
+endif
+        if a$<>"" then
+                archi$=a$
+                archi$=archi$+".AGM"
+        endif
+        archi$=ucase$(Archi$)
+        archi$=ltrim$(Archi$)
+        archi$=rtrim$(Archi$)
+
+        if archi$="" then 
+                SCREEN 0
+                PRINT "Especifique archivo AGM en linea de comandos!"
+                PRINT "Ej: CONTORNO MIO.AGM"
+                END        
+        endif
+AGM$=ARCHI$
+GOSUB LOADAGM:
+FOR Y=0 TO 200
+FOR X=0 TO 320
+A=POINT(Y,X)
+IF A<>LINEA THEN
+        PSET(Y,X),FONDO
+ENDIF
+NEXT X
+NEXT Y
+D$=""
+WHILE D$=""
+D$=INKEY$
+WEND
+
+REM ===============================
+
+END
+REM -----------------------------
+
+LOADAGM:
+        REM V2.00 (31/D/1998)
+        REM Abre un archivo AGM (grafico)
+        REM La pantalla debe estar en SCREEN 13
+        REM Llamar con AGM$=ARCHIVO
+REM Si TAM&=0, calcula automaticamente el tama¤o, de lo contrario,
+REM usa TAM& (Util para cargar juegos salvados, que incluyen info extra)
+REM Luego de usar la rutina, coloca TAM& a 0 de vuelta
+AGM$=LTRIM$(AGM$)
+AGM$=RTRIM$(AGM$)
+
+REM Posicion de memoria de la placa de video
+DEFSEG = &HexA000
+IF AGM$="" THEN
+        RETURN
+ENDIF
+
+a=instr(AGM$,".")
+if a=0 then
+        AGM$=AGM$+".AGM"
+endif
+IF TAM&<=0& THEN
+        REM Tama¤o de pantalla
+        TAM&=FILELEN(AGM$)
+                IF ERROR>0 THEN
+                        GOSUB errorhandler:
+                ENDIF           
+        REM Quita el espacio de datos de la paleta (1792 bytes)
+        TAM&=TAM&-1792&
+ENDIF
+REM Lee la paleta de 256 colores
+OPEN "R",3,AGM$
+                IF ERROR>0 THEN
+                        GOSUB errorhandler:
+                ENDIF           
+
+FOR t&=0& TO 255&
+        
+        C&=T&*7&
+        C&=C&+TAM&
+        C&=C&+1&        
+        
+        P&=FILEPOS(3,C&)
+        INPUT# 3, R
+        INPUT# 3, G
+        INPUT# 3, B
+
+        OUT &HEX3C8, t&
+        OUT &HEX3C9, r
+        OUT &HEX3C9, g
+        OUT &HEX3C9, b
+
+NEXT T&
+CLOSE 3
+
+BLOAD AGM$ 0 TAM&
+TAM&=0&
+RETURN
+REM -----------------------------
+
+WRITEAGM:
+REM ESTA RUTINA ESCRIBE LA PANTALLA A DISCO PARA LEERLA LUEGO
+REM UTIL PARA RESTAURAR LA PANTALLA LUEGO DE LOS MENUES.
+REM PONER EN AGM$ EL NOMBRE DE ARCHIVO
+REM SALVA HASTA LA PALETA!
+REM Posicion de memoria de la placa de video
+DEFSEG = &HexA000
+AGM$=LTRIM$(AGM$)
+AGM$=RTRIM$(AGM$)
+IF AGM$="" THEN
+        RETURN
+ENDIF
+
+a=instr(AGM$,".")
+if a=0 then
+        AGM$=AGM$+".AGM"
+endif
+
+REM Tama¤o de pantalla
+TAM&=320&*200&
+
+BSAVE AGM$ 0 TAM&
+
+REM Salva la paleta de 256 colores
+OPEN "R",3,AGM$
+
+FOR T&=0& TO 255&
+        C&=T&*7&
+        C&=C&+TAM&
+        C&=C&+1&
+        P&=FILEPOS(3,C&)
+        OUT &HEX3C7, T&
+        R= INP &HEX3C9
+        G= INP &HEX3C9
+        B= INP &HEX3C9
+        R$=str$(R)
+        R$=str$(G)
+        G$=str$(B)
+        PRINT# 3, R
+        PRINT# 3, G
+        PRINT# 3, B
+NEXT T&
+CLOSE 3
+TAM&=0&
+RETURN
+REM -----------------------------
+
+ERRORHANDLER:
+REM Maneja los errores de INPUT
+IF ERROR=18 THEN
+        ERROR=96
+ENDIF
+
+IF ERROR<>96 THEN        
+
+        SCREEN 0
+        PRINT "WOOPS!"
+        PRINT "ERROR ";
+        PRINT ERROR
+        FALLA=ERROR
+        IF ERROR=1 THEN
+                PRINT "APPEND invalidado"
+        ENDIF
+        IF ERROR=2 THEN
+                PRINT "Archivo no encontrado"
+        ENDIF
+        IF ERROR=4 THEN
+                PRINT "Archivo no encontrado"
+        ENDIF
+        IF ERROR=3 THEN
+                PRINT "Path no encontrado"
+        ENDIF
+        IF ERROR=5 THEN
+                PRINT "Acceso a archivo denegado"
+        ENDIF
+        IF ERROR=98 THEN
+                PRINT "Archivo no fue abierto"
+        ENDIF
+        IF ERROR=255 THEN
+                PRINT "Disco lleno"
+        ENDIF
+        IF ERROR=97 THEN
+                PRINT "Archivo no es posible abrirlo"
+        ENDIF
+        
+        END
+ELSE
+        REM Una linea de mas de 80 letras
+        ERROR=0
+ENDIF
+RETURN
+REM -----------------------------

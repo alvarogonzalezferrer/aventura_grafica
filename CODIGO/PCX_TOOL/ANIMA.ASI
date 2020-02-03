@@ -1,0 +1,438 @@
+REM Programa que hace una animacion con varios archivos AGM (max 30)
+REM Se usa asi: ANIMA [archivos] [parametros]
+REM [archivos] Archivos AGM; NO ACEPTA COMODINES TIPO *.*, *.A, etc
+REM Los [parametros] son opcionales
+REM /V[velociad] delay en tics de reloj entre cuadro (18=1 segundo)
+REM Si no se especifica, toma 0
+REM
+REM /AC Animacion ciclica: hacia adelante/atras
+REM /AL Animacion en loop: hacia adelante y de vuelta
+REM /A1 Animacion una sola vez hacia adelante
+REM /A2 Animacion ciclica una sola vez
+REM Por default, animacion en loop
+REM /? Esta ayuda
+REM /I Presenta informacion extra al finalizar programa
+REM
+REM Ejemplo: ANIMA MIO1.AGM MIO2.AGM /V2 /AC
+REM
+REM Por Alvaro Gonzalez Ferrer - 21/Abril/1999
+
+DIM ARCH$(30)
+DIM PALABRA$(50)
+maximopalabras=50
+FRAME=0
+ESC$=CHR$(27)
+
+REM Reconoce la linea de comandos
+FRASE$=COMMAND$
+FRASE$=UCASE$(FRASE$)
+COMA$=" "
+
+r=INSTR(FRASE$,"?")
+IF R>0 THEN AYUDA:
+
+GOSUB RECONOCER:
+
+REM animacion default
+ANIMA=2
+REM delay default
+DELAY&=0
+REM Info default
+INFO=-1
+
+FOR dummy1=1 TO CANTIPALS
+        IF PALABRA$(dummy1)="/AC" THEN
+                ANIMA=1
+        ENDIF
+
+        IF PALABRA$(dummy1)="/AL" THEN
+                ANIMA=2
+        ENDIF
+
+        IF PALABRA$(dummy1)="/A1" THEN
+                ANIMA=3
+        ENDIF
+
+        IF PALABRA$(dummy1)="/A2" THEN
+                ANIMA=4
+        ENDIF
+
+REM /V[velociad] delay en tics de reloj entre cuadro (18=1 segundo)
+A$=LEFT$(PALABRA$(dummy1),2)
+
+IF A$="/V" THEN
+        REM VELOCIDAD
+        p2=LEN(PALABRA$(dummy1))
+        
+        IF P2=2 THEN
+                REM Dejo un espacio entre /V y el numero
+                P2=DUMMY1+1
+                DELAY&=VAL(PALABRA$(P2))
+        ELSE
+                REM Lo puso seguido
+                p2=p2-2
+                A$=RIGHT$(PALABRA$(dummy1),p2)
+                DELAY&=VAL(A$)
+        ENDIF
+ENDIF
+IF PALABRA$(DUMMY1)="/I" THEN
+        REM presentar informacion
+        info=1
+ENDIF
+
+A$=LEFT$(PALABRA$(dummy1),1)
+IF A$<>"/" THEN
+IF A$<>"" THEN        
+        REM No es un parametro, es un archivo
+        FRAME=FRAME+1
+        ARCH$(FRAME)=PALABRA$(dummy1)
+        IF FRAME>30 THEN 
+                PRINT "ERROR!"
+                PRINT "Demasiados archivos; maximo son 30!"
+                END
+        ENDIF
+ENDIF
+ENDIF
+
+NEXT dummy1
+IF FRAME=0 THEN AYUDA:
+IF FRAME<2 THEN
+        PRINT "Debe especificar al menos dos archivos!"
+        PRINT "De lo contrario que diablos animo?"
+        PRINT "/? = AYUDA"
+        END
+ENDIF
+REM fin linea de comandos
+REM Hace la animacion
+
+REM Direccion de la animacion 1 o -1
+SUMA=1
+ACTUAL=0
+SCREEN 13
+
+REM /AC Animacion ciclica: hacia adelante/atras
+REM /AL Animacion en loop: hacia adelante y de vuelta
+REM /A1 Animacion una sola vez hacia adelante
+REM /A2 Animacion ciclica una sola vez
+
+DO1:
+REM Carga el grafico actual
+AGM$=ARCH$(ACTUAL)
+GOSUB LOADAGM:
+
+REM Hace la pausa
+IF DELAY&>0& THEN
+        T1&=TIMER
+        T2&=0&
+        WHILE T2&< DELAY&
+                T2&=TIMER
+                T2&=T2&-T1&
+        D$=INKEY$
+        d$=ucase$(d$)
+        IF D$=ESC$ THEN ENDDO:
+
+        IF D$="+" THEN 
+                DELAY&=DELAY&+1&
+        ENDIF
+        IF D$="-" THEN 
+                DELAY&=DELAY&-1&
+        ENDIF
+        IF D$="*" THEN 
+                DELAY&=DELAY&+5&
+        ENDIF
+        IF D$="/" THEN 
+                DELAY&=DELAY&-5&
+        ENDIF
+        IF D$=" " THEN 
+                LOCATE 23, 0
+                PRINT "Vel: ";
+                PRINT DELAY&
+        ENDIF
+        IF D$="I" THEN
+                INFO=-INFO
+        ENDIF
+        WEND
+ELSE
+        D$=INKEY$
+        d$=ucase$(d$)
+        IF D$=ESC$ THEN ENDDO:
+
+        IF D$="+" THEN 
+                DELAY&=DELAY&+1&
+        ENDIF
+        IF D$="-" THEN 
+                DELAY&=DELAY&-1&
+        ENDIF
+        IF D$="*" THEN 
+                DELAY&=DELAY&+5&
+        ENDIF
+        IF D$="/" THEN 
+                DELAY&=DELAY&-5&
+        ENDIF
+        IF D$=" " THEN 
+                LOCATE 23, 0
+                PRINT "Vel: ";
+                PRINT DELAY&
+        ENDIF
+        IF D$="I" THEN
+                INFO=-INFO
+        ENDIF
+ENDIF
+IF INFO=1 THEN
+        locate 19, 0
+        PRINT "Fr: ";
+        print actual;
+        IF SUMA=1 THEN
+        print " []"
+        ELSE
+        PRINT " []"
+        ENDIF
+        
+ENDIF
+ACTUAL=ACTUAL+SUMA
+rem IF INFO=1 THEN
+rem         locate 20, 0
+rem         PRINT "Fr: ";
+rem         print actual;
+rem         PRINT " Dir: ";
+rem         print suma;
+rem ENDIF
+
+IF ANIMA=1 THEN 
+REM loop
+        IF ACTUAL<1 THEN
+                SUMA=-SUMA
+                ACTUAL=2
+        ENDIF
+        IF ACTUAL>FRAME THEN
+                SUMA=-SUMA
+                ACTUAL=FRAME
+                ACTUAL=FRAME-1
+        ENDIF
+        GOTO DO1:
+ENDIF
+IF ANIMA=2 THEN 
+        REM adelante 
+        IF ACTUAL>FRAME THEN
+                ACTUAL=1
+        ENDIF
+        GOTO DO1:
+ENDIF
+IF ANIMA=3 THEN 
+        REM adelante una sola vez
+        IF ACTUAL<=FRAME THEN
+                GOTO DO1:
+        ENDIF
+ENDIF
+IF ANIMA=4 THEN 
+REM loop 1 vez
+        IF ACTUAL<1 THEN ENDDO:
+        IF ACTUAL>FRAME THEN
+                SUMA=-SUMA
+                ACTUAL=FRAME
+                ACTUAL=FRAME-1
+        ENDIF
+        GOTO DO1:
+ENDIF
+
+ENDDO:
+SCREEN 0
+REM Info extra:
+IF INFO=1 THEN
+        PRINT "Informacion extra: "
+        PRINT "Delay : ";
+        PRINT DELAY&
+        PRINT "Cantidad de frames: ";
+        PRINT FRAME
+        PRINT "Archivos: "
+        FOR dummy1=1 to FRAME
+                PRINT ARCH$(dummy1)
+        NEXT dummy1
+        PRINT "Tipo de animacion: ";
+        IF ANIMA=1 THEN
+                PRINT "Animacion ciclica: hacia adelante/atras"
+        ENDIF
+        IF ANIMA=2 THEN
+                PRINT "Animacion en loop: hacia adelante y de vuelta"
+        ENDIF
+        IF ANIMA=3 THEN
+                PRINT "Animacion una sola vez hacia adelante"
+        ENDIF
+        IF ANIMA=4 THEN
+                PRINT "Animacion ciclica una sola vez"
+        ENDIF
+ENDIF
+END
+RECONOCER:
+REM Rutina que separa las palabras contenidas en frase$
+REM Utiliza como separador solo la contenida en COMA$; 
+REM Sirve para separar las lineas de comando. 
+REM El DEFAULT DE COMA$ es la COMA ","
+REM por AGF - Revision del 25/11/1998 - Almacena las palabras en
+REM la matriz PALABRA$. Puede almacenar hasta 30 palabras
+REM NO PASA A MAYUSCULAS.
+REM COLOCA LA CANTIDAD DE PALABRAS EN "CANTIPALS"
+pal$ = ""
+CANTIPALS = 0
+REM si esto no esta, no lee la ultima palabra
+FRASE$ = FRASE$ + COMA$
+p2 = LEN(frase$)
+
+FOR dummy1 = 1 TO p2
+   a$ = MID$(frase$, dummy1, 1)
+   IF A$=COMA$ THEN 
+           REM encontro el fin de una palabra
+           pal$ = LTRIM$(pal$)
+           pal$ = RTRIM$(pal$)
+        IF pal$ <> "" THEN
+                CANTIPALS = CANTIPALS + 1
+                IF CANTIPALS > maximopalabras THEN
+                        REM aborta el FOR, demasiadas palabras
+                        p2 = 0
+                        CANTIPALS = 0
+                ELSE
+                        PALABRA$(CANTIPALS) = pal$
+                ENDIF
+        ENDIF
+        pal$ = ""
+   ELSE
+        pal$ = pal$ + a$
+   ENDIF
+NEXT dummy1
+
+RETURN
+REM -----------------------------
+
+LOADAGM:
+        REM V2.00 (31/D/1998)
+        REM Abre un archivo AGM (grafico)
+        REM La pantalla debe estar en SCREEN 13
+        REM Llamar con AGM$=ARCHIVO
+REM Si TAM&=0, calcula automaticamente el tama¤o, de lo contrario,
+REM usa TAM& (Util para cargar juegos salvados, que incluyen info extra)
+REM Luego de usar la rutina, coloca TAM& a 0 de vuelta
+AGM$=LTRIM$(AGM$)
+AGM$=RTRIM$(AGM$)
+
+REM Posicion de memoria de la placa de video
+DEFSEG = &HexA000
+IF AGM$="" THEN
+        RETURN
+ENDIF
+
+a=instr(AGM$,".")
+if a=0 then
+        AGM$=AGM$+".AGM"
+endif
+IF TAM&<=0& THEN
+        REM Tama¤o de pantalla
+        TAM&=FILELEN(AGM$)
+                IF ERROR>0 THEN
+                        GOSUB errorhandler:
+                ENDIF           
+        REM Quita el espacio de datos de la paleta (1792 bytes)
+        TAM&=TAM&-1792&
+ENDIF
+REM Lee la paleta de 256 colores
+OPEN "R",3,AGM$
+
+FOR t&=0& TO 255&
+        
+        C&=T&*7&
+        C&=C&+TAM&
+        C&=C&+1&        
+        
+        P&=FILEPOS(3,C&)
+        INPUT# 3, R
+        INPUT# 3, G
+        INPUT# 3, B
+
+        OUT &HEX3C8, t&
+        OUT &HEX3C9, r
+        OUT &HEX3C9, g
+        OUT &HEX3C9, b
+
+NEXT T&
+CLOSE 3
+
+BLOAD AGM$ 0 TAM&
+TAM&=0&
+RETURN
+REM -----------------------------
+
+ERRORHANDLER:
+REM Maneja los errores de INPUT
+IF ERROR=18 THEN
+        ERROR=96
+ENDIF
+
+IF ERROR<>96 THEN        
+
+        SCREEN 0
+        PRINT "WOOPS!"
+        PRINT "ERROR ";
+        PRINT ERROR
+        FALLA=ERROR
+        IF ERROR=1 THEN
+                PRINT "APPEND invalidado"
+        ENDIF
+        IF ERROR=2 THEN
+                PRINT "Archivo no encontrado"
+        ENDIF
+        IF ERROR=4 THEN
+                PRINT "Archivo no encontrado"
+        ENDIF
+        IF ERROR=3 THEN
+                PRINT "Path no encontrado"
+        ENDIF
+        IF ERROR=5 THEN
+                PRINT "Acceso a archivo denegado"
+        ENDIF
+        IF ERROR=98 THEN
+                PRINT "Archivo no fue abierto"
+        ENDIF
+        IF ERROR=255 THEN
+                PRINT "Disco lleno"
+        ENDIF
+        IF ERROR=97 THEN
+                PRINT "Archivo no es posible abrirlo"
+        ENDIF
+        
+        END
+ELSE
+        REM Una linea de mas de 80 letras
+        ERROR=0
+ENDIF
+RETURN
+REM -----------------------------
+AYUDA:
+CLS
+COLOR 11, 0
+PRINT "Krono Anime v0.1á"
+COLOR 14, 0
+PRINT "Programa que hace una animacion con varios archivos AGM (max 30)"
+COLOR 15,0
+PRINT "Se usa asi: ANIMA [archivos] [parametros]"
+COLOR 7,0
+PRINT "[archivos] Archivos AGM; NO ACEPTA COMODINES TIPO *.*, *.A, etc"
+PRINT "Los [parametros] son opcionales"
+PRINT "/V[velociad] delay en tics de reloj entre cuadro (18=1 segundo)"
+PRINT "Si no se especifica, toma 0; maximo 35000"
+PRINT "/AC Animacion ciclica: hacia adelante/atras"
+PRINT "/AL Animacion en loop: hacia adelante y de vuelta"
+PRINT "/A1 Animacion una sola vez hacia adelante"
+PRINT "/A2 Animacion ciclica una sola vez"
+PRINT "Por default, animacion en loop"
+PRINT "/? Esta ayuda"
+PRINT "/I Presenta informacion extra al finalizar programa"
+PRINT "Ejemplo: ANIMA MIO1.AGM MIO2.AGM /V2 /AC"
+COLOR 10, 0
+PRINT "Teclas durante la animacion:"
+PRINT "ESC varias veces = cancelar animacion"
+PRINT "+ - / * = cambiar velocidad (en incrementos de 1 y 5)"
+PRINT "BARRA = ver velocidad actual"
+PRINT "I = info ON/OFF"
+COLOR 14,0 
+PRINT "Por Alvaro Gonzalez Ferrer - (C) 1999 - Argentina"
+COLOR 7,0
+END

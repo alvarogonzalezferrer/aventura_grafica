@@ -1,0 +1,322 @@
+REM Codificador de archivos GAI v2.00 Para compilar los archivos GAIPLUS
+REM Por Alvaro D.C Gonzalez Ferrer
+REM (c) 1998, AGF SOFT - 8/FEB/1999 (d/m/a) - 18:12PM
+REM ASIC 5.00
+DIM INST$(50)
+DIM BUFFER$(100)
+
+REM INSTRUCCIONES VALIDAS
+INST$(1)="GLOAD"
+INST$(2)="PRINT"
+INST$(3)="INV"
+INST$(4)="DEFINEOBJ"
+INST$(5)="IFON"
+INST$(6)="IFOO"
+INST$(7)="GOTO"
+INST$(8)="@"
+INST$(9)="WAIT"
+INST$(10)="INPUT"
+INST$(11)="DEFINEACC"
+INST$(12)="CLS"
+INST$(13)="COLOR"
+INST$(14)="TEXTO"
+INST$(15)="BOX"
+INST$(16)="COGEOBJ"
+INST$(17)="DEJAOBJ"
+INST$(18)="MATAOBJ"
+INST$(19)="PONOBJ"
+INST$(20)="MENSAJE"
+INST$(21)="DESC"
+INST$(22)="SALIR"
+INST$(23)="IFAC"
+INST$(24)="ALTERNATE"
+INST$(25)="LOCATE"
+INST$(26)="GSAVE"
+INST$(27)="VER"
+INST$(28)="GTSAVE"
+INST$(29)="GTLOAD"
+INST$(30)="{"
+INST$(31)="}"
+INST$(32)="SUB"
+INST$(33)="GOSUB"
+INST$(34)="RETURN"
+INST$(35)="VERLARGA"
+INST$(36)="FLAG"
+INST$(37)="FLAGCMP"
+INST$(38)="PRINTFLAG"
+INST$(39)="RESTAURA ON"
+INST$(40)="RESTAURA OFF"
+INST$(41)="CLEAR"
+INST$(42)="RUN"
+INST$(43)="RESET"
+INST$(44)="SAVE"
+INST$(45)="LOAD"
+INST$(46)="LARGA ON"
+INST$(47)="LARGA OFF"
+INST$(48)="ANIMA"
+
+CANTINS=48
+
+REM VARIABLES DE CONTROL
+REM CANTIDAD DE { } MALOS
+SKIP=0 
+REM CANTIDAD DE INSTRUCCIONES INCORRECTAS
+FALL=0
+
+CLS
+COLOR 15, 0
+PRINT "Codificador de archivos GAI (GENERADOR AVENTURAS INTERACCTIVAS)"
+PRINT "Por Alvaro D.C Gonzalez Ferrer"
+PRINT "(c) 1998"
+PRINT
+REM CODIGO ESTANDAR
+CODI=82
+arch1$=COMMAND$
+arch1$=LTRIM$(arch1$)
+arch1$=RTRIM$(arch1$)
+if arch1$="" THEN 
+        print "Escriba el nombre del archivo GAI a convertir:";
+        input arch1$
+ENDIF
+
+if arch1$="" then 
+        end
+endif
+a=instr(arch1$,".")
+if a=0 then
+        arch1$=arch1$ + ".GAI"
+endif
+
+a=instr(arch1$,".")
+ARCH2$=LEFT$(ARCH1$,A)
+ARCH2$=ARCH2$ + "AGC"
+
+CLS
+PRINT "Convirtiendo..."
+PRINT ARCH1$
+PRINT ARCH2$
+REM Formato es asi:
+REM CADA LINEA TERMINA EN CARACTER NULO
+REM SUMA EL NUMERO CODI AL REM CODIGO ASCII. (ES LA RUTINA DE CODIFICACION)
+REM LAS LINEAS SE LEEN AL REVES! (DE 79 A 0)
+
+OPEN "I",1,ARCH1$
+if error>0 then
+        GOSUB ERRORHANDLE:
+endif
+
+OPEN "O",2,ARCH2$
+if error>0 then
+        GOSUB ERRORHANDLE:
+endif
+
+E=ERROR
+IF E>0 THEN
+        GOSUB ERRORHANDLE:
+ENDIF
+
+WHILE E=0
+        INPUT# 1, A$ CRLF
+        OK=1
+        E=ERROR
+IF E<>99 THEN
+IF E<>96 THEN
+IF E>0 THEN
+        GOSUB ERRORHANDLE:
+ENDIF
+ENDIF
+ENDIF
+IF E=96 THEN
+        COLOR 11, 0
+        PRINT
+        PRINT "Hay una linea de mas de 80 caracteres."
+        PRINT "Me es imposible compilarla."
+        PRINT "Reduzca su tama¤o e intente de vuelta..."
+        PRINT "(p/Ej: quite los espacios de la izquierda)"
+        PRINT
+        PRINT "Trozo leido de la linea: "
+        COLOR 14, 0
+        PRINT a$
+        COLOR 7,0
+        PRINT "Linea N§ ";
+        PRINT LINEA
+        END
+ENDIF
+A$=LTRIM$(A$)
+A$=RTRIM$(A$)
+
+L=LEN(A$)
+IF L>79 THEN
+        A$=LEFT$(A$,79)
+        L=79
+ELSE
+A$=A$+" "
+ENDIF
+REM SACA COMENTARIOS
+K$=LEFT$(A$,1)
+IF K$=";" THEN
+        OK=0
+        A$=""
+ENDIF
+
+REM SE FIJA SI ES UNA PALABRA VALIDA, SOLO SI NO ESTA DENTRO DE UN BLOQUE
+REM PORQUE PUEDEN SER LAS PALABRAS DE DEFINICION DE OBJETOS, ETC
+IF SKIP=0 THEN
+REM SACA LINEAS EN BLANCO (NO LAS SACA DE LOS { }, POR SI SON DE TEXTO { }
+IF A$="" THEN
+        OK=0
+ENDIF
+
+FOR Q=1 TO CANTINS
+        INST$(Q)=UCASE$(INST$(Q))
+        B=LEN(INST$(Q))
+        B$=LEFT$(A$,B)
+        B$=UCASE$(B$)
+        IF B$<>INST$(Q) THEN
+                        OK=0
+                ELSE
+                        OK=1
+                        Q=CANTINS+5
+        
+        ENDIF
+NEXT Q
+        B$=LEFT$(A$,3)
+        IF B$="RUN" THEN
+                BUFFER$(BUFERMAX)=A$
+                B=LEN(A$)
+                B=B-4
+                BUFFER$(BUFERMAX)=RIGHT$(A$,B)
+                BUFERMAX=BUFERMAX+1
+        ENDIF
+
+Q=Q-1
+IF Q=CANTINS THEN
+b$=LTRIM$(A$)
+b$=RTRIM$(B$)
+
+if b$<>"" THEN        
+        REM SUMA 1 A FALL Y PONE MENSAJE DE NO SIRVE
+        PRINT "ERROR DE SINTAXIS EN:"
+        COLOR 14,0
+        PRINT A$
+        COLOR 15,0
+        FALL=FALL+1     
+ENDIF
+ENDIF
+ENDIF
+REM CUENTA { }, SI SKIP>0 TENES { SIN }, SI SKIP<0 TENES } SIN {
+IF K$="{" THEN
+        SKIP=SKIP+1
+ENDIF
+IF K$="}" THEN
+        SKIP=SKIP-1
+ENDIF
+
+IF OK=1 THEN
+
+
+REM CODIFICA
+Z=LEN(A$)
+C$=""
+WHILE Z>0
+        K$ = MID$(A$,Z,1)
+        R = ASC(K$)
+        R = R + CODI
+        IF R > 255 THEN
+                R = R - 255
+        ENDIF
+        K$ = CHR$(R)
+        C$ = C$ + K$
+        Z=Z-1
+WEND
+PRINT# 2, C$
+        LINEA=LINEA+1
+
+ENDIF
+WEND
+
+PRINT "Se compilaron ";
+PRINT LINEA;
+PRINT " lineas"
+IF SKIP<>0 THEN
+PRINT
+PRINT "ERROR en los bloques de estructura {...}"
+ENDIF
+IF SKIP< 0 THEN
+        PRINT "Hay ";
+        SKIP=-SKIP
+        PRINT SKIP;
+        PRINT " } sin abrir con {"
+        SKIP=-SKIP
+ENDIF
+IF SKIP> 0 THEN
+        PRINT "Hay ";
+        SKIP=SKIP
+        PRINT SKIP;
+        PRINT " { sin cerrar con }"
+ENDIF
+
+IF FALL>0 THEN
+        PRINT "HAY ";
+        PRINT FALL;
+        PRINT " ERRORES DE SINTAXIS"
+ENDIF
+IF BUFERMAX>0 THEN
+        COLOR 11,0
+        PRINT "RECUERDE COMPILAR LOS SIGUIENTES ARCHIVOS PARA QUE SU PROGRAMA FUNCIONE:"
+        PRINT "(Estan indicados en instrucciones RUN, si no existen, el programa fallara)"
+        COLOR 7, 0
+        FOR A=0 TO BUFERMAX
+                PRINT BUFFER$(A);
+                print " ";
+        NEXT A
+PRINT
+ENDIF
+PRINT
+PRINT
+PRINT "Listo..."
+
+CLOSE 1
+CLOSE 2
+END
+
+ERRORHANDLE:
+REM Maneja los errores de INPUT
+IF ERROR<>96 THEN        
+
+        SCREEN 0
+        PRINT "WOOPS!"
+        PRINT "ERROR ";
+        PRINT ERROR
+        IF ERROR=1 THEN
+                PRINT "APPEND invalidado"
+        ENDIF
+        IF ERROR=2 THEN
+                PRINT "Archivo no encontrado"
+        ENDIF
+        IF ERROR=4 THEN
+                PRINT "Archivo no encontrado"
+        ENDIF
+        IF ERROR=3 THEN
+                PRINT "Path no encontrado"
+        ENDIF
+        IF ERROR=5 THEN
+                PRINT "Acceso a archivo denegado"
+        ENDIF
+        IF ERROR=98 THEN
+                PRINT "Archivo no fue abierto"
+        ENDIF
+        IF ERROR=255 THEN
+                PRINT "Disco lleno"
+        ENDIF
+        IF ERROR=97 THEN
+                PRINT "Archivo no es posible abrirlo"
+        ENDIF
+        
+        END
+ELSE
+        REM Una linea de mas de 80 letras
+        ERROR=0
+ENDIF
+RETURN
+

@@ -1,0 +1,2439 @@
+REM Proyecto: Generador de Aventuras Interactivas (GAI)
+REM Fecha: 25/11/1998 - V1.10 - V1.50 (31/D/1998) - V1.9 22/E/1999
+REM 23/1/1999 - v2.0
+REM Por Alvaro D.C Gonzalez Ferrer
+REM Copyrigth (c) 1998, AGF SOFT
+REM Version PLUS - Incluye comandos extra
+REM ESTA VERSION TRABAJA CON *.AGC, *.GAI
+REM SE LLAMA DE LA LINEA DE COMANDOS CON EL NOMBRE DE ARCHIVO
+REM SI NO SE PONE NINGUN ARCHIVO, TOMA EL PRIMERO DEL DIRECTORIO
+REM USA EL DIRECTORIO TEMPORAL SETEADO EN TEMP
+REM
+REM Historia:
+REM AGREGADO DE >= Y <= A IFOO IFON FLAGCMP (V1.9)
+REM V2.0 Correccion de un error en IFAC y agregado de un parametro a DEFINEAC
+REM V2.1 24/E/1999 Agregado de funcion ESC a INPUT 
+REM V2.2 28/E/1999 Agregado de variable COMSPEC a reconocer TEMP$ 
+REM      COMSPEC es la variable de entorno que situa al COMMAND.COM
+REM V2.3 5/F/99 RETOQUE DEL CODIGO ; agregado de /v para version 
+REM V3.0 6/F/99 Version PLUS con soporte para ambas versiones AGC/GAI
+REM             Agregado de LARGA ON / OFF - Optimizacion del codigo
+REM V3.5 12/F/99 Agregado de FADE-IN, FADE-OUT, RESETPALETA, etc
+REM *************** DIMs *****************
+
+REM Para los efectos de luces y colores
+ DIM R1(255)
+ DIM G1(255)
+ DIM B1(255)
+
+ DIM R2(255)
+ DIM G2(255)
+ DIM B2(255)
+ DIM C2(255)
+
+REM Variables necesarias para las rutinas
+REM Control de GOSUB, SUB, RETURN
+REM ultimos lugareas a donde volver con RETURN
+DIM STACK&(100)
+
+DIM PALABRA$(30)
+REM Nombre objeto
+        DIM OBJNAM$(100)
+REM Descripcion objetos larga
+        DIM OBJDES$(100)
+REM Estado Objetos
+        DIM OBJEST(100)
+
+REM Descripcion acciones
+        DIM ACCDES$(100)
+REM Parametros accion
+REM 0 = ninguno, 1 = 1 objeto, 2 = 2 objetos, -1 borrada de las listas
+        DIM ACCEST(100)
+REM Tipo Parametros accion
+REM 0 = cualquier objeto, 1 = objetos jugador, 2 = objetos habitacion
+        DIM ACCPAR(100)
+
+REM Banderas
+DIM FLAG(100)
+
+REM MEMORIA CON DESCRIPCIONES VIRTUALES
+REM UTIL PARA LOS MENUES, DATOS ALEATORIOS, ETC..
+DIM BUFER$(100)
+DIM BUF(100)
+
+REM VARIABLE DE COPYRIGTH
+KRONO$="Por Alvaro D.C Gonzalez Ferrer; (c) 1998-99 - AGC OK"
+VER$="Generador Aventuras Interactivas G.A.I - V 3.0 PLUS - 6/FEB/99"
+REM *************** VARIABLES ***********************
+REM Nombre del Archivo ejecutante (el especificado en la linea de comandos,
+REM o a traves de una instruccion LOAD o RUN)
+ARCHREAL$=""
+
+REM DECODIFICADOR
+CODI=82
+REM Trabajo con un codificado? 1=SI
+CODEC=0
+REM Mostrar descripcion larga siempre (comandos LARGA ON / LARGA OFF) 1=si
+LARGA=0
+REM lugar actual del programa en el archivo
+        STACKACTUAL&=0&
+REM a donde hay que ir
+        GOTOSTACK&=0&
+REM Cantidad de STACKs en Memoria
+        CANTSTACKRAM=0
+
+REM CANTIDAD DE PALABRAS EN PALABRA$()
+        cantipals = 0
+REM poner el tama¤o de la matriz PALABRA$()
+        maximopalabras = 30
+REM ESTE CARACTER ES EL QUE DELIMITA LA SEPARACION EN LA RUTINA QUE
+REM INTERPRETA LOS COMANDOS. POR DEFECTO ES LA COMA ","
+COMA$=","
+REM RESTAURA PANTALLA 1=SI
+RESTAURA=1
+
+REM Pone los objetos y las acciones a 0
+        FOR A=0 to 100
+                OBJDES$(A)=""
+                OBJNAM$(A)=""
+                OBJEST(A)=0
+                ACCDES$(A)=""
+                ACCEST(A)=-1
+                ACCPAR(A)=0
+        NEXT A
+REM Fondo grafico actual
+        ACTUALGRAPH$=""
+REM variables del interprete para saltar bloques { } anidados
+        SKIP=0
+        FOUND=0
+REM VARIABLE DE LA ULTIMA ACCION, 0 = NINGUNA
+        LASTACCION=0
+        REM PAR1 & PAR2 SON LOS NUMEROS DE OBJETO QUE AFECTA LA ACCION
+        REM 0 = NINGUNO
+        PAR1=0
+        PAR2=0
+REM VARIABLE QUE ACTIVA ALTERNATE CUANDO ES 1, LA PONEN A 0 LOS IF, 
+REM LA PONE A 1 LA INPUT
+        NOBIEN=0
+
+REM VARIABLE DE LA PIEZA ACTUAL
+PIEZACTUAL=1
+
+REM TECLADO
+        ENTER$=CHR$(13)
+        ESC$=CHR$(27)
+REM PANTALLA
+        ARR$=CHR$(24)
+        ABJ$=CHR$(25)
+
+REM *************** CODIGO PRINCIPAL ***********************
+REM toma de la linea de comandos el archivo
+GOSUB TAKEARCH:
+
+REM Comienzo interprete
+REM Modo 320x200x256
+SCREEN 13
+SALIR=0
+GOSUB CARGAPALETA:
+
+WHILE SALIR=0
+        INPUT #1, FRASE$ CRLF
+        STACKACTUAL& = STACKACTUAL& + 1&
+
+IF ERROR=99 THEN
+        REM SE TERMINO EL ARCHIVO
+        ERROR=0
+        SALIR=1
+ENDIF
+IF ERROR>0 THEN        
+        GOSUB ERRORHANDLER:
+ENDIF
+        GOSUB RECONOCER:
+PALABRA$(1)=UCASE$(PALABRA$(1))
+PALABRA$(1)=LTRIM$(PALABRA$(1))
+PALABRA$(1)=RTRIM$(PALABRA$(1))
+
+IF CANTIPALS>0 THEN
+IF SKIP=0 THEN
+REM INSTRUCIONES EJECUTANDOSE
+        REM ----------
+        IF PALABRA$(1)="TEXTO" THEN
+                REM BLOQUE PARA TEXTO
+                REM IMPRIME TEXTO EN X,Y     
+                IF CANTIPALS<3 THEN
+                        GOSUB errorgeneral:
+                ENDIF
+                Y=VAL(PALABRA$(2))                        
+                X=VAL(PALABRA$(3))                        
+                LOCATE Y, X
+                
+                REM LEE EL BLOQUE { } 
+                GOSUB READBLOQUE:                
+                
+                REM BUSCA FIN BLOQUE Y VA ESCRIBIENDO
+                FOR R=0 TO BLOQUELEN
+                        LOCATE Y, X
+                        SP=39-X
+                        A$=SPACE$(SP)
+                        PRINT A$
+                        LOCATE Y, X                        
+                        PRINT BUFER$(R)
+                        Y=Y+1
+                        IF Y>24 THEN
+                                Y=0
+                        ENDIF
+                NEXT R
+        ENDIF
+        REM ----------
+        IF PALABRA$(1)="MENSAJE" THEN
+                REM BLOQUE PARA MENSAJE
+                REM IMPRIME TEXTO EN X,Y     
+                REM RESTAURA LA PANTALLA LUEGO DE LA PAUSA
+                IF CANTIPALS<4 THEN
+                        GOSUB errorgeneral:
+                ENDIF
+                C=VAL(PALABRA$(4))        
+                IF RESTAURA=1 THEN
+                        AGM$=TEMP$+"TEMPO.AGM"
+                        GOSUB WRITEAGM:
+                ENDIF
+                Y=VAL(PALABRA$(2))                        
+                X=VAL(PALABRA$(3))                        
+                LOCATE Y, X
+                
+                REM LEE EL BLOQUE { } 
+                GOSUB READBLOQUE:                
+                
+                REM BUSCA FIN BLOQUE Y VA ESCRIBIENDO
+                FOR R=0 TO BLOQUELEN
+                        LOCATE Y, X
+                        SP=39-X
+                        A$=SPACE$(SP)
+                        PRINT A$
+                        LOCATE Y, X                        
+                        PRINT BUFER$(R)
+                        Y=Y+1
+                        IF Y>24 THEN
+                                Y=0
+                        ENDIF
+                NEXT R
+                
+                REM ESPERA n TICS DE RELOJ - ESC SALTAR PAUSA
+                REM Si n = 0 espera por una tecla
+                IF C>0 THEN
+                T=TIMER
+                Z=0
+                WHILE Z<C
+                        D$=INKEY$
+                        T2=TIMER        
+                        Z=T2-T
+                        IF D$=ESC$ THEN
+                                Z=C+1
+                                T=T2
+                        ENDIF
+                WEND
+                ELSE
+                        LOCATE Y, X
+                        PRINT "Presione una tecla..."
+                        D$=""
+                        WHILE D$=""
+                                D$=INKEY$
+                        WEND
+                ENDIF
+                IF RESTAURA=1 THEN
+                        AGM$=TEMP$+"TEMPO.AGM"
+                        GOSUB LOADAGM:
+                        KILL AGM$
+                ENDIF
+        ENDIF
+        REM ----------
+
+        IF PALABRA$(1)="DEFINEOBJ" THEN
+                REM BLOQUE PARA DEFINIR OBJETOS
+                
+                REM LEE EL BLOQUE { } 
+                GOSUB READBLOQUE:                
+                        
+        FOR R=0 TO BLOQUELEN
+                        FRASE$=BUFER$(R)                        
+                        FRASE$=LTRIM$(FRASE$)
+                        FRASE$=RTRIM$(FRASE$)
+                        Z$=LEFT$(FRASE$,1)
+                        IF Z$=";" THEN
+                                REM LINEA DE COMENTARIO
+                                FRASE$=""
+                        ENDIF
+                        
+                        IF FRASE$="" THEN
+                                REM Saltar linea                                
+                        ELSE
+                        
+                        GOSUB RECONOCER:
+                        
+                        IF CANTIPALS<4 THEN
+                                GOSUB errorgeneral:
+                        ENDIF
+                        
+                                G=VAL(PALABRA$(1))
+IF G>100 THEN                  
+        SCREEN 0
+        PRINT "Error al definir objeto, el N§ debe ser < a 100"
+        GOTO FINALIZAR:
+ENDIF
+IF G<1 THEN                  
+        SCREEN 0
+        PRINT "Error al definir objeto, el N§ debe ser > a 0"
+        GOTO FINALIZAR:
+ENDIF
+                                
+                                B=VAL(PALABRA$(2))
+                                OBJNAM$(G)=LEFT$(PALABRA$(3),40)
+                                OBJDES$(G)=LEFT$(PALABRA$(4),40)
+                                OBJEST(G)=B
+                        ENDIF
+NEXT R                
+
+
+        ENDIF
+        REM ----------
+        IF PALABRA$(1)="DEFINEACC" THEN
+                REM BLOQUE PARA DEFINIR ACCIONES
+                
+                REM BUSCA FIN BLOQUE Y VA DEFINIENDO ACCIONES
+                REM LEE EL BLOQUE { } 
+                GOSUB READBLOQUE:                
+                        
+        FOR R=0 TO BLOQUELEN
+                        FRASE$=BUFER$(R)                        
+                        FRASE$=LTRIM$(FRASE$)
+                        FRASE$=RTRIM$(FRASE$)
+                        Z$=LEFT$(FRASE$,1)
+                        IF Z$=";" THEN
+                                REM LINEA DE COMENTARIO
+                                FRASE$=""
+                        ENDIF
+                                                      
+                        
+                      
+                        IF FRASE$="" THEN
+                                REM IGNORAR
+                        ELSE
+                        
+                        GOSUB RECONOCER:
+                        IF CANTIPALS<3 THEN
+                                GOSUB errorgeneral:
+                        ENDIF
+                        
+                                G=VAL(PALABRA$(1))
+IF G>100 THEN                  
+        SCREEN 0
+        PRINT "Error al definir accion, el N§ debe ser < a 100"
+        GOTO FINALIZAR:
+ENDIF
+IF G<1 THEN                  
+        SCREEN 0
+        PRINT "Error al definir accion, el N§ debe ser > a 0"
+        GOTO FINALIZAR:
+ENDIF
+
+                                B=VAL(PALABRA$(2))
+                                ACCDES$(G)=LEFT$(PALABRA$(3),40)
+                                ACCEST(G)=B
+                        IF CANTIPALS<4 THEN
+                        PALABRA$(4)="0"
+                        ENDIF        
+                                B=VAL(PALABRA$(4))
+                                IF B<0 THEN
+                                        B=0
+                                ENDIF
+                                IF B>2 THEN
+                                        B=2
+                                ENDIF
+                                ACCPAR(G)=B
+                        ENDIF
+                
+                NEXT R
+
+        ENDIF
+        REM ----------
+        
+        IF PALABRA$(1)="SALIR" THEN
+                REM SALE AL DOS
+                CLS
+                SCREEN 0
+                SALIR=1
+        ENDIF
+        
+        IF PALABRA$(1)="CLS" THEN
+                REM LIMPIA PANTALLA Y RESETEA MODO DE VIDEO
+                SCREEN 0
+                CLS
+                SCREEN 13
+        ENDIF        
+        
+        IF PALABRA$(1)="COLOR" THEN
+                REM CAMBIA EL COLOR DEL TEXTO
+                IF CANTIPALS<2 THEN
+                        GOSUB errorgeneral:
+                ENDIF
+                C=VAL(PALABRA$(2))
+                COLOR C, 0
+        ENDIF
+
+REM -------------------GOTO COMIENZO------------        
+        IF PALABRA$(1)="GOTO" THEN
+                REM HACE UN SALTO A UNA ETIQUETA MARCADA CON @
+                IF CANTIPALS<2 THEN
+                        GOSUB errorgeneral:
+                ENDIF
+        DEBOIRA=VAL(PALABRA$(2))
+        
+        REM TIENE QUE ABRIR EL ARCHIVO DE NUEVO!
+        CLOSE 1
+        GOSUB ABRIRGAI:
+
+        Z$=""
+        WHILE Z$=""
+                        INPUT #1, FRASE$ CRLF
+                STACKACTUAL& = STACKACTUAL& + 1&
+                IF ERROR=99 THEN
+                        REM SE TERMINO EL ARCHIVO
+                        SCREEN 0
+                        PRINT "GOTO; LA LOCALIDAD NO EXISTE!"
+                        GOTO FINALIZAR:
+                ENDIF
+                IF ERROR>0 THEN        
+                        GOSUB ERRORHANDLER:
+                ENDIF
+                GOSUB RECONOCER:
+                PALABRA$(1)=UCASE$(PALABRA$(1))
+                PALABRA$(1)=LTRIM$(PALABRA$(1))
+                PALABRA$(1)=RTRIM$(PALABRA$(1))
+        
+        IF PALABRA$(1)="@" THEN
+                ESTOYEN=VAL(PALABRA$(2))
+                IF ESTOYEN=DEBOIRA THEN 
+                        PIEZACTUAL=DEBOIRA
+                        Z$="OK!"
+                ENDIF
+        ENDIF
+        WEND
+        ENDIF
+REM -------------------GOTO FIN-----------------
+REM -------------------GOSUB COMIENZO------------        
+        IF PALABRA$(1)="GOSUB" THEN
+                REM HACE UN SALTO A UNA RUTINA MARCADA CON SUB
+                REM ALMACENA EN EL STACK PARA PODER VOLVER!
+                IF CANTIPALS<2 THEN
+                        GOSUB errorgeneral:
+                ENDIF
+CANTSTACKRAM=CANTSTACKRAM+1
+IF CANSTACKRAM>100 THEN
+        SCREEN 0
+        COLOR 14,0 
+        PRINT "ERROR: DEMASIADOS GOSUB SIN RETURN"
+        PRINT "STACK EXCEDIDO!"
+        COLOR 7,0
+        PRINT FRASE$
+        PRINT
+ENDIF
+STACK&(CANSTACKRAM)=STACKACTUAL&
+                G$=PALABRA$(2)
+                G$=UCASE$(G$)
+                G$=LTRIM$(G$)
+                G$=RTRIM$(G$)
+
+        REM TIENE QUE ABRIR EL ARCHIVO DE NUEVO!
+        CLOSE 1
+        GOSUB ABRIRGAI:
+
+        Z$=""
+        WHILE Z$=""
+                        INPUT #1, FRASE$ CRLF
+                STACKACTUAL& = STACKACTUAL& + 1&
+                IF ERROR=99 THEN
+                        REM SE TERMINO EL ARCHIVO
+                        SCREEN 0
+                        PRINT "GOSUB; LA RUTINA NO EXISTE!"
+                        GOTO FINALIZAR:
+                ENDIF
+                IF ERROR>0 THEN        
+                        GOSUB ERRORHANDLER:
+                ENDIF
+                GOSUB RECONOCER:
+                PALABRA$(1)=UCASE$(PALABRA$(1))
+                PALABRA$(1)=LTRIM$(PALABRA$(1))
+                PALABRA$(1)=RTRIM$(PALABRA$(1))
+        
+        IF PALABRA$(1)="SUB" THEN
+                R$=PALABRA$(2)
+                R$=UCASE$(R$)
+                R$=LTRIM$(R$)
+                R$=RTRIM$(R$)
+                IF R$=G$ THEN 
+                        REM LLEGO
+                        Z$="OK!"
+                ENDIF
+        ENDIF
+        WEND
+ENDIF
+REM -------------------GOSUB FIN-----------------
+REM -------------------RETURN COMIENZO------------        
+        IF PALABRA$(1)="RETURN" THEN
+                REM VUELVE A LA ULTIMA DIRECCION ALMACENADA EN EL STACK
+                REM USARLA LUEGO DE UN GOSUB
+IF CANTSTACKRAM<1 THEN
+        SCREEN 0
+        COLOR 14,0 
+        PRINT "ERROR: RETURN SIN GOSUB"
+        COLOR 7,0
+        PRINT FRASE$
+        PRINT
+        GOTO FINALIZAR:
+ENDIF
+GOTOSTACK&=STACK&(CANSTACKRAM)
+CANTSTACKRAM=CANTSTACKRAM-1
+
+        REM TIENE QUE ABRIR EL ARCHIVO DE NUEVO!
+        CLOSE 1
+        GOSUB ABRIRGAI:
+
+        Z$=""
+DENUEVO:        
+                        INPUT #1, FRASE$ CRLF
+                STACKACTUAL& = STACKACTUAL& + 1&
+                IF ERROR=99 THEN
+                        REM SE TERMINO EL ARCHIVO
+                        SCREEN 0
+                        PRINT "RETURN; STACK INCORRECTO- ERROR INTERNO"
+                        GOTO FINALIZAR:
+                ENDIF
+                IF ERROR>0 THEN        
+                        GOSUB ERRORHANDLER:
+                ENDIF
+                IF STACKACTUAL&=GOTOSTACK& THEN 
+                        REM LLEGO
+                        Z$="OK!"
+                ENDIF
+REM NO USO UNA WEND, P' Q' SINO SE PASA UNA LINEA DE LARGO 
+IF Z$="" THEN DENUEVO:
+GOTOSTACK&=0
+ENDIF
+REM -------------------GOSUB FIN-----------------
+REM COMANDO UNDOCUMENTADO "DEBUG"
+        IF PALABRA$(1)="DEBUG" THEN
+                               
+                AGM$=TEMP$+"TEMP2.AGM"
+                GOSUB WRITEAGM:
+                LOCATE 0, 0
+                PRINT "Ultimo linea leida"
+                PRINT FRASE$
+                PRINT "STACKACTUAL&=";
+                PRINT STACKACTUAL& 
+                PRINT "GOTOSTACK&=";
+                PRINT GOTOSTACK&
+                PRINT "CANTSTACKRAM=";
+                PRINT CANTSTACKRAM
+                PRINT "SKIP";
+                PRINT SKIP
+                PRINT "FOUND";
+                PRINT FOUND
+                PRINT "LASTACC";
+                PRINT LASTACCION
+                PRINT "PAR1";
+                PRINT PAR1
+                PRINT "PAR2";
+                PRINT PAR2
+                PRINT "NOBIEN";
+                PRINT NOBIEN
+                PRINT "PIEZA";
+                PRINT PIEZACTUAL
+
+                PRINT "Presione una tecla..."                        
+                D$=""
+                WHILE D$=""
+                    D$=INKEY$
+                WEND
+                AGM$=TEMP$+"TEMP2.AGM"
+                GOSUB LOADAGM:
+                KILL AGM$
+        ENDIF
+REM -----------------------------------------        
+        IF PALABRA$(1)="PRINT" THEN
+                REM IMPRIME TEXTO EN 20,0     
+                IF CANTIPALS<2 THEN
+                        GOSUB errorgeneral:
+                ENDIF
+                A$=SPACE$(40)
+                LOCATE 20, 0
+                PRINT A$
+                
+                LOCATE 20, 0
+                PRINT PALABRA$(2)
+        ENDIF
+        
+        IF PALABRA$(1)="VER" THEN
+                REM IMPRIME DESCRIPCION OBJETO EN 20,0
+                REM SOLO SI ESTA EN LA PIEZA O LA TIENE EL JUGADOR
+                IF CANTIPALS<2 THEN
+                       GOSUB errorgeneral: 
+                ENDIF
+                C=VAL(PALABRA$(2))                        
+                IF OBJEST(C)=999 THEN
+                        LOCATE 20, 0
+                        PRINT OBJDES$(C)
+                ENDIF
+                IF OBJEST(C)=PIEZACTUAL THEN
+                        LOCATE 20, 0
+                        PRINT OBJDES$(C)
+                ENDIF
+        ENDIF
+IF PALABRA$(1)="RESETPALETA" THEN        
+        REM restaura la paleta
+        GOSUB restaurapaleta:
+ENDIF
+        IF PALABRA$(1)="FADEOUT" THEN
+                REM hace un FADE-OUT
+                IF CANTIPALS<2 THEN
+                        GOSUB errorgeneral:
+                ENDIF
+                        REM Fade in
+                        FADEIN=VAL(PALABRA$(2))
+                        IF FADEIN<1 THEN
+                                FADEIN=1
+                        ENDIF
+                        IF FADEIN>63 THEN
+                                FADEIN=63
+                        ENDIF
+                        IF CANTIPALS>2 THEN
+                                PAU=VAL(PALABRA$(3))
+                        ENDIF
+          GOSUB FADEOUT:
+        ENDIF
+
+        IF PALABRA$(1)="GLOAD" THEN
+                REM Abre un grafico 320x200x256
+                IF CANTIPALS<2 THEN
+                        GOSUB errorgeneral:
+                ENDIF
+                IF CANTIPALS>2 THEN
+                        REM Fade in
+                        FADEIN=VAL(PALABRA$(3))
+                        IF FADEIN<0 THEN
+                                FADEIN=0
+                        ENDIF
+                        IF FADEIN>63 THEN
+                                FADEIN=63
+                        ENDIF
+                        IF CANTIPALS>3 THEN
+                                PAU=VAL(PALABRA$(4))
+                        ENDIF
+                ENDIF
+        
+        REM ESTA VARIABLE SIRVE PARA RESTAURAR LA PANTALLA
+        REM DESPUES DE LOS CUADROS DE TEXTO
+                ACTUALGRAPH$=PALABRA$(2)
+                AGM$=PALABRA$(2)
+                GOSUB LOADAGM:
+        ENDIF
+        
+        IF PALABRA$(1)="GSAVE" THEN
+                REM Salva un grafico 320x200x256
+                IF CANTIPALS<2 THEN
+                        GOSUB errorgeneral:
+                ENDIF
+                AGM$=PALABRA$(2)
+                GOSUB WRITEAGM:
+
+        ENDIF
+        
+        IF PALABRA$(1)="GTLOAD" THEN
+                REM Abre un grafico TEMPORAL 320x200x256
+                REM LO MUESTRA Y LO BORRA DE DISCO
+                IF CANTIPALS>1 THEN
+                        REM Fade in
+                        FADEIN=VAL(PALABRA$(2))
+                        IF FADEIN<0 THEN
+                                FADEIN=0
+                        ENDIF
+                        IF FADEIN>63 THEN
+                                FADEIN=63
+                        ENDIF
+                        IF CANTIPALS>2 THEN
+                                PAU=VAL(PALABRA$(3))
+                        ENDIF
+                ENDIF
+                
+                AGM$=TEMP$+"TEMPO1.AGM"
+                GOSUB LOADAGM:
+                KILL AGM$
+        ENDIF
+        
+        IF PALABRA$(1)="GTSAVE" THEN
+                REM Salva un grafico 320x200x256 TEMPORAL EN TEMP
+                AGM$=TEMP$+"TEMPO1.AGM"
+                GOSUB WRITEAGM:
+        ENDIF
+        
+
+        IF PALABRA$(1)="WAIT" THEN
+                IF CANTIPALS<2 THEN
+                        GOSUB errorgeneral:
+                ENDIF
+                
+                REM ESPERA n TICS DE RELOJ - ESC SALTAR PAUSA
+                REM Si n = 0 espera por una tecla
+                C=VAL(PALABRA$(2))        
+                IF C>0 THEN
+                T=TIMER
+                Z=0
+                WHILE Z<C
+                        D$=INKEY$
+                        T2=TIMER        
+                        Z=T2-T
+                        IF D$=ESC$ THEN
+                                Z=C+1
+                                T=T2
+                        ENDIF
+                WEND
+                ELSE
+                        D$=""
+                        WHILE D$=""
+                                D$=INKEY$
+                        WEND
+                ENDIF
+        ENDIF
+        
+        IF PALABRA$(1)="LOCATE" THEN
+                REM IMPRIME TEXTO EN X,Y     
+                IF CANTIPALS<4 THEN
+                        GOSUB errorgeneral:
+                ENDIF
+                Y=VAL(PALABRA$(2))                        
+                X=VAL(PALABRA$(3))                        
+                LOCATE Y, X
+                PRINT PALABRA$(4)
+        ENDIF
+        
+        IF PALABRA$(1)="BOX" THEN
+                REM HACE UN CUADRO VACIO     
+                IF CANTIPALS<5 THEN
+                        GOSUB errorgeneral:
+                ENDIF
+                XT=VAL(PALABRA$(2))
+                YT1=VAL(PALABRA$(3))
+                YT2=VAL(PALABRA$(4))
+                SP=VAL(PALABRA$(5))
+                GOSUB WINDOWTEXT:
+        ENDIF
+
+
+        IF PALABRA$(1)="INV" THEN
+                REM COLOCA EL INVENTARIO EN PANTALLA
+                REM USAR FLECHAS PARA EXPLORAR, ESC SEGUIR
+        IF RESTAURA=1 THEN
+                AGM$=TEMP$+"TEMPO.AGM"
+                GOSUB WRITEAGM:
+        ENDIF
+REM CREA EL BUFER CON LOS DATOS A ESCRIBIR
+
+PARAMETRO=1
+GOSUB BUFERMAKER:
+
+IF T> 0 THEN
+        TEXT1$ = "Inventario general: "
+        GOSUB PEDILO:
+
+ELSE
+        XT=0
+        YT1=20
+        YT2=22
+        SP=40
+        GOSUB WINDOWTEXT:
+        
+        LOCATE 20,0 
+        PRINT "No tengo nada..."
+        PRINT 
+        PRINT "Presione una tecla."
+        D$=""
+        WHILE D$=""
+                D$=INKEY$
+        WEND
+ENDIF          
+                REM RESTAURA PANTALLA
+                IF RESTAURA=1 THEN
+                        GOSUB LOADAGM:
+                        KILL AGM$
+                ENDIF
+        ENDIF
+REM -----------fin inventario------------------
+        IF PALABRA$(1)="VERLARGA" THEN
+                REM COLOCA EL INVENTARIO LARGO EN PANTALLA
+                REM USAR FLECHAS PARA EXPLORAR, ESC SEGUIR
+        IF RESTAURA=1 THEN
+                AGM$=TEMP$+"TEMPO.AGM"
+                GOSUB WRITEAGM:
+        ENDIF
+REM CREA EL BUFER CON LOS DATOS A ESCRIBIR
+PARAMETRO=0
+GOSUB BUFERMAKER:
+
+IF T> 0 THEN
+B=LARGA        
+LARGA=1        
+        TEXT1$="Esto es lo que veo:"
+        GOSUB PEDILO:
+LARGA=B
+ELSE
+        XT=0
+        YT1=20
+        YT2=22
+        SP=40
+        GOSUB WINDOWTEXT:
+        
+        LOCATE 20,0 
+        PRINT "No tengo ni veo nada..."
+        PRINT 
+        PRINT "Presione una tecla."
+        D$=""
+        WHILE D$=""
+                D$=INKEY$
+        WEND
+ENDIF          
+                REM RESTAURA PANTALLA
+                IF RESTAURA=1 THEN
+                        GOSUB LOADAGM:
+                        KILL AGM$
+                ENDIF
+        ENDIF
+REM -----------fin inventario largo------------------
+        
+        IF PALABRA$(1)="DESC" THEN
+                REM DESCRIBE LOS OBJETOS QUE HAY EN LA HABITACION
+                REM USAR FLECHAS PARA EXPLORAR, ESC SEGUIR
+        IF RESTAURA=1 THEN
+                AGM$=TEMP$+"TEMPO.AGM"
+                GOSUB WRITEAGM:
+        ENDIF        
+REM CREA EL BUFER CON LOS DATOS A ESCRIBIR
+PARAMETRO=2
+GOSUB BUFERMAKER:
+
+IF T> 0 THEN
+        TEXT1$ = "Estoy mirando: "
+        GOSUB PEDILO:
+ELSE
+        XT=0
+        YT1=20
+        YT2=22
+        SP=40
+        GOSUB WINDOWTEXT:
+        
+        LOCATE 20,0 
+        PRINT "No veo objetos cerca"
+        PRINT 
+        PRINT "Presione una tecla."
+        D$=""
+        WHILE D$=""
+                D$=INKEY$
+        WEND
+ENDIF          
+                REM RESTAURA PANTALLA
+                IF RESTAURA=1 THEN
+                        GOSUB LOADAGM:
+                        KILL AGM$
+                ENDIF
+        ENDIF
+REM -----------fin descripcion-----------------
+        IF PALABRA$(1)="INPUT" THEN
+                REM ESPERA QUE EL USUARIO HAGA ALGUNA ACCION 
+                REM USAR FLECHAS PARA EXPLORAR, ESC SEGUIR
+                REM DEVUELVE LOS DATOS EN LASTACCION, PAR1, PAR2
+        IF RESTAURA=1 THEN
+                AGM$=TEMP$+"TEMPO.AGM"
+                GOSUB WRITEAGM:
+        ENDIF
+LECTURA1:
+        PAR1=0
+        PAR2=0
+
+REM CREA EL BUFER CON LOS DATOS A ESCRIBIR
+        T=0
+        FOR A=0 to 100
+          IF ACCEST(A) >= 0 THEN
+                T=T+1
+                BUFER$(T)=ACCDES$(A)
+                REM GUARDA EL NUMERO DE LA ACCION
+                BUF(T)=A
+          ENDIF
+        NEXT A
+IF T> 0 THEN
+A=-1
+WHILE A=-1
+        TEXT1$="Que debo hacer?"
+        GOSUB PEDILO:
+WEND
+                        NOBIEN=1
+                        LASTACCION=BUF(A)                 
+LECTURA2:
+REM PIDE LOS PARAMETROS DE LA ACCION (A QUE OBJETO APLICAR)
+        
+IF ACCEST(LASTACCION) = 0 THEN
+        PAR1=0
+        PAR2=0
+ENDIF
+IF ACCEST(LASTACCION) > 0 THEN
+
+REM CREA EL BUFER CON LOS DATOS A ESCRIBIR
+PARAMETRO=ACCPAR((LASTACCION)
+GOSUB bufermaker:
+
+IF T> 0 THEN
+        TEXT1$=""
+        Z$=LEFT$(ACCDES$(LASTACCION),30)
+        TEXT1$="Que debo "
+        TEXT1$=TEXT1$+Z$
+        GOSUB PEDILO:
+        IF A=-1 THEN LECTURA1:
+        PAR1=BUF(A)                 
+ELSE
+        XT=0
+        YT1=20
+        YT2=22
+        SP=40
+        GOSUB WINDOWTEXT:
+        
+        LOCATE 20,0 
+        PRINT "No hay nada para ";
+        PRINT z$
+        PRINT "Presione una tecla."
+        D$=""
+        WHILE D$=""
+                D$=INKEY$
+        WEND
+ENDIF
+
+ENDIF
+
+IF ACCEST(LASTACCION) > 1 THEN
+
+REM CREA EL BUFER CON LOS DATOS A ESCRIBIR
+PARAMETRO=ACCPAR((LASTACCION)
+GOSUB bufermaker:
+IF T>0 THEN
+        TEXT1$="Lo hago junto con: "
+        GOSUB PEDILO:
+        IF A=-1 THEN LECTURA2:
+        PAR2=BUF(A)                 
+ELSE
+        XT=0
+        YT1=20
+        YT2=22
+        SP=40
+        GOSUB WINDOWTEXT:
+        
+        LOCATE 20,0 
+        PRINT "No hay nada para ";
+        PRINT z$
+        PRINT "Presione una tecla."
+        D$=""
+        WHILE D$=""
+                D$=INKEY$
+        WEND
+ENDIF
+
+ENDIF
+
+ELSE
+        XT=0
+        YT1=20
+        YT2=22
+        SP=40
+        GOSUB WINDOWTEXT:
+        
+        LOCATE 20,0 
+        PRINT "No puedo hacer nada."
+        PRINT 
+        PRINT "Presione una tecla."
+        D$=""
+        WHILE D$=""
+                D$=INKEY$
+        WEND
+ENDIF          
+                REM RESTAURA PANTALLA
+                IF RESTAURA=1 THEN
+                        GOSUB LOADAGM:
+                        KILL AGM$
+                ENDIF
+        ENDIF
+REM -----------fin acciones--------------
+IF PALABRA$(1)="IFON" THEN
+                REM COMPARA EL ESTADO DE UN OBJETO CON UN NUMERO
+                IF CANTIPALS<4 THEN
+                        GOSUB errorgeneral:
+                ENDIF
+                OBJ1=VAL(PALABRA$(2))                        
+                OBJ2=VAL(PALABRA$(4))                        
+        OBJ1=OBJEST(OBJ1)
+        GOSUB EVALUAR:        
+ENDIF
+REM ----fin IFON ----
+IF PALABRA$(1)="IFAC" THEN
+REM SE FIJA SI SE REALIZO LA ACCION CON LOS PARAMETROS
+                IF CANTIPALS<4 THEN
+                        GOSUB errorgeneral:
+                ENDIF
+                OBJ1=VAL(PALABRA$(2))                        
+                OBJ2=VAL(PALABRA$(3))
+                OBJ3=VAL(PALABRA$(4))
+        REM SALTAR EL BLOQUE { }
+        FOUND=1 
+        IF OBJ2=-1 THEN
+        REM IGNORAR PARAMETROS SI ALGUNO ES -1
+                OBJ2=PAR1
+        ENDIF
+        IF OBJ3=-1 THEN
+        REM IGNORAR PARAMETROS SI ALGUNO ES -1
+                OBJ3=PAR2
+        ENDIF
+        
+        IF LASTACCION=OBJ1 THEN
+        IF PAR1=OBJ2 THEN
+        IF PAR2=OBJ3 THEN
+                REM NO SALTAR EL BLOQUE, EJECUTARLO.
+                NOBIEN=0
+                FOUND=0
+REM limpia bufer de acciones (para que no se repita por siempre)
+                LASTACCION=0
+                PAR1=0
+                PAR2=0
+        ENDIF
+        ENDIF
+        ENDIF
+ENDIF
+REM ----fin IFAC ----
+IF PALABRA$(1)="IFOO" THEN
+                REM COMPARA EL ESTADO DE DOS OBJETOS
+                IF CANTIPALS<4 THEN
+                        GOSUB errorgeneral:
+                ENDIF
+                OBJ1=VAL(PALABRA$(2))                        
+                OBJ2=VAL(PALABRA$(4))                        
+        OBJ1=OBJEST(OBJ1)
+        OBJ2=OBJEST(OBJ2)
+        GOSUB EVALUAR:        
+ENDIF
+REM ----fin IFOO ----
+IF PALABRA$(1)="ALTERNATE" THEN
+        REM COSA A HACER CUANDO PIFIA UNA ACCION
+        IF NOBIEN=0 THEN                
+                REM SALTAR EL BLOQUE {}
+                FOUND=1
+        ELSE
+                REM EJECUTAR {}
+                FOUND=0 
+        ENDIF
+        
+        NOBIEN=0
+ENDIF
+REM ----fin ALTERNATE ----
+
+        IF PALABRA$(1)="COGEOBJ" THEN
+                REM PONE UN OBJETO EN EL INV DEL PERSONAJE
+                IF CANTIPALS<2 THEN
+                        GOSUB errorgeneral:
+                ENDIF
+                OBJ1=VAL(PALABRA$(2))
+                OBJEST(OBJ1)=999
+        ENDIF        
+        
+        IF PALABRA$(1)="DEJAOBJ" THEN
+                REM DEJA UN OBJETO EN EL LUGAR ACTUAL
+                IF CANTIPALS<2 THEN
+                        GOSUB errorgeneral:
+                ENDIF
+                OBJ1=VAL(PALABRA$(2))
+                OBJEST(OBJ1)=PIEZACTUAL
+        ENDIF        
+        
+        IF PALABRA$(1)="MATAOBJ" THEN
+                REM MATA UN OBJETO 
+                IF CANTIPALS<2 THEN
+                        GOSUB errorgeneral:
+                ENDIF
+                OBJ1=VAL(PALABRA$(2))
+                OBJEST(OBJ1)=0
+        ENDIF        
+        
+        IF PALABRA$(1)="PONOBJ" THEN
+                REM PONE UN OBJETO
+                IF CANTIPALS<3 THEN
+                        GOSUB errorgeneral:
+                ENDIF
+                OBJ1=VAL(PALABRA$(2))
+                OBJ2=VAL(PALABRA$(3))
+                OBJEST(OBJ1)=OBJ2
+        ENDIF        
+        
+        IF PALABRA$(1)="PRINTFLAG" THEN
+                REM IMPRIME BANDERA EN X,Y     
+                IF CANTIPALS<4 THEN
+                        GOSUB errorgeneral:
+                ENDIF
+                Y=VAL(PALABRA$(2))                        
+                X=VAL(PALABRA$(3))                        
+                R=VAL(PALABRA$(4))                                        
+                LOCATE Y, X
+                PRINT FLAG(R)
+        ENDIF
+
+
+IF PALABRA$(1)="FLAG" THEN
+                REM Asigna a una BANDERA c/numero, objeto o bandera
+                IF CANTIPALS<5 THEN
+                        GOSUB errorgeneral:
+                ENDIF
+                OBJ1=VAL(PALABRA$(2))                        
+             
+PALABRA$(4)=UCASE$(PALABRA$(4))
+IF PALABRA$(4)="N" THEN
+        OBJ2=VAL(PALABRA$(5))                        
+ENDIF
+IF PALABRA$(4)="B" THEN
+        OBJ2=VAL(PALABRA$(5))                        
+        OBJ2=FLAG(OBJ2)
+ENDIF
+IF PALABRA$(4)="O" THEN
+        OBJ2=VAL(PALABRA$(5))                        
+        OBJ2=OBJEST(OBJ2)
+ENDIF
+        IF PALABRA$(3)="=" THEN        
+                FLAG(OBJ1)=OBJ2
+        ENDIF
+        IF PALABRA$(3)="+" THEN        
+                FLAG(OBJ1) = FLAG(OBJ1) + OBJ2
+        ENDIF
+        IF PALABRA$(3)="-" THEN        
+                FLAG(OBJ1) = FLAG(OBJ1) - OBJ2
+        ENDIF
+        
+        IF PALABRA$(3)="/" THEN        
+                FLAG(OBJ1) = FLAG(OBJ1) / OBJ2
+        ENDIF
+        
+        IF PALABRA$(3)="*" THEN        
+                FLAG(OBJ1) = FLAG(OBJ1) * OBJ2
+        ENDIF
+        
+ENDIF
+REM ----fin FLAG ----
+        
+IF PALABRA$(1)="FLAGCMP" THEN
+                REM COMPARA EL ESTADO DE BANDERAS c/numero, objeto o bandera
+                IF CANTIPALS<5 THEN
+                        GOSUB errorgeneral:
+                ENDIF
+                OBJ1=VAL(PALABRA$(2))                        
+             
+PALABRA$(4)=UCASE$(PALABRA$(4))
+IF PALABRA$(4)="N" THEN
+        OBJ2=VAL(PALABRA$(5))                        
+ENDIF
+IF PALABRA$(4)="B" THEN
+        OBJ2=VAL(PALABRA$(5))                        
+        OBJ2=FLAG(OBJ2)
+ENDIF
+IF PALABRA$(4)="O" THEN
+        OBJ2=VAL(PALABRA$(5))                        
+        OBJ2=OBJEST(OBJ2)
+ENDIF
+        OBJ1=FLAG(OBJ1)
+        GOSUB EVALUAR:
+ENDIF
+REM ----fin FLAGCMP ----
+
+IF PALABRA$(1)="RESTAURA ON" THEN
+        RESTAURA=1        
+ENDIF
+IF PALABRA$(1)="RESTAURA OFF" THEN
+        RESTAURA=0        
+ENDIF
+
+IF PALABRA$(1)="LARGA ON" THEN
+        LARGA=1        
+ENDIF
+IF PALABRA$(1)="LARGA OFF" THEN
+        LARGA=0        
+ENDIF
+
+IF PALABRA$(1)="CLEAR" THEN
+        REM LIMPIA EL STACK        
+        REM Cantidad de STACKs en Memoria
+        CANTSTACKRAM=0
+ENDIF
+
+IF PALABRA$(1)="RUN" THEN
+        REM EJECUTA OTRO ARCHIVO .AGC
+                IF CANTIPALS<2 THEN
+                        GOSUB errorgeneral:
+                ENDIF
+        arch$=PALABRA$(2)
+        arch$=LTRIM$(arch$)
+        arch$=RTRIM$(arch$)
+        if arch$<>"" THEN 
+GOSUB HACENOMBRE:
+                CLOSE 1
+                GOSUB ABRIRGAI:
+                CANTSTACKRAM=0
+        ELSE
+                        GOSUB errorgeneral:
+        ENDIF
+
+ENDIF
+
+IF PALABRA$(1)="RESET" THEN
+        REM LIMPIA TODAS LAS VARIABLES
+        REM Cantidad de STACKs en Memoria
+                CANTSTACKRAM=0
+
+        REM Pone los objetos y las acciones a 0
+        FOR A=0 to 100
+                OBJDES$(A)=""
+                OBJNAM$(A)=""
+                OBJEST(A)=0
+                ACCDES$(A)=""
+                ACCEST(A)=-1
+                ACCPAR(A)=0
+                BUFER$(A)=""
+                BUF(A)=0
+                FLAG(A)=0
+        NEXT A
+ENDIF
+REM ------------------SAVE COMIENZO---------------
+IF PALABRA$(1)="SAVE" THEN
+                CLOSE 2
+                CLOSE 3
+                AGM$=TEMP$+"TEMPO.AGM"
+                GOSUB WRITEAGM:
+          A$=SPACE$(40)
+          LOCATE 0,0
+          FOR A=0 TO 23
+                PRINT A$
+          NEXT A
+          COLOR 15,0
+          LOCATE 0,0
+          A$="*.SAV"
+          
+          GOSUB DISPLAYDIR:
+IF Z=0 THEN          
+        LOCATE 0,0
+        PRINT "[no hay archivos salvados]"
+ENDIF          
+          PRINT
+LOCATE 20, 0
+PRINT "Salvar juego:"
+        PRINT "Escriba el archivo a salvar"
+        PRINT "(No necesariamente uno de la lista)"
+        INPUT ARCH1$;
+        
+        ARCH1$=LTRIM$(ARCH1$)
+        ARCH1$=RTRIM$(ARCH1$)
+        ARCH1$=UCASE$(ARCH1$)
+        
+        x=instr(arch1$,".")
+        if x>0 then        
+                z=x-1
+                arch1$=left$(arch1$,z)
+        endif
+        
+        IF arch1$<>"" then
+                arch1$=arch1$
+                arch1$=arch1$+".SAV"
+                
+                REM Salva primero la imagen
+                GOSUB LOADAGM:
+                AGM$=ARCH1$
+                GOSUB WRITEAGM:
+                AGM$=TEMP$+"TEMPO.AGM"
+                
+                CLOSE 3
+                OPEN "A",3,arch1$
+                IF ERROR>0 THEN        
+                        GOSUB errorhandler:
+                ENDIF
+REM ---ESCRITURA--                
+
+        FOR A=0 to 100
+PRINT #3, OBJDES$(A)
+PRINT #3, OBJNAM$(A)
+PRINT #3, OBJEST(A)
+PRINT #3, ACCDES$(A)
+PRINT #3, ACCEST(A)
+PRINT #3, ACCPAR(A)
+PRINT #3, FLAG(A)
+        NEXT A
+PRINT #3, ARCHREAL$
+PRINT #3, STACKACTUAL&
+PRINT #3, GOTOSTACK&
+PRINT #3, CANTSTACKRAM
+PRINT #3, RESTAURA
+PRINT #3, SKIP
+PRINT #3, FOUND
+PRINT #3, LASTACCION
+PRINT #3, PAR1
+PRINT #3, PAR2
+PRINT #3, NOBIEN
+PRINT #3, PIEZACTUAL
+PRINT #3, KRONO$
+
+        FOR A=0 to 100
+                PRINT #3, STACK&(A)
+        NEXT A
+REM --FIN ESCRITURA--
+
+                CLOSE 3
+        ELSE
+                BEEP
+                BEEP
+        ENDIF
+
+                GOSUB LOADAGM:
+                KILL AGM$
+NOBIEN=0
+
+ENDIF   
+REM ------------------SAVE FINAL---------------
+REM -----------LOAD COMIENZO------------
+
+IF PALABRA$(1)="LOAD" THEN
+REM carga un archivo previamente grabado                
+                CLOSE 2
+                CLOSE 3
+                AGM$=TEMP$+"TEMPO.AGM"
+                GOSUB WRITEAGM:
+          
+          A$=SPACE$(40)
+          LOCATE 0,0
+          FOR A=0 TO 23
+                PRINT A$
+          NEXT A
+          COLOR 15,0
+          LOCATE 0,0
+          A$="*.SAV"
+          
+          GOSUB DISPLAYDIR:
+          PRINT
+                LOCATE 20, 0
+PRINT "Cargar juego:"
+IF Z<>0 THEN          
+          LOCATE 21, 0
+          PRINT "Escriba el archivo a recuperar"
+          INPUT ARCH1$;
+        
+        ARCH1$=LTRIM$(ARCH1$)
+        ARCH1$=RTRIM$(ARCH1$)
+        ARCH1$=UCASE$(ARCH1$)
+        
+        x=instr(arch1$,".")
+        if x>0 then        
+                z=x-1
+                arch1$=left$(arch1$,z)
+        endif
+        
+        IF arch1$<>"" then
+                arch1$=arch1$
+                arch1$=arch1$+".SAV"
+                
+                REM Lee primero la imagen
+                TAM&=320&*200&
+                AGM$=ARCH1$
+                GOSUB LOADAGM:
+                AGM$=TEMP$+"TEMPO.AGM"
+                GOSUB WRITEAGM:
+                
+                CLOSE 3
+REM Translada a ASCII en un archivo temporal
+AGM$=TEMP$+"TEMPO.SAV"
+OPEN "R",3,ARCH1$
+        IF ERROR>0 THEN
+                GOSUB errorhandler:
+        ENDIF
+OPEN "O",2,AGM$
+CLOSE 2
+OPEN "R",2,AGM$
+        IF ERROR>0 THEN
+                GOSUB errorhandler:
+        ENDIF
+R&=FILEPOS(3,EOF)
+R&=FILEPOS(3,CURRENT)
+B&=0&
+FOR C&=65793& TO R&
+        G&=FILEPOS(3,C&)
+        INPUT #3, A$ BYTE
+        G&=FILEPOS(2,B&)
+        IF A$="" THEN
+                A$=CHR$(0)
+                PRINT #2, A$ 
+        ELSE
+                PRINT #2, A$ NONULL
+        ENDIF
+        
+        B&=B&+1
+        IF ERROR>0 THEN
+                GOSUB errorhandler:
+        ENDIF
+NEXT C&                
+CLOSE 3
+CLOSE 2
+                OPEN "I",3,AGM$
+                IF ERROR>0 THEN        
+                        GOSUB errorhandler:
+                ENDIF
+REM ---lectura--                
+
+        FOR A=0 to 100
+input #3, OBJDES$(A)
+input #3, OBJNAM$(A)
+input #3, OBJEST(A)
+input #3, ACCDES$(A)
+input #3, ACCEST(A)
+input #3, ACCPAR(A)
+input #3, FLAG(A)
+        NEXT A
+input #3, ARCHREAL$
+input #3, STACKACTUAL&
+input #3, GOTOSTACK&
+input #3, CANTSTACKRAM
+input #3, RESTAURA
+input #3, SKIP
+input #3, FOUND
+input #3, LASTACCION
+input #3, PAR1
+input #3, PAR2
+input #3, NOBIEN
+input #3, PIEZACTUAL
+input #3, D$
+        
+        FOR A=0 to 100
+                input #3, STACK&(A)
+        NEXT A
+                CLOSE 3
+                CLOSE 2
+
+REM esto corrige un peque¤o BUG
+ACCEST(0)=-1
+
+IF D$<>KRONO$ THEN
+        SCREEN 0
+        PRINT "ERROR - El archivo no es un juego salvado!"
+        BEEP
+        goto finalizar:
+ENDIF
+        AGM$=TEMP$+"TEMPO.SAV"
+        KILL AGM$
+        AGM$=TEMP$+"TEMPO.AGM"
+
+REM Seguir a partir de la proxima linea
+        GOTOSTACK&=STACKACTUAL&
+        STACKACTUAL&=0&
+                CLOSE 2
+                CLOSE 3
+                ARCH$=ARCHREAL$
+                GOSUB HACENOMBRE:
+                CLOSE 1
+                GOSUB ABRIRGAI:
+        
+        WHILE STACKACTUAL&<>GOTOSTACK&
+                        INPUT #1, FRASE$ CRLF
+                STACKACTUAL& = STACKACTUAL& + 1&
+                IF ERROR=99 THEN
+                        REM SE TERMINO EL ARCHIVO
+                        SCREEN 0
+                        PRINT "ERROR EN LOAD!"
+                        PRINT "NO ES LA MISMA AVENTURA"
+                        PRINT "SE EXCEDIO EL FIN DEL ARCHIVO!"
+                        goto finalizar:
+                ENDIF
+                IF ERROR>0 THEN        
+                        GOSUB errorhandler:
+                ENDIF
+        WEND
+
+REM --FIN lectura--
+                CLOSE 3
+                CLOSE 2
+        ELSE
+                REM No puso archivo
+                BEEP
+                BEEP
+        z=0
+        ENDIF
+
+ELSE
+Z=0          
+          LOCATE 20, 0
+          PRINT "No hay archivos para recuperar!"
+          PRINT "Presione una tecla..."
+          D$=""
+          WHILE D$=""
+                D$=INKEY$
+          WEND
+ENDIF
+                GOSUB LOADAGM:
+                KILL AGM$
+NOBIEN=0
+
+ENDIF
+REM ------------------LOAD FINAL---------------
+        
+        REM ENDIF DE SKIP - DESPUES DE ACA NO INTERPRETAN LAS INSTRUCCIONES
+ENDIF
+
+        IF FOUND=1 THEN        
+                REM SALTAR BLOQUES
+                IF PALABRA$(1)="{" THEN
+                        SKIP=SKIP+1
+                ENDIF
+                IF PALABRA$(1)="}" THEN
+                        SKIP=SKIP-1
+                                IF SKIP<1 THEN
+                                        REM TERMINO EL BLOQUE
+                                        SKIP=0
+                                        FOUND=0
+                                ENDIF
+                ENDIF
+        REM FIN SALTAR BLOQUES
+        ENDIF
+        
+        REM ENDIF DE CANTIPALS
+ENDIF
+REM ************
+
+WEND
+
+SCREEN 0
+CLOSE 1
+GOTO FINALIZAR:
+
+REM **********   RUTINAS   ***********
+
+RECONOCER:
+REM Rutina que separa las palabras contenidas en frase$
+REM Utiliza como separador solo la contenida en COMA$; 
+REM Sirve para separar las lineas de comando. 
+REM El DEFAULT DE COMA$ es la COMA ","
+REM por AGF - Revision del 25/11/1998 - Almacena las palabras en
+REM la matriz PALABRA$. Puede almacenar hasta 30 palabras
+REM NO PASA A MAYUSCULAS.
+REM COLOCA LA CANTIDAD DE PALABRAS EN "CANTIPALS"
+pal$ = ""
+CANTIPALS = 0
+REM si esto no esta, no lee la ultima palabra
+FRASE$ = FRASE$ + COMA$
+p2 = LEN(frase$)
+
+FOR dummy1 = 1 TO p2
+   a$ = MID$(frase$, dummy1, 1)
+   IF A$=COMA$ THEN 
+           REM encontro el fin de una palabra
+           pal$ = LTRIM$(pal$)
+           pal$ = RTRIM$(pal$)
+        IF pal$ <> "" THEN
+                CANTIPALS = CANTIPALS + 1
+                IF CANTIPALS > maximopalabras THEN
+                        REM aborta el FOR, demasiadas palabras
+                        p2 = 0
+                        CANTIPALS = 0
+                ELSE
+                        PALABRA$(CANTIPALS) = pal$
+                ENDIF
+        ENDIF
+        pal$ = ""
+   ELSE
+        pal$ = pal$ + a$
+   ENDIF
+
+NEXT dummy1
+
+RETURN
+REM -----------------------------
+
+TAKEARCH:
+REM Esta rutina es de inicializacion del programa
+REM Lee la variable de DOS TEMP para usar los archivos temporales
+REM la coloca en TEMP$
+REM Ademas Toma de la linea de comandos del DOS el archivo AGC,lo abre
+REM y lo decodifica en TEMPORAL\KRONO.TMP
+REM Si no existe la variable TEMP, Usa COMSPEC (y si no C:\)
+
+Z$=COMA$
+COMA$="="
+TEMP$="C:\"
+B=0
+FOR A=1 to 10
+        FRASE$=ENVIRON$(a)
+        GOSUB RECONOCER:
+PALABRA$(1)=UCASE$(PALABRA$(1))
+PALABRA$(1)=LTRIM$(PALABRA$(1))
+PALABRA$(1)=RTRIM$(PALABRA$(1))
+IF PALABRA$(1)="TEMP" THEN
+        A=10
+        TEMP$=PALABRA$(2)
+        B=1
+ENDIF
+NEXT a
+REM No encontro la TEMP
+IF b=0 THEN
+        FOR A=1 to 10
+                FRASE$=ENVIRON$(a)
+                GOSUB RECONOCER:
+        PALABRA$(1)=UCASE$(PALABRA$(1))
+        PALABRA$(1)=LTRIM$(PALABRA$(1))
+        PALABRA$(1)=RTRIM$(PALABRA$(1))
+        IF PALABRA$(1)="COMSPEC" THEN
+                A=10
+                TEMP$=LEFT$(PALABRA$(2),3)
+                B=1
+        ENDIF
+        NEXT a
+ENDIF
+
+COMA$=Z$
+Z$=RIGHT$(TEMP$,1)
+IF Z$<>"\" THEN
+        TEMP$=TEMP$+"\"
+ENDIF
+
+REM ----
+
+arch$=COMMAND$
+arch$=LTRIM$(arch$)
+arch$=RTRIM$(arch$)
+arch$=UCASE$(Arch$)
+if arch$="/V" THEN
+        CLS
+        COLOR 11,0
+        PRINT "                                  G.A.I"
+        PRINT
+        COLOR 15,0
+        PRINT KRONO$
+        PRINT VER$
+        PRINT "Hecho en Argentina - Por Alvaro Gonzalez Ferrer."
+        COLOR 7,0
+        END
+ENDIF
+if arch$="/?" THEN
+        CLS
+        COLOR 15, 0
+        PRINT "G.A.I Generador Aventuras Interactivas "
+        PRINT "(c) 1998-99 - Por Alvaro Gonzalez Ferrer"
+        COLOR 11, 0
+        PRINT KRONO$
+        PRINT VER$
+        PRINT
+        COLOR 7,0
+        PRINT "No hay ayuda disponible... }:) "
+        END
+ENDIF
+if arch$="" THEN 
+        REM Busca primer archivo *.AGC
+        ARCH$=FIND FIRST("*.AGC", 0)        
+        IF ERROR>0 THEN        
+                REM Busca primer archivo *.GAI
+                ARCH$=FIND FIRST("*.GAI", 0)        
+                IF ERROR>0 THEN                        
+                        PRINT "NO puedo encontrar un archivo AGC o uno GAI!"
+                        GOTO FINALIZAR:
+                ELSE
+                        CODEC=0
+                ENDIF
+        ELSE 
+                CODEC=1
+        ENDIF
+ENDIF
+GOSUB HACENOMBRE:
+
+ABRIRGAI:
+REM --- subrutina de TAKEARCH, puede ser llamada de otros lados
+REM p/ej al ejecutar la instruccion GOTO que el archivo debe ser reopen
+REM Abre el archivo especificado como #1 
+CLOSE 1
+open "I",1,arch$
+if error>0 then
+   screen 0
+   color 14,0
+   print "Ocurrio un error."
+   beep
+   print "Lo mas probable es que el archivo NO EXISTA, o ESTE PROTEGIDO."
+   print "Analize la situacion y si lo desea, intente de nuevo. :-)"
+   color 7,0
+   print "Archivo: ";
+   PRINT ARCH$
+   close 1
+   GOTO FINALIZAR:
+endif
+STACKACTUAL&=0&
+RETURN
+REM -----------------------------
+
+LOADAGM:
+        REM V3.00 (12/F/1999)
+        REM Abre un archivo AGM (grafico)
+        REM La pantalla debe estar en SCREEN 13
+        REM Llamar con AGM$=ARCHIVO
+REM Si TAM&=0, calcula automaticamente el tama¤o, de lo contrario,
+REM usa TAM& (Util para cargar juegos salvados, que incluyen info extra)
+REM Luego de usar la rutina, coloca TAM& a 0 de vuelta
+REM Si FADEIN>0 (1-63) hace un fade in para la imagen con pausa de PAU
+REM 
+AGM$=LTRIM$(AGM$)
+AGM$=RTRIM$(AGM$)
+
+REM Posicion de memoria de la placa de video
+DEFSEG = &HexA000
+IF AGM$="" THEN
+        RETURN
+ENDIF
+
+a=instr(AGM$,".")
+if a=0 then
+        AGM$=AGM$+".AGM"
+endif
+IF TAM&<=0& THEN
+        REM Tama¤o de pantalla
+        TAM&=FILELEN(AGM$)
+                IF ERROR>0 THEN
+                        GOSUB errorhandler:
+                ENDIF           
+        REM Quita el espacio de datos de la paleta (1792 bytes)
+        TAM&=TAM&-1792&
+ENDIF
+REM Lee la paleta de 256 colores
+OPEN "R",3,AGM$
+
+FOR t&=0& TO 255&
+        
+        C&=T&*7&
+        C&=C&+TAM&
+        C&=C&+1&        
+        
+        P&=FILEPOS(3,C&)
+        INPUT# 3, R
+        INPUT# 3, G
+        INPUT# 3, B
+   OUT &HEX3C8, t&
+R1(t&)=r
+g1(t&)=g
+b1(t&)=b
+C2(t&)=t&
+
+IF FADEIN<=0 THEN
+        OUT &HEX3C9, r
+        OUT &HEX3C9, g
+        OUT &HEX3C9, b
+ELSE
+REM Pone todo negro 
+        OUT &HEX3C9, 0
+        OUT &HEX3C9, 0
+        OUT &HEX3C9, 0
+ENDIF
+
+NEXT T&
+CLOSE 3
+
+BLOAD AGM$ 0 TAM&
+
+REM Fade-in
+IF FADEIN>0 THEN
+        r = 255
+        C = 0
+
+        DOFADEIN:
+
+                C = C + 1
+                IF C > r THEN
+                        C = 0
+                rem pausa luego de los ciclos (opcional)
+                
+                        T=TIMER
+                        Z=0
+                        WHILE Z<PAU
+                                D$=INKEY$
+                                T2=TIMER        
+                                Z=T2-T
+                                IF D$=ESC$ THEN
+                                        Z=PAU+1
+                                        T=T2
+                                        PAU=0
+                                ENDIF
+                        WEND
+                
+
+                ENDIF
+
+                A = C2(C)
+                R2(A) = R2(A) + fadein
+                G2(A) = G2(A) + fadein
+                B2(A) = B2(A) + fadein
+
+        IF R2(A) >= R1(A) THEN
+                R2(A) = R1(A)
+        ENDIF
+        IF G2(A) >= G1(A) THEN
+                G2(A) = G1(A)
+        ENDIF
+
+        IF B2(A) >= B1(A) THEN
+                B2(A) = B1(A)
+        ENDIF
+
+        REM ESCRIBIR
+        DEFSEG = &HEXA000
+
+        OUT &HEX3C8, A
+
+        OUT &HEX3C9, R2(A)
+        OUT &HEX3C9, G2(A)
+        OUT &HEX3C9, B2(A)
+
+        IF B2(A) = B1(A) THEN
+        IF R2(A) = R1(A) THEN
+        IF G2(A) = G1(A) THEN
+        REM OPTIMIZAR
+                t = C2(r)
+                C2(r) = C2(C)
+                C2(C) = t
+        
+                t = R2(r)
+                R2(r) = R2(C)
+                R2(C) = t
+        
+                t = G2(r)
+                G2(r) = G2(C)
+                G2(C) = t
+        
+                t = B2(r)
+                B2(r) = B2(C)
+                B2(C) = t
+                REM esto era igual a:
+                REM SWAP R2(C), R2(r)
+                REM SWAP G2(C), G2(r)
+                REM SWAP B2(C), B2(r)
+                r = r - 1
+                A = C2(C)
+        ENDIF
+        ENDIF
+        ENDIF
+
+        IF r > 0 THEN DOFADEIN:
+ENDIF
+REM Fade-in
+
+REM resetea variables
+        TAM&=0&
+        FADEIN=0
+        PAU=0
+RETURN
+REM -----------------------------
+
+WINDOWTEXT:
+REM HACE UNA VENTANA DE TEXTO BORRANDO UN CUADRADO
+REM PARAMETROS: de XT , YT1 a YT2 con espacios SP
+REM 
+A$=SPACE$(SP)
+FOR A=YT1 TO YT2
+        LOCATE A, XT
+        PRINT A$
+NEXT A
+RETURN
+REM -----------------------------
+
+WRITEAGM:
+REM ESTA RUTINA ESCRIBE LA PANTALLA A DISCO PARA LEERLA LUEGO
+REM UTIL PARA RESTAURAR LA PANTALLA LUEGO DE LOS MENUES.
+REM PONER EN AGM$ EL NOMBRE DE ARCHIVO
+REM SALVA HASTA LA PALETA!
+REM Posicion de memoria de la placa de video
+DEFSEG = &HexA000
+AGM$=LTRIM$(AGM$)
+AGM$=RTRIM$(AGM$)
+IF AGM$="" THEN
+        RETURN
+ENDIF
+
+a=instr(AGM$,".")
+if a=0 then
+        AGM$=AGM$+".AGM"
+endif
+
+REM Tama¤o de pantalla
+TAM&=320&*200&
+
+BSAVE AGM$ 0 TAM&
+
+REM Salva la paleta de 256 colores
+OPEN "R",3,AGM$
+
+FOR T&=0& TO 255&
+        C&=T&*7&
+        C&=C&+TAM&
+        C&=C&+1&
+        P&=FILEPOS(3,C&)
+        OUT &HEX3C7, T&
+        R= INP &HEX3C9
+        G= INP &HEX3C9
+        B= INP &HEX3C9
+        R$=str$(R)
+        R$=str$(G)
+        G$=str$(B)
+        PRINT# 3, R
+        PRINT# 3, G
+        PRINT# 3, B
+NEXT T&
+CLOSE 3
+TAM&=0&
+RETURN
+REM -----------------------------
+
+READBLOQUE:
+REM ESTA RUTINA LEE UN BLOQUE { } Y COLOCA TODO EN BUFER$
+REM EL TAMA¥O MAXIMO DE UN BLOQUE { } ES DE 101 LINEAS (0-100)
+REM COLOCA EL TAMA¥O DEL BLOQUE EN "BLOQUELEN"
+REM EL BLOQUE SE LEE DE BUFER$(0) A BUFER$(BLOQUELEN)!
+BLOQUELEN=0
+
+                REM BUSCA APERTURA BLOQUE "{"
+                Z$=" "
+                WHILE Z$=" "       
+        
+                INPUT #1, FRASE$ CRLF
+                IF ERROR>0 THEN        
+                        GOSUB ERRORHANDLER:
+                ENDIF
+                STACKACTUAL& = STACKACTUAL& + 1&
+                
+                GOSUB RECONOCER:
+                PALABRA$(1)=UCASE$(PALABRA$(1))
+                IF PALABRA$(1)="{" THEN
+                        Z$="{"
+                ENDIF
+                WEND
+                
+                REM BUSCA FIN BLOQUE Y VA ESCRIBIENDO EN BUFER$
+
+                Z$=" "
+                WHILE Z$=" "       
+        
+                INPUT #1, FRASE$ CRLF
+                IF ERROR=99 THEN
+                        REM SE TERMINO EL ARCHIVO
+                        ERROR=0
+                        SALIR=1
+                ENDIF
+                IF ERROR>0 THEN        
+                        GOSUB ERRORHANDLER:
+                ENDIF
+                STACKACTUAL& = STACKACTUAL& + 1&
+                
+                D$=FRASE$
+                GOSUB RECONOCER:                        
+                        IF PALABRA$(1)="}" THEN
+                                Z$="}"
+                        BLOQUELEN=BLOQUELEN-1
+                        ELSE
+                                BUFER$(BLOQUELEN) = D$
+                                BLOQUELEN=BLOQUELEN+1
+                                IF BLOQUELEN>100 THEN
+                                        SCREEN 0
+                                        PRINT "WOOPS!"
+                                        PRINT "ERROR ";
+                                        PRINT "BLOQUE { } MAYOR A 100 LINEAS!"
+                                ENDIF
+                        ENDIF
+                        
+                WEND
+
+RETURN
+REM -----------------------------
+
+ERRORGENERAL:
+REM Esto pone el mensaje
+REM "ERROR: FALTAN PARAMETROS"
+REM FRASE$
+REM y sale al DOS
+        SCREEN 0
+        COLOR 14,0 
+        PRINT "ERROR: FALTAN PARAMETROS"
+        COLOR 7,0
+        PRINT FRASE$
+        PRINT
+        GOTO FINALIZAR:
+RETURN
+
+REM -----------------------------
+DECODIFICAR:
+REM esta rutina decodifica un archivo AGC especificado en ARCH1$ 
+REM lo coloca en ARCH2$
+REM ATENTO:
+REM No hace verificacion de errores, ni agrega extensiones ni nada
+REM Es UNA RUTINA INTERNA DEL PROGRAMA
+REM El CODIGO PARA DECODIFICAR SE ESPECIFICA EN CODI (default=82)
+REM USA LOS ARCHIVOS 2 y 3
+CLOSE 2
+CLOSE 3
+OPEN "I",2,ARCH1$
+E=ERROR
+IF E>0 THEN
+        GOSUB ERRORHANDLER:
+ENDIF
+
+OPEN "O",3,ARCH2$
+E=ERROR
+IF E>0 THEN
+       GOSUB ERRORHANDLER:
+ENDIF
+G=0
+WHILE G=0
+        INPUT# 2, A$
+        
+        G=ERROR
+A$=LTRIM$(A$)
+A$=RTRIM$(A$)
+
+L=LEN(A$)
+IF L>79 THEN
+        A$=LEFT$(A$,79)
+        L=79
+ENDIF
+                REM DECODIFICA
+                Z=LEN(A$)
+                C$=""
+                WHILE Z>1
+                        K$ = MID$(A$,Z,1)
+                        R = ASC(K$)
+                        R = R - CODI
+                        IF R < 0 THEN
+                                R = R + 255
+                        ENDIF
+                        K$ = CHR$(R)
+                        C$ = C$ + K$
+                        Z=Z-1
+                WEND
+        D$=CHR$(13)
+        C$=C$+D$
+        D$=CHR$(10)
+        C$=C$+D$
+        PRINT #3, C$  NONULL
+
+WEND
+CLOSE 2
+CLOSE 3
+
+RETURN
+REM -----------------------------
+
+FINALIZAR:
+
+REM DEVUELVE EL CONTROL AL D.O.S
+IF ARCH2$<>"" THEN
+        REM Borra el CODIGO FUENTE (DEJA EL CODIFICADO)
+        CLOSE 3
+        OPEN "O",3,ARCH2$
+        CLOSE 3
+        KILL ARCH2$
+ENDIF
+END
+
+ERRORHANDLER:
+REM Maneja los errores de INPUT
+IF ERROR=18 THEN
+        ERROR=96
+ENDIF
+
+IF ERROR<>96 THEN        
+
+        SCREEN 0
+        PRINT "WOOPS!"
+        PRINT "ERROR ";
+        PRINT ERROR
+        IF ERROR=1 THEN
+                PRINT "APPEND invalidado"
+        ENDIF
+        IF ERROR=2 THEN
+                PRINT "Archivo no encontrado"
+        ENDIF
+        IF ERROR=4 THEN
+                PRINT "Archivo no encontrado"
+        ENDIF
+        IF ERROR=3 THEN
+                PRINT "Path no encontrado"
+        ENDIF
+        IF ERROR=5 THEN
+                PRINT "Acceso a archivo denegado"
+        ENDIF
+        IF ERROR=98 THEN
+                PRINT "Archivo no fue abierto"
+        ENDIF
+        IF ERROR=255 THEN
+                PRINT "Disco lleno"
+        ENDIF
+        IF ERROR=97 THEN
+                PRINT "Archivo no es posible abrirlo"
+        ENDIF
+        
+        GOTO FINALIZAR:
+ELSE
+        REM Una linea de mas de 80 letras
+        ERROR=0
+ENDIF
+RETURN
+REM -----------------------------
+
+DISPLAYDIR:
+REM Rutina que pone el directorio actual en pantalla
+REM Poner en A$ la mascara (ej: *.SAV)
+REM Empieza donde quede el cursor, limpiar antes la pantalla para mas prolijo
+REM Afecta a las variables R$, A$, T, A, Z
+REM En Z coloca la cantidad total de archivos.
+Z=0
+IF A$="" THEN
+        A$="*.*"
+ENDIF
+               ATTRIB=0
+               R$=FIND FIRST (A$,ATTRIB)
+               
+               IF ERROR>0 THEN DONE:
+               PRINT R$;
+               PRINT " ";
+          T=1
+          Z=1
+          A=0
+          LOOP:
+               R$=FIND CONTINUE
+               IF ERROR>0 THEN DONE:
+               PRINT R$;
+               PRINT " ";
+                T=T+1               
+                Z=Z+1
+                IF T>=3 then
+                        PRINT
+                        T=0
+                        A=A+1
+                ENDIF
+
+                IF A>18 THEN DONE:
+
+                GOTO LOOP:
+          DONE: 
+
+RETURN
+REM -----------------------------
+
+EVALUAR:
+REM RUTINA LOGICA LLAMADA POR IFON, IFOO, FLAGCMP        
+REM PARA EVALUAR DATOS
+REM (C) 1999-AGF
+        IF PALABRA$(3)=">" THEN        
+                IF OBJ1>OBJ2 THEN
+                        REM SI ES OK NO HACE NADA, SIGUE EJECUTANDO
+                ELSE
+                        REM SI NO, BUSCA EL PRIMER { PARA SALTAR EL BLOQUE
+                        REM HASTA EL PROXIMO }
+                        FOUND=1
+                ENDIF
+        ENDIF
+        IF PALABRA$(3)="=" THEN        
+                IF OBJ1=OBJ2 THEN
+                ELSE
+                        FOUND=1
+                ENDIF
+        ENDIF
+        IF PALABRA$(3)="<" THEN        
+                IF OBJ1<OBJ2 THEN
+                ELSE
+                        FOUND=1
+                ENDIF
+        ENDIF
+        IF PALABRA$(3)="<>" THEN        
+                IF OBJ1<>OBJ2 THEN
+                ELSE
+                        FOUND=1
+                ENDIF
+        ENDIF
+        IF PALABRA$(3)=">=" THEN        
+                IF OBJ1>=OBJ2 THEN
+                ELSE
+                        FOUND=1
+                ENDIF
+        ENDIF
+        IF PALABRA$(3)="<=" THEN        
+                IF OBJ1<=OBJ2 THEN
+                ELSE
+                        FOUND=1
+                ENDIF
+        ENDIF
+        IF PALABRA$(3)="=>" THEN        
+                IF OBJ1>=OBJ2 THEN
+                ELSE
+                        FOUND=1
+                ENDIF
+        ENDIF
+        IF PALABRA$(3)="=<" THEN        
+                IF OBJ1<=OBJ2 THEN
+                ELSE
+                        FOUND=1
+                ENDIF
+        ENDIF
+
+
+RETURN
+REM -----------------------------
+
+HACENOMBRE:
+REM TRANSFORMA EL NOMBRE DE ARCH$ (LE PONE EXTENSION, HACE CODEC, ETC)
+arch$=LTRIM$(arch$)
+arch$=RTRIM$(arch$)
+arch$=UCASE$(Arch$)
+
+a=INSTR(arch$,".")
+IF a=0 THEN
+        arch$=arch$+".AGC"
+        CODEC=1
+ENDIF
+a=INSTR(arch$,".AGC")
+IF a=0 THEN
+        CODEC=0    
+ELSE
+        CODEC=1
+ENDIF
+
+ARCHREAL$=ARCH$
+ARCH1$ = ARCH$
+IF CODEC=1 THEN
+        ARCH2$ = TEMP$+"KRONO.TMP"
+        PRINT "Espere..."
+        GOSUB DECODIFICAR:
+
+        REM nuevo nombre del ejecutable
+        ARCH$=TEMP$+"KRONO.TMP"
+ENDIF
+
+RETURN
+REM -----------------------------
+
+BUFERMAKER:
+REM CREA EL BUFER CON LOS DATOS A ESCRIBIR
+REM Rutina interna de INPUT/VERLARGA/INV/DESC
+REM Pasar el parametro PARAMETRO para decirle si queres        
+REM todos los objetos <=0; los que llevo 1; 2 del lugar
+        T=0
+        FOR A=0 to 100
+IF PARAMETRO <= 0 THEN
+        IF OBJEST(A)=999 THEN
+                T=T+1
+                BUFER$(T)="Llevo "
+                BUFER$(T)=BUFER$(T)+OBJNAM$(A)
+                R=LEN(bufer$(T))
+                R=40-R
+                Z$=SPACE$(R)
+                bufer$(T)=bufer$(T)+Z$
+                bufer$(T)=bufer$(T)+OBJDES$(A)
+                buf(T)=A
+          ENDIF
+          IF OBJEST(A)=PIEZACTUAL THEN
+                T=T+1
+                BUFER$(T)="Veo "
+                BUFER$(T)=BUFER$(T)+OBJNAM$(A)
+                R=LEN(bufer$(T))
+                R=40-R
+                Z$=SPACE$(R)
+                bufer$(T)=bufer$(T)+Z$
+                bufer$(T)=bufer$(T)+OBJDES$(A)
+                buf(T)=A
+          ENDIF
+ENDIF          
+
+IF PARAMETRO = 1 THEN
+        IF OBJEST(A)=999 THEN
+                T=T+1
+                BUFER$(T)="Llevo "
+                BUFER$(T)=BUFER$(T)+OBJNAM$(A)
+                R=LEN(bufer$(T))
+                R=40-R
+                Z$=SPACE$(R)
+                bufer$(T)=bufer$(T)+Z$
+                bufer$(T)=bufer$(T)+OBJDES$(A)
+                buf(T)=A
+          ENDIF
+ENDIF        
+
+IF PARAMETRO >= 2 THEN
+          IF OBJEST(A)=PIEZACTUAL THEN
+                T=T+1
+                BUFER$(T)="Veo "
+                BUFER$(T)=BUFER$(T)+OBJNAM$(A)
+                R=LEN(bufer$(T))
+                R=40-R
+                Z$=SPACE$(R)
+                bufer$(T)=bufer$(T)+Z$
+                bufer$(T)=bufer$(T)+OBJDES$(A)
+                buf(T)=A
+          ENDIF
+ENDIF        
+
+        NEXT A
+
+RETURN
+REM -----------------------------
+
+PEDILO:
+REM Pide entrada por parte del usuario        
+REM Devuelve en A la respuesta; -1 si es ESC
+        XT=0
+        YT1=19
+        YT2=22
+        SP=40
+        GOSUB WINDOWTEXT:
+        LOCATE 19,0 
+        PRINT TEXT1$
+        LOCATE 22,0
+        PRINT "Use ";
+        PRINT ARR$;
+        PRINT ABJ$; 
+        PRINT " para elejir-ENTER OK"
+        
+        A=1
+        LOCATE 20, 0
+                Z$=LEFT$(BUFER$(A),40)
+        PRINT Z$
+                Z$=MID$(BUFER$(A),41,39)
+        IF LARGA=1 THEN
+                PRINT Z$
+        ENDIF
+        D$=""        
+        WHILE D$=""
+                 D$=INKEY$        
+                 IF D$="H" THEN 
+                        A=A-1        
+                                IF A<1 THEN        
+                                        A=1
+                                ENDIF
+                 ENDIF
+                 IF D$="P" THEN 
+                        A=A+1        
+                                IF A>T THEN        
+                                        A=T
+                                ENDIF
+                 ENDIF
+IF d$<>"" THEN                
+                LOCATE 20, 0
+                print a$
+                print a$
+                LOCATE 20, 0
+                Z$=LEFT$(BUFER$(A),40)
+                PRINT Z$
+                Z$=MID$(BUFER$(A),41,39)
+                IF LARGA=1 THEN
+                        PRINT Z$
+                ENDIF
+ENDIF        
+        IF D$<>ESC$ THEN
+        IF D$<>ENTER$ THEN
+                D$=""
+        ENDIF
+        ELSE
+                REM apreto ESC
+                A=-1
+        ENDIF
+        WEND
+RETURN
+REM -----------------------------
+CARGAPALETA:
+REM carga la paleta de pantalla en matrices de memoria
+
+FOR t = 0 TO 255
+        REM lee de memoria
+        OUT &HEX3C7, T
+        R=INP &HEX3C9
+        G=INP &HEX3C9
+        B=INP &HEX3C9
+        REM Salva los atributos       
+                REM Rojo
+                R1(t) = R
+                REM Verde
+                G1(t) = G
+                REM Azul       
+                B1(t) = B
+        
+        C2(t) = t
+NEXT t
+RETURN
+REM -----------------------------
+fadeout:
+rem rutina que hace un fade-out 12/f/99
+rem recordar leer antes la paleta con la otra rutina
+rem fadein = numero positivo que indica el salto
+REM pau=pausa en tics de reloj
+IF FADEIN<1 then
+        fadein=1
+ENDIF
+FOR g=0 to 63
+
+FOR c=0 to 255                
+                A = C2(c)
+                R2(A) = R2(A) - fadein
+                G2(A) = G2(A) - fadein
+                B2(A) = B2(A) - fadein
+
+        IF R2(A) < 0 THEN
+                R2(A) = 0
+        ENDIF
+        IF G2(A) < 0 THEN
+                G2(A) = 0
+        ENDIF
+
+        IF B2(A) < 0 THEN
+                B2(A) = 0
+        ENDIF
+
+        REM ESCRIBIR
+        DEFSEG = &HEXA000
+
+        OUT &HEX3C8, A
+
+        OUT &HEX3C9, R2(A)
+        OUT &HEX3C9, G2(A)
+        OUT &HEX3C9, B2(A)
+
+NEXT c
+                rem pausa luego de los ciclos (opcional)
+                        T=TIMER
+                        Z=0
+                        WHILE Z<PAU
+                                D$=INKEY$
+                                T2=TIMER        
+                                Z=T2-T
+                                IF D$=ESC$ THEN
+                                        Z=PAU+1
+                                        T=T2
+                                        PAU=0
+                                ENDIF
+                        WEND
+        b=fadein-1
+        g=g+b
+NEXT g
+        FADEIN=0
+        PAU=0
+RETURN
+REM -----------------------------
+restaurapaleta:
+REM recupera la paleta de las matrices r1, g1, b1
+
+for c=0 to 255
+        OUT &HEX3C8, c
+        OUT &HEX3C9, r1(c)
+        OUT &HEX3C9, g1(c)
+        OUT &HEX3C9, b1(c)
+NEXT c
+
+RETURN

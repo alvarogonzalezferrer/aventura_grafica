@@ -1,0 +1,93 @@
+REM RUTINA QUE SALVA EL CONTENIDO DE LA MEMORIA DE VIDEO
+REM EN EL DISCO MEDIANTE EL COMANDO BSAVE!
+REM POR ALVARO - 30/10/98 - 27-11-98 - 31/D/1998 V2.00
+REM POR AHORA SOLO FUNCIONA EN MODO 13h
+REM La extension es AGM o sea Alvaro Gonzalez Memoria
+
+REM ============================
+a$=COMMAND$
+a$=ucase$(a$)
+x=instr(a$,".")
+if x>0 then        
+        z=x-1
+        a$=left$(a$,z)
+endif
+        if a$<>"" then
+                archi$=a$
+                archi$=archi$+".AGM"
+        endif
+        archi$=ucase$(Archi$)
+        archi$=ltrim$(Archi$)
+        archi$=rtrim$(Archi$)
+
+        if archi$="" then 
+                SCREEN 0
+                PRINT "Llamar con DOIT.BAT, y especificar archivo!"
+                END
+        endif
+
+REM ===============================
+
+REM Posicion de memoria de la placa de video
+DEFSEG = &HexA000
+
+REM RUTINA QUE SCANEA LA PANTALLA PARA BUSCAR EXTREMO INFERIOR 
+y& = 0&
+Y1& = 0&
+FOR x1 = 0 TO 320
+
+FOR Y1& = Y2& TO 200&
+        d = POINT(Y1&, X1)
+        IF d > 0 THEN
+        IF Y1& > y& THEN
+                y& = Y1&
+        ENDIF
+        ENDIF
+NEXT Y1&
+        Y2& = y&
+NEXT x1
+REM Tama¤o pantalla
+y& = y& + 1&
+IF y& > 200& THEN 
+        y& = 200&
+ENDIF
+TAM& = 320& * y&
+rem ==========
+
+
+BSAVE archi$ 0 TAM&
+
+
+REM Salva la paleta de 256 colores
+OPEN "R",1,ARCHI$
+IF ERROR<>0 THEN
+        PRINT "ERROR ";
+        PRINT ERROR
+        END
+ENDIF
+FOR colors&=0& TO 255&
+        C&=colors&*7&
+        C&=C&+TAM&
+        C&=C&+1&
+        P&=FILEPOS(1,C&)
+        OUT &HEX3C7, colors&
+        R= INP &HEX3C9
+        G= INP &HEX3C9
+        B= INP &HEX3C9
+        R=R
+        G=G
+        B=B
+
+        r$=str$(r)
+        g$=str$(g)
+        b$=str$(b)
+
+        PRINT# 1, R
+        PRINT# 1, G
+        PRINT# 1, B
+NEXT  colors&
+CLOSE 1
+SCREEN 0
+PRINT "Listo ";
+PRINT ARCHI$
+END

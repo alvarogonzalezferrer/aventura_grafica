@@ -1,0 +1,5 @@
+Este directorio contiene los scripts para crear el instalador original para DOS, contenido en dos diskettes.
+
+Se necesita RAR 2.5 para MS-DOS para compilarlo
+
+Info> febrero 2020

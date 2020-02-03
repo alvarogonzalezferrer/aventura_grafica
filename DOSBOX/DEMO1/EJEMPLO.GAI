@@ -1,0 +1,862 @@
+;Aventura ejemplo para GAI
+;Por Alvaro D.C Gonzalez Ferrer
+;Copyright (c) 1998
+;Ejecutar usando GAI EJEMPLO.GAI
+
+;Limpio la pantalla
+CLS
+;reseteo el juego
+RESET
+CLEAR
+
+;AQUI SE DEFINEN LOS OBJETOS de la pieza 1
+DEFINEOBJ
+{
+        1, 1, Herramientas, Son mis herramientas
+        2, 1, Cadillac, Es mi Cadillac Rosa
+        3, 1, Poster, Es una chica muy linda
+        4, 3, Rosa, Es una rosa roja
+        5, 4, Cuchillo, Es un cuchillo de cocina
+        6, 5, Tarro de Basura, Un viejo tacho lleno de basura
+        7, 7, Flavia, Es Flavia
+        10,999, Campera, Es mi campera de cuero negro
+}
+
+;AQUI LAS ACCIONES: NUMERO, PARAMETROS, DESCRIPCION
+;Dejo las 10 primeras libres para las salidas de los lugares
+;De esta forma no defino todas cada vez que cambio de lugar.
+DEFINEACC
+{
+        10, 1, Usar
+        11, 2, Usar OBJ1 con OBJ2
+        12, 0, Descripcion general
+        13, 0, Mirar el lugar
+        14, 0, Mirar mis cosas
+        15, 1, Dejar
+        16, 1, Agarrar
+        17, 1, Hablar a...
+        18, 0, Salvar juego
+        19, 0, Cargar juego
+        20, 0, Salir del juego
+}
+;pongo la bandera 1 a 0, me sirve para saber si arreglo el Cadillac
+;0=no, 1=si
+FLAG,1,=,N,0
+;pongo la bandera 2 a 0, me sirve para saber si le dio la rosa a Flavia
+;0=no, 1=si
+FLAG,2,=,N,0
+
+;Localidad 1 "Garage"
+@,1
+;Acciones especificas de este lugar
+DEFINEACC
+{
+        1, 0, Ir a la calle
+        2, 0, Subir al Cadillac
+        3, 0, Ir por la puerta
+        4,-1, Eliminada
+        5,-1, Eliminada
+        6,-1, Eliminada
+}
+;Pongo la imagen
+GLOAD, GARAGE
+;Color blanco brillante
+COLOR, 15
+;Espero que el jugador elija su accion
+INPUT
+;Proceso las acciones con IFAC { }
+;Ir a la calle
+IFAC,1, 0,0 
+{
+GOTO, 5
+}
+
+;Arreglar cadillac
+IFAC,11,1,2
+{
+;Arregla el cadillac y setea FLAG 1 a 1 para poder luego saber
+;si se uso las herramientas
+;pongo la bandera 1 a 0, me sirve para saber si arreglo el Cadillac
+;0=no, 1=si
+FLAG,1,=,N,1
+        MENSAJE, 19, 0, 0
+        {
+10 minutos despues...
+El Cadillac esta listo para rodar
+        }
+}
+
+;Usar Cadillac
+IFAC,10,2,0
+{
+;Se fija si no uso las herramientas en el cadillac
+        FLAGCMP, 1,<>,N,1
+        {
+        MENSAJE, 20, 0, 0
+        {
+El Cadillac esta roto
+        }
+        }
+
+;Se fija si uso las herramientas en el cadillac (FLAG 1 = 1)
+       FLAGCMP, 1,=,N,1
+        {
+        GOTO,2
+        }
+}
+
+;Subir al cadillac
+IFAC,2,0,0
+{
+;Se fija si no uso las herramientas en el cadillac
+        FLAGCMP, 1,<>,N,1
+        {
+        MENSAJE, 20, 0, 0
+        {
+El Cadillac esta roto
+        }
+        }
+
+;Se fija si uso las herramientas en el cadillac (FLAG 1 = 1)
+       FLAGCMP, 1,=,N,1
+        {
+        GOTO,2
+        }
+}
+
+;Patio
+IFAC,3,0,0
+        {
+        GOTO, 3
+        }
+
+
+GOSUB, standard
+
+GOTO, 1
+
+;-------------------------------
+;Dentro del cadillac
+@,2
+;nuevas acciones
+DEFINEACC
+{
+        1, 0, Ir a la casa de Flavia
+        2, 0, Bajar del Cadillac
+        3, -1, ELIMINADA
+        4, -1, ELIMINADA
+        5, -1, ELIMINADA
+        6, -1, ELIMINADA
+}
+
+;Pongo la imagen
+GLOAD, CADI
+
+;Espero que juegue
+INPUT
+
+;a casa de Flavia
+IFAC,1,0,0
+        {
+        GOTO, 6
+        }
+
+;bajar cadillac
+IFAC,2,0,0
+        {
+        GOTO, 1
+        }
+
+GOSUB, standard
+GOTO,2
+
+;-------------------------------
+;Patio
+@,3
+;nuevas acciones
+DEFINEACC
+{
+        1, 0, Ir al garage
+        2, 0, Ir a la cocina
+        3, -1, ELIMINADA
+        4, -1, ELIMINADA
+        5, -1, ELIMINADA
+        6, -1, ELIMINADA
+}
+
+;Pongo la imagen
+GLOAD, PATIO
+
+;Espero que juegue
+INPUT
+;Ir al garage
+IFAC, 1,0 ,0
+{
+        GOTO, 1
+}
+;Ir a la cocina
+IFAC, 2,0 ,0
+{
+        GOTO, 4
+}
+
+GOSUB, standard
+GOTO,3
+;-------------------------------
+;Cocina
+@,4
+;nuevas acciones
+DEFINEACC
+{
+        1, 0, Ir al patio
+        2, -1, Eliminada
+        3, -1, ELIMINADA
+        4, -1, ELIMINADA
+        5, -1, ELIMINADA
+        6, -1, ELIMINADA
+}
+
+;Pongo la imagen
+GLOAD, COCINA
+
+;Espero que juegue
+INPUT
+;Ir al patio
+IFAC, 1,0 ,0
+{
+        GOTO, 3
+}
+
+GOSUB, standard
+GOTO,4
+
+;-------------------------------
+;Calle
+@,5
+;nuevas acciones
+DEFINEACC
+{
+        1, 0, Caminar
+        2, 0, Entrar al garage
+        3, 0, Revisar basura
+        4, -1, ELIMINADA
+        5, -1, ELIMINADA
+        6, -1, ELIMINADA
+}
+
+;Pongo la imagen
+GLOAD, CALLE
+
+;Espero que juegue
+INPUT
+
+;Caminar
+IFAC, 1,0 ,0
+{
+        MENSAJE, 20, 0, 0
+        {
+Usemos el auto mejor...
+        }
+}
+
+;Ir al garage
+IFAC, 2,0 ,0
+{
+        GOTO, 1
+}
+
+;Revisar basura
+IFAC, 3,0 ,0
+{
+        MENSAJE, 20, 0, 0
+        {
+Tiene un olor espantoso.
+No veo nada de interes...
+        }
+}
+
+
+GOSUB, standard
+GOTO,5
+
+;-------------------------------
+;Casa de Flavia
+@,6
+;nuevas acciones
+DEFINEACC
+{
+        1, 0, Golpear la puerta
+        2, 0, Volver a casa
+        3, -1, ELIMINADA
+        4, -1, ELIMINADA
+        5, -1, ELIMINADA
+        6, -1, ELIMINADA
+}
+
+;Pongo la imagen
+GLOAD, CASAOUT
+
+;Espero que juegue
+INPUT
+
+;Golpear puerta
+IFAC, 1,0 ,0
+{
+        MENSAJE, 0, 0, 18
+        {
+Golpeo la puerta y espero...
+        
+        
+        
+        
+        }
+        
+        MENSAJE, 0, 0, 0
+        {
+Flavia me invita a pasar
+        
+        
+        
+        
+        }
+GOTO,7
+}
+
+;Ir al garage
+IFAC, 2,0 ,0
+{
+        GOTO, 1
+}
+
+
+GOSUB, standard
+GOTO,6
+;-------------------------------
+
+;Dentro de la casa de Flavia
+@,7
+;Coloco a Flavia aqui
+DEJAOBJ, 7
+
+;nuevas acciones
+DEFINEACC
+{
+        1, 0, Salir de la casa
+        2, -1, Eliminada
+        3, -1, ELIMINADA
+        4, -1, ELIMINADA
+        6, -1, ELIMINADA
+        5, 0, Propasarse con Flavia
+}
+
+;Si tiene la rosa, habilita darsela a Flavia
+
+IFON,4,=,999         
+{
+        DEFINEACC
+        {
+                2, 0, Darle la rosa a Flavia 
+        }
+}
+;Si tiene cuchillo, habilita apu¤alar
+IFON,5,=,999         
+{
+        DEFINEACC
+        {
+                4, 0, Apu¤alar a Flavia 
+        }
+}
+        
+;Si bandera 2=1, habilita dar una vuelta en Cadillac
+        FLAGCMP, 2,=,N,1
+        {
+        ;cambia la accion 2 y 3
+        DEFINEACC
+                {
+                2, -1, eliminada
+                3, 0, Invitarla a pasear
+                }
+        }
+
+;Pongo la imagen
+GLOAD, CASAIN
+
+;Espero que juegue
+INPUT
+
+;Salir de la casa
+IFAC, 1,0 ,0
+{
+        GOTO, 6
+}
+
+;dar rosa, habilita dar una vuelta
+IFAC, 2,0 ,0
+{
+        MENSAJE, 20, 0, 0
+        {
+Flavia esta muy contenta...
+Su sonrisa es bellisima...
+        }
+;pongo la bandera 2 a 1, me sirve para saber si le dio la rosa a Flavia
+;0=no, 1=si
+        FLAG,2,=,N,1
+        ;desaparece la rosa
+        MATAOBJ,4
+}
+
+;Invito a dar la vuelta
+IFAC,3,0,0
+{
+        GOTO, 8
+}
+
+;La apu¤alo
+IFAC,4,0,0
+{
+        GOTO, 14
+}
+;Se propaso
+IFAC,5,0,0
+{
+;pongo la bandera 3 a 2, me sirve para saber si se propaso
+;0=no, 1=si, 2=propasarse
+        FLAG,3,=,N,1
+        GOTO, 9
+}
+
+GOSUB, standard
+GOTO,7
+;-------------------------------
+;Dando la vuelta en Cadillac
+@,8
+;Coloco a Flavia aqui
+DEJAOBJ, 7
+
+;nuevas acciones
+DEFINEACC
+{
+        1, 0, Ir a tomar un helado
+        2, 0, Invitarla a mi casa
+        3, 0, Propasarse con Flavia
+        4, 0, Correr una picada
+        5,-1, Eliminada
+        6, -1, ELIMINADA
+}
+
+;Si tiene cuchillo, habilita apu¤alar
+IFON,5,=,999         
+{
+        DEFINEACC
+        {
+                5, 0, Apu¤alar a Flavia 
+        }
+}
+
+;Pongo la imagen
+GLOAD, PASEO
+
+;Espero que juegue
+INPUT
+
+;Interpreto acciones
+
+;Tomar helado
+IFAC,1,0,0
+{
+        GOTO, 10
+}
+;Ir a casa - REBOTE
+IFAC,2,0,0
+{
+;pongo la bandera 3 a 1, me sirve para saber si la invito a la casa
+;0=no, 1=si, 2=propasarse
+        FLAG,3,=,N,1
+        GOTO, 9
+}
+;Propasarse 
+IFAC,3,0,0
+{
+;pongo la bandera 3 a 2, me sirve para saber si se propaso
+;0=no, 1=si, 2=propasarse
+        FLAG,3,=,N,2
+        GOTO, 9
+}
+
+;Correr picada
+IFAC,4,0,0
+{
+        GOTO, 13
+}
+;Usar cuchillo
+IFAC,5,0,0
+{
+        GOTO, 14
+}
+
+
+GOSUB, standard
+GOTO,8
+;-------------------------------
+;Rebote
+@,9
+;Pongo la imagen
+GLOAD, REBOTE
+        
+        FLAGCMP, 3,=,N,1
+        {
+        MENSAJE, 20, 0, 0
+        {
+Flavia no acepto y te hecho...
+Fin del juego...
+        }
+        }
+        FLAGCMP, 3,=,N,2
+        {
+        MENSAJE, 20, 0, 0
+        {
+Eso no fue muy inteligente
+Flavia se enojo y te hecho...
+Fin del juego...
+        }
+        }
+
+SALIR
+;-------------------------------
+;Tomando un helado
+@,10
+;Coloco a Flavia aqui
+DEJAOBJ, 7
+
+;nuevas acciones
+DEFINEACC
+{
+        1, 0, Invitarla a mi casa
+        2, 0, Propasarse con Flavia
+        3, -1, ELIMINADA
+        4, -1, ELIMINADA
+        5, -1, ELIMINADA
+        6, -1, ELIMINADA
+}
+
+;Si tiene cuchillo, habilita apu¤alar
+IFON,5,=,999         
+{
+        DEFINEACC
+        {
+                4, 0, Apu¤alar a Flavia 
+        }
+}
+
+;Pongo la imagen
+GLOAD, HELADO
+        
+;mensaje (solo la primera vez
+        FLAGCMP, 4,=,N,0
+        {
+        MENSAJE, 19, 0, 0
+        {
+Flavia esta muy contenta
+y te agradece el gesto amable
+
+        }
+        ;para que no ponga el mensaje dos veces
+        FLAG,4,=,N,1
+        
+        }
+
+;Espero que juegue
+INPUT
+
+;a mi casa
+IFAC,1,0,0
+        {
+        GOTO, 11
+        }
+
+;Propasarse 
+IFAC,2,0,0
+{
+;pongo la bandera 3 a 2, me sirve para saber si se propaso
+;0=no, 1=si, 2=propasarse
+        FLAG,3,=,N,2
+        GOTO, 9
+}
+
+;Usar cuchillo
+IFAC,5,0,0
+{
+        GOTO, 14
+}
+
+GOSUB, standard
+GOTO,10
+
+;-------------------------------
+;En mi casa
+@,11
+;Coloco a Flavia aqui
+DEJAOBJ, 7
+
+;nuevas acciones
+DEFINEACC
+{
+        1, 0, Invitar una copa
+        2, 0, Charlar un rato
+        3, 0, Propasarse
+        4, -1, ELIMINADA
+        5, -1, ELIMINADA
+        6, -1, ELIMINADA
+}
+
+;Si tiene cuchillo, habilita apu¤alar
+IFON,5,=,999         
+{
+        DEFINEACC
+        {
+                4, 0, Apu¤alar a Flavia 
+        }
+}
+
+;Pongo la imagen
+GLOAD, INVITADA
+        
+;Espero que juegue
+INPUT
+
+;invitar una copa
+IFAC,1,0,0
+        {
+        GOTO, 12
+        }
+        
+;charlar
+IFAC,2,0,0
+        {
+        
+        MENSAJE, 19, 0, 0
+        {
+Flavia te cuenta que le gusta mucho tu
+casa; y esta muy feliz de conocerte...
+
+        }
+        }
+;Propasarse 
+IFAC,3,0,0
+{
+;pongo la bandera 3 a 2, me sirve para saber si se propaso
+;0=no, 1=si, 2=propasarse
+        FLAG,3,=,N,2
+        GOTO, 9
+}
+
+;Usar cuchillo
+IFAC,5,0,0
+{
+        GOTO, 14
+}
+
+GOSUB, standard
+GOTO,11
+
+;-------------------------------
+@,12
+;Ganaste!
+;Pongo la imagen
+GLOAD, WINNER
+        
+        MENSAJE, 20, 0, 0
+        {
+Has logrado finalmente conquistarla
+Felicitaciones...
+        
+        }
+
+GLOAD, WINSCR
+        
+        MENSAJE, 20, 0, 0
+        {
+Te mereces un descanso...
+(Solo hasta hoy a la noche)
+
+        }
+
+SALIR
+;-------------------------------
+@,13
+;Corriendo picada
+;Pongo la imagen
+GLOAD, PICADA
+
+MENSAJE, 20, 0, 0
+        {
+Lograste ganarle a esa coupe!
+        
+        }
+
+MENSAJE, 20, 0, 18
+        {
+Oops! Un camion de frente!!!
+        }
+        
+        MENSAJE, 20, 0, 8
+        {
+NOOOooo!!! Argh!!!
+        }
+
+GLOAD, SKULL
+        MENSAJE, 20, 0, 0
+        {
+Lastima que no pudiste disfrutar
+tu victoria...
+        
+        }
+
+SALIR
+;-------------------------------
+@,14
+;Preso por matar a Flavia
+;Pongo la imagen
+CLS
+        MENSAJE, 0, 0, 0
+        {
+Furiosamente apu¤alas a Flavia
+y luego te das a la fuga...
+        
+        }
+
+
+GLOAD, PRESO
+        
+        MENSAJE, 20, 0, 0
+        {
+Malditos policias!!!
+Casi logras llegar a la frontera!
+        
+        }
+        
+SALIR
+;-------------------------------
+
+
+;-------------------------------
+SUB, standard
+;Esta rutina procesa las acciones estandar
+;tales como mirar, salir, inventario, etc
+
+;Descripcion general de objetos en habitacion y personaje
+IFAC,12, 0, 0
+{
+     VERLARGA
+}
+
+;Ver el lugar
+IFAC,13, 0, 0
+{
+     DESC
+}
+
+;Inventario del personaje
+IFAC,14, 0, 0
+{
+     INV
+}
+;Salvar juego
+IFAC,18, 0, 0
+{
+     SAVE
+}
+;Cargar juego
+IFAC,19, 0, 0
+{
+     LOAD
+}
+
+
+;Salir
+IFAC,20, 0, 0
+{
+     SALIR
+}
+
+
+;Agarrar objetos
+;notese que yo solo programe los objetos que pueden ser agarrados
+IFAC,16, 4, 0
+{
+        ;rosa
+        COGEOBJ, 4
+}       
+IFAC,16, 5, 0
+{
+        ;cuchillo
+        COGEOBJ, 5
+}       
+
+;Dejar objetos
+;notese que yo solo programe los objetos que pueden ser dejados
+IFAC,15, 4, 0
+{
+        ;rosa
+        DEJAOBJ, 4
+}       
+IFAC,15, 5, 0
+{
+        ;cuchillo
+        DEJAOBJ, 5
+}       
+IFAC,15,10, 0
+{
+        ;campera de cuero
+        MENSAJE, 19, 0, 0
+        {
+No voy a dejar mi campera 
+en cualquier lado!
+
+        }
+
+        
+}       
+        
+;Usar cuchillo con Flavia
+IFAC,11,5,7
+{
+        GOTO, 14
+}
+
+;Usar herramientas (solas)
+IFAC,10,1,0
+{
+        MENSAJE, 19, 0, 0
+        {
+No puedo usar solo las herramientas
+Quiza deba probar usarlas en algo...
+
+        }
+
+}
+
+
+;Hablar a Flavia
+IFAC,17, 7, 0
+{
+        MENSAJE, 19, 0, 0
+        {
+Flavia te dice que eres muy agradable 
+
+        }
+}       
+        
+
+;Accion en caso de errarle, ALTERNATE Debe estar luego de cualquier IFAC
+ALTERNATE
+{
+        MENSAJE, 20, 0, 0
+        {
+No puedo...
+        }
+}
+
+
+;volver al juego
+RETURN

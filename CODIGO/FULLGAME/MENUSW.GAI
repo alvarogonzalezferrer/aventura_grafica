@@ -1,0 +1,123 @@
+;Menu principal de la aventura Rock Baby! - SHAREWARE
+;Copyrigth (c) 1998-99 AGF SOFT
+;Por Alvaro D.C Gonzalez Ferrer
+;v1.10 - MAR 11/M/1999 - 1430hs
+CLS
+CLEAR
+RESET
+RESTAURA ON
+GLOAD,PORTSW
+WAIT,0
+cls
+@,1
+DEFINEACC
+{
+        1, 0, VERSION COMPLETA
+        2, 0, Juego Nuevo
+        3, 0, Cargar juego
+        4, 0, Creditos
+        5, 0, Historia
+        6, 0, Salir
+}
+GLOAD,SWMENU
+
+INPUT
+IFAC, 1,0,0
+{
+        GOSUB, INFO
+}
+
+IFAC, 2,0,0
+{
+        FLAG,100,=,N,-1
+        RUN, GAME1SW
+}
+IFAC, 3,0,0
+{
+        LOAD
+}
+IFAC, 4,0,0
+{
+GOSUB, CREDITOS
+}
+IFAC, 5,0,0
+{
+CLS
+COLOR, 15
+MENSAJE,11,0,70
+{
+Tu y tu banda de motoqueros acampan
+en un claro del bosque cuando...
+}
+COLOR, 7
+        GLOAD,MATO1
+        print, Arghh!
+        wait, 36
+        gload, mato2
+        print, Nooo!
+        wait,36
+cls
+GLOAD,MATO3
+MENSAJE,19,0,40
+{
+Rapidamente te ocultas entre el pasto
+}
+        
+MENSAJE,19,0,60
+{
+Encontraras a los que hicieron esto
+y cobraras venganza!
+}
+gload, a1
+mensaje,19,0,25
+{
+Es tiempo de la accion...
+}
+mensaje,19,0,25
+{
+Es tiempo de rock 'n roll!
+}
+        
+        gload, portsw
+        WAIT,0
+        cls
+}
+IFAC, 6,0,0
+{
+        GOSUB, INFO
+        SALIR
+}
+
+GOTO,1
+
+SUB, INFO
+;INFO SHAREWARE
+GLOAD, SW0
+WAIT,0
+GLOAD, SW1
+WAIT,0
+GLOAD, SW2
+WAIT,0
+GLOAD, SW3
+WAIT,0
+CLS
+RETURN
+
+SUB, CREDITOS
+;creditos
+GLOAD, CR0
+WAIT,0
+GLOAD, CR1
+WAIT,0
+GLOAD, CR2
+WAIT,0
+GLOAD, CR3
+WAIT,0
+GLOAD, CR4
+WAIT,0
+GLOAD, CR5
+WAIT,0
+GLOAD, CR6
+WAIT,0
+CLS
+RETURN

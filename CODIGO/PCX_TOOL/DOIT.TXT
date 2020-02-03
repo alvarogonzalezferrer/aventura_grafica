@@ -1,0 +1,42 @@
+GAI - Generador Aventuras Interactivas
+Por Alvaro D.C Gonzalez Ferrer
+(c) 1998, AGF SOFT
+
+UTILIDAD DOIT.BAT - CONVERSOR DE BMP/PCX A AGM
+----------------------------------------------
+
+Estos son los archivos que necesitas para pasar de un PCX/BMP a un AGM
+DOIT.BAT } Programa que ejecuta la conversion
+BSAVE.EXE } Salva la pantalla en un AGM
+BLOAD.EXE } Este si queres ver el archivo AGM (BLOAD [archivo])
+VIEWER.EXE } Programa auxiliar de BSAVE.EXE
+
+Como convertir:
+
+** Recordar que el PCX/BMP debe ser de 256 colores de 320x200 pixels **
+Para hacer la conversion hacer asi:
+DOIT [archivo]
+
+RECORDAR COLOCAR LA EXTENSION DEL ARCHIVO (PCX o BMP)
+EL ARCHIVO SE SALVA CON EL MISMO NOMBRE, PERO CON EXTENSION AGM
+PARA COMENZAR LA CONVERSION APRETAR LA <BARRA> ESPACIADORA
+
+Ej: 
+DOIT FONDO.PCX
+Generara un FONDO.AGM
+
+Si usted coloca el parametro -c, no se centrara la imagen en la pantalla 
+(en caso de que la imagen sea menor de 320x200 se procede a centrarla)
+
+Ej:
+DOIT MIO.PCX -c
+Generara un MIO.AGM  (con la imagen en la esquina superior izquierda).
+
+
+** NOTA ** A VECES, LA PALETA DE COLORES DE UN ARCHIVO PCX DIFICULTA MUCHO
+LA LECTURA DEL TEXTO, AL QUEDAR COLORES MUY OSCUROS.
+PARA SOLUCIONAR ESTO, USE EL PROGRAMA PALETA.EXE ASI:
+PALETA [archivo.AGM]
+Ejemplo: PALETA FONDO.AGM
+Este programa ajusta la paleta de colores para que funcione correctamente
+en GAI. 

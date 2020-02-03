@@ -1,0 +1,336 @@
+REM Anima un archivo ANM
+dim bufer$(100)
+CODI=82
+ruta$=COMMAND$
+ruta$=LTRIM$(ruta$)
+ruta$=RTRIM$(ruta$)
+IF ruta$="" THEN
+        ruta$="/?"
+ENDIF
+IF ruta$="/?" THEN
+        CLS
+        PRINT "ANIMADOR DE ARCHIVOS ANM DE GAI PLUS!"
+        PRINT "POR ALVARO GONZALEZ FERRER (C) 1999"
+        PRINT "24/ABRIL/99"
+        PRINT
+        PRINT "USO: ANM [ARCHIVO.ANM]"
+        PRINT
+        END
+ENDIF
+
+AGM$=ruta$
+SCREEN 13
+GOSUB ANIMA:
+SCREEN 0
+INFO:
+PRINT "Info de ";
+PRINT ruta$
+PRINT "FRAMES: ";
+PRINT FRAMES
+FOR A=1 TO FRAMES
+        PRINT BUFER$(A);
+        PRINT " ";
+NEXT A
+PRINT
+IF ANIMA=1 THEN
+        PRINT "ANIMACION CICLICA"
+ELSE
+        PRINT "ANIMACION LINEAL"
+ENDIF
+PRINT "DELAY ";
+PRINT DELAYMOV
+IF VECESTEMP=0 THEN
+        PRINT "SE MUESTRA UNA SOLA VEZ"
+ENDIF
+IF VECESTEMP<0 THEN
+        PRINT "SE MUESTRA HASTA APRETAR LA BARRA"
+ENDIF
+IF VECESTEMP>0 THEN
+        PRINT "SE MUESTRA ";
+        VECESTEMP=VECESTEMP+1
+        PRINT VECESTEMP;
+        PRINT "VECES "
+ENDIF
+
+END
+REM -----------------------------
+ANIMA:
+
+REM Hace la animacion v0.1á
+REM Ejecuta el `script' especificado en AGM$
+
+REM Cantidad de frames
+FRAMES=0
+
+REM Abre el archivo
+
+a=instr(AGM$,".")
+if a=0 then
+        AGM$=AGM$+".ANM"
+endif
+
+OPEN "I",3,AGM$
+E=ERROR
+IF E>0 THEN
+        GOSUB ERRORHANDLER:
+ENDIF
+INPUT #3, ANIMA
+INPUT #3, DELAYMOV
+INPUT #3, VECES
+REM ***ATENTO - ESTA VARIABLE ES SOLO PARA INFO, SE PUEDE SUPRIMIR!**
+VECESTEMP=VECES
+REM ***ATENTO - ESTA VARIABLE ES SOLO PARA INFO, SE PUEDE SUPRIMIR!**
+
+WHILE E=0
+        INPUT #3, A$
+        E=ERROR
+        IF E=0 THEN
+                FRAMES=FRAMES+1
+        ENDIF
+
+                REM DECODIFICA
+                Z=LEN(A$)
+                BUFER$(FRAMES)=""
+                WHILE Z>1
+                        K$ = MID$(A$,Z,1)
+                        R = ASC(K$)
+                        R = R - CODI
+                        IF R < 0 THEN
+                                R = R + 255
+                        ENDIF
+                        K$ = CHR$(R)
+                        BUFER$(FRAMES) = BUFER$(FRAMES) + K$
+                        Z=Z-1
+                WEND
+
+WEND
+REM si no, pone una de mas!
+FRAMES=FRAMES-1
+CLOSE 3
+IF FRAMES=0 THEN
+        RETURN
+ENDIF
+
+REM Direccion de la animacion 1 o -1
+SUMA=1
+REM Grafico actual
+ACTUAL=1
+
+REM Si la animacion es ciclica, hacer todo el ciclo
+IF ANIMA=1 THEN
+IF VECES=0 THEN
+        VECES=1
+ELSE
+        REM tiene que hacer el doble-1 para complementar los ciclos
+        VECES=VECES+VECES
+        VECES=VECES-1
+ENDIF
+ENDIF
+
+REM Loop de animacion
+DOMOVIE:
+REM Carga el grafico actual
+AGM$=bufer$(ACTUAL)
+GOSUB LOADAGM:
+
+REM Hace la pausa
+IF delaymov>0 THEN
+        T1&=TIMER
+        T2&=0&
+        WHILE T2&< delaymov
+                T2&=TIMER
+                T2&=T2&-T1&
+        D$=INKEY$
+        d$=ucase$(d$)
+        IF D$="+" THEN 
+                delaymov=delaymov+1
+        D$=""
+        ENDIF
+        IF D$="-" THEN 
+                delaymov=delaymov-1
+        D$=""
+        ENDIF
+        IF D$="*" THEN 
+                delaymov=delaymov+5                
+                D$=""
+        ENDIF
+        IF D$="/" THEN 
+                delaymov=delaymov-5
+                D$=""
+        ENDIF
+        
+        IF D$=" " THEN ENDOMOVIE:
+        WEND
+ELSE
+        D$=INKEY$
+        d$=ucase$(d$)
+        IF D$="+" THEN 
+                delaymov=delaymov+1
+                D$=""
+        ENDIF
+        IF D$="-" THEN 
+                delaymov=delaymov-1
+                D$=""
+        ENDIF
+        IF D$="*" THEN 
+                delaymov=delaymov+5
+                D$=""
+        ENDIF
+        IF D$="/" THEN 
+                delaymov=delaymov-5
+                D$=""
+        ENDIF
+        IF D$=" " THEN ENDOMOVIE:
+
+
+ENDIF
+        
+REM        locate 19, 0
+REM        PRINT "Fr: ";
+REM        print ACTUAL;
+REM        print SUMA
+REM        PRINT "Agm: ";
+REM        PRINT AGM$
+REM PRINT FRAMES
+ACTUAL=ACTUAL+SUMA
+
+IF ANIMA=1 THEN 
+REM loop
+        IF ACTUAL<1 THEN
+                SUMA=-SUMA
+                ACTUAL=2
+        
+        IF VECES=0 THEN ENDOMOVIE:
+        VECES=VECES-1
+        
+        ENDIF
+        IF ACTUAL>FRAMES THEN
+                SUMA=-SUMA
+                ACTUAL=FRAMES-1
+        
+        IF VECES=0 THEN ENDOMOVIE:
+        VECES=VECES-1
+        
+        ENDIF
+        GOTO DOMOVIE:
+ENDIF
+IF ANIMA=2 THEN 
+        REM adelante 
+        IF ACTUAL>FRAMES THEN
+                ACTUAL=1
+        
+        IF VECES=0 THEN ENDOMOVIE:
+        VECES=VECES-1
+        
+        ENDIF
+        GOTO DOMOVIE:
+ENDIF
+
+ENDOMOVIE:
+RETURN
+REM -----------------------------
+LOADAGM:
+        REM V2.00 (31/D/1998)
+        REM Abre un archivo AGM (grafico)
+        REM La pantalla debe estar en SCREEN 13
+        REM Llamar con AGM$=ARCHIVO
+REM Si TAM&=0, calcula automaticamente el tama¤o, de lo contrario,
+REM usa TAM& (Util para cargar juegos salvados, que incluyen info extra)
+REM Luego de usar la rutina, coloca TAM& a 0 de vuelta
+AGM$=LTRIM$(AGM$)
+AGM$=RTRIM$(AGM$)
+
+REM Posicion de memoria de la placa de video
+DEFSEG = &HexA000
+IF AGM$="" THEN
+        RETURN
+ENDIF
+
+a=instr(AGM$,".")
+if a=0 then
+        AGM$=AGM$+".AGM"
+endif
+IF TAM&<=0& THEN
+        REM Tama¤o de pantalla
+        TAM&=FILELEN(AGM$)
+                IF ERROR>0 THEN
+                        GOSUB errorhandler:
+                ENDIF           
+        REM Quita el espacio de datos de la paleta (1792 bytes)
+        TAM&=TAM&-1792&
+ENDIF
+REM Lee la paleta de 256 colores
+OPEN "R",3,AGM$
+                IF ERROR>0 THEN
+                        GOSUB errorhandler:
+                ENDIF           
+
+FOR t&=0& TO 255&
+        
+        C&=T&*7&
+        C&=C&+TAM&
+        C&=C&+1&        
+        
+        P&=FILEPOS(3,C&)
+        INPUT# 3, R
+        INPUT# 3, G
+        INPUT# 3, B
+
+        OUT &HEX3C8, t&
+        OUT &HEX3C9, r
+        OUT &HEX3C9, g
+        OUT &HEX3C9, b
+
+NEXT T&
+CLOSE 3
+
+BLOAD AGM$ 0 TAM&
+TAM&=0&
+RETURN
+REM -----------------------------
+ERRORHANDLER:
+REM Maneja los errores de INPUT
+IF ERROR=18 THEN
+        ERROR=96
+ENDIF
+
+IF ERROR<>96 THEN        
+
+        SCREEN 0
+        PRINT "WOOPS!"
+        PRINT "ERROR ";
+        PRINT ERROR
+        FALLA=ERROR
+        PRINT RUTA$
+        IF ERROR=1 THEN
+                PRINT "APPEND invalidado"
+        ENDIF
+        IF ERROR=2 THEN
+                PRINT "Archivo no encontrado"
+        ENDIF
+        IF ERROR=4 THEN
+                PRINT "Archivo no encontrado"
+        ENDIF
+        IF ERROR=3 THEN
+                PRINT "Path no encontrado"
+        ENDIF
+        IF ERROR=5 THEN
+                PRINT "Acceso a archivo denegado"
+        ENDIF
+        IF ERROR=98 THEN
+                PRINT "Archivo no fue abierto"
+        ENDIF
+        IF ERROR=255 THEN
+                PRINT "Disco lleno"
+        ENDIF
+        IF ERROR=97 THEN
+                PRINT "Archivo no es posible abrirlo"
+        ENDIF
+        
+GOTO INFO:
+ELSE
+        REM Una linea de mas de 80 letras
+        ERROR=0
+ENDIF
+RETURN
+REM -----------------------------

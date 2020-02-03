@@ -1,0 +1,232 @@
+REM Codificador de archivos ANM v1.00 Para compilar animaciones
+REM Por Alvaro D.C Gonzalez Ferrer
+REM (c) 1999, AGF SOFT - 22/ABR/1999 (d/m/a) 
+REM ASIC 5.00
+
+CLS
+COLOR 15, 0
+PRINT "Codificador de archivos ANM para G.A.I Plus!"
+PRINT "Por Alvaro D.C Gonzalez Ferrer"
+PRINT "(c) 1999 v1.00"
+PRINT
+REM CODIGO ESTANDAR
+CODI=82
+arch1$=COMMAND$
+arch1$=LTRIM$(arch1$)
+arch1$=RTRIM$(arch1$)
+if arch1$="" THEN 
+        print "Escriba el nombre del `script' TXT a convertir:";
+        input arch1$
+ENDIF
+
+if arch1$="" then 
+        end
+endif
+a=instr(arch1$,".")
+if a=0 then
+        arch1$=arch1$ + ".TXT"
+endif
+
+a=instr(arch1$,".")
+ARCH2$=LEFT$(ARCH1$,A)
+ARCH2$=ARCH2$ + "ANM"
+
+CLS
+PRINT "Convirtiendo..."
+PRINT ARCH1$
+PRINT ARCH2$
+REM Formato es asi:
+REM CADA LINEA TERMINA EN CARACTER NULO
+REM SUMA EL NUMERO CODI AL REM CODIGO ASCII. (ES LA RUTINA DE CODIFICACION)
+REM Las LINEAS SE LEEN AL REVES (de 80 a 0)
+OPEN "I",1,ARCH1$
+if error>0 then
+        GOSUB ERRORHANDLE:
+endif
+
+OPEN "O",2,ARCH2$
+if error>0 then
+        GOSUB ERRORHANDLE:
+endif
+
+REM pide parametros
+GOSUB PEDIRPARAMETROS:
+
+PRINT "Compilando frames..."
+
+E=ERROR
+IF E>0 THEN
+        GOSUB ERRORHANDLE:
+ENDIF
+
+WHILE E=0
+        INPUT# 1, A$ CRLF
+        OK=1
+        E=ERROR
+IF E<>99 THEN
+IF E<>96 THEN
+IF E>0 THEN
+        GOSUB ERRORHANDLE:
+ENDIF
+ENDIF
+ENDIF
+IF E=96 THEN
+        COLOR 11, 0
+        PRINT
+        PRINT "Hay una linea de mas de 80 caracteres."
+        PRINT "Me es imposible compilarla."
+        PRINT "Reduzca su tama¤o e intente de vuelta..."
+        PRINT "(p/Ej: quite los espacios de la izquierda)"
+        PRINT
+        PRINT "Trozo leido de la linea: "
+        COLOR 14, 0
+        PRINT a$
+        COLOR 7,0
+        PRINT "Linea N§ ";
+        PRINT LINEA
+        END
+ENDIF
+A$=LTRIM$(A$)
+A$=RTRIM$(A$)
+
+L=LEN(A$)
+IF L>79 THEN
+        A$=LEFT$(A$,79)
+        L=79
+ELSE
+        A$=A$+" "
+ENDIF
+REM SACA COMENTARIOS
+K$=LEFT$(A$,1)
+IF K$=";" THEN
+        OK=0
+        A$=""
+ENDIF
+
+
+IF OK=1 THEN
+
+REM CODIFICA
+Z=LEN(A$)
+C$=""
+WHILE Z>0
+        K$ = MID$(A$,Z,1)
+        R = ASC(K$)
+        R = R + CODI
+        IF R > 255 THEN
+                R = R - 255
+        ENDIF
+        K$ = CHR$(R)
+        C$ = C$ + K$
+        Z=Z-1
+WEND
+PRINT# 2, C$
+        LINEA=LINEA+1
+
+ENDIF
+WEND
+LINEA=LINEA-1
+PRINT
+PRINT
+PRINT "Listo..."
+PRINT LINEA ;
+PRINT " frames a una velocidad de ";
+PRINT DELAY
+PRINT "Animacion ";
+IF ANIMA=1 THEN
+        PRINT " Ciclica; hacia adelante y hacia atras"
+ELSE
+        PRINT " hacia adelante "
+ENDIF
+IF REPET=0 THEN
+        PRINT "Mostrarla una sola vez"
+ELSE
+        IF REPET>0 THEN
+                PRINT "Repetirla: ";
+                PRINT REPET
+        ELSE
+                PRINT "Repetirla hasta que se apriete una tecla."
+        ENDIF
+ENDIF
+PRINT
+CLOSE 1
+CLOSE 2
+END
+
+ERRORHANDLE:
+REM Maneja los errores de INPUT
+IF ERROR<>96 THEN        
+
+        SCREEN 0
+        PRINT "WOOPS!"
+        PRINT "ERROR ";
+        PRINT ERROR
+        IF ERROR=1 THEN
+                PRINT "APPEND invalidado"
+        ENDIF
+        IF ERROR=2 THEN
+                PRINT "Archivo no encontrado"
+        ENDIF
+        IF ERROR=4 THEN
+                PRINT "Archivo no encontrado"
+        ENDIF
+        IF ERROR=3 THEN
+                PRINT "Path no encontrado"
+        ENDIF
+        IF ERROR=5 THEN
+                PRINT "Acceso a archivo denegado"
+        ENDIF
+        IF ERROR=98 THEN
+                PRINT "Archivo no fue abierto"
+        ENDIF
+        IF ERROR=255 THEN
+                PRINT "Disco lleno"
+        ENDIF
+        IF ERROR=97 THEN
+                PRINT "Archivo no es posible abrirlo"
+        ENDIF
+        
+        END
+ELSE
+        REM Una linea de mas de 80 letras
+        ERROR=0
+ENDIF
+RETURN
+
+PEDIRPARAMETROS:
+REM Esta rutina pide los parametros necesarios para la animacion
+REM 
+REM /V[velociad] delay en tics de reloj entre cuadro (18=1 segundo)
+REM Si no se especifica, toma 0
+REM
+REM /AC Animacion ciclica: hacia adelante/atras
+REM /AL Animacion en loop: hacia adelante y de vuelta
+print "La animacion sera: "
+PRINT "1) Ciclica; hacia adelante y hacia atras"
+PRINT "2) Loop hacia adelante (adelante, rebobina y de vuelta)"
+input ANIMA
+IF ANIMA<1 THEN
+        ANIMA=3
+ENDIF
+IF ANIMA>2 THEN
+        PRINT "Error! no existe esa animacion"
+        END
+ENDIF
+PRINT #2, ANIMA
+
+print "Cuantos tics de delay entre cuadro y cuadro? "
+PRINT "18 tics = 1 segundo"
+PRINT "0 = a la velocidad de la maquina (recomendado 1 o 2)"
+INPUT DELAY
+
+PRINT #2, DELAY
+
+print "Cuantas veces repetir la animacion? "
+PRINT "-1 = hasta que se apriete una tecla" 
+PRINT "0  = mostrar una sola vez "
+PRINT "1 mostrar dos veces, etc "
+INPUT REPET
+
+PRINT #2, REPET
+
+RETURN

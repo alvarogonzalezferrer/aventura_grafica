@@ -1,0 +1,982 @@
+              Generador de Aventuras Interactivas PLUS (G.A.I)
+
+Por Alvaro D.C Gonzalez Ferrer
+
+Descripcion:
+            GAI es un lenguaje que interpreta el codigo necesario para hacer
+una aventura grafica. Es decir, sirve para CREAR SUS PROPIAS AVENTURAS.
+Es poderoso, sencillo y portatil.
+Las aventuras creadas con GAI pueden ser codificadas y distribuidas con un
+modulo RUN-TIME que las ejecuta.
+Soporta graficos, administracion de objetos, subrutinas, etc.
+Esta escrito en espa¤ol.
+Utiliza graficos de 256 colores, con paleta totalmente modificable,
+y con un conversor que pasa de PCX o BMP al formato AGM (para que nadie
+pueda modificar su aventura con un editor tipo PAINT o similar).
+
+Introduccion:
+             Es necesario saber que una aventura grafica funciona manejando
+lugares y objetos, y enlazandolos con las acciones del jugador.
+Es exactamente para eso para lo que esta dise¤ado GAI.
+Se presupone que el usuario (llamare USUARIO a la persona que crea la
+aventura, y JUGADOR a quien la juega) dispone de ciertos conocimientos
+previos de informatica y programacion (es decir, obviare dar descripciones
+demasiado obvias de como programar una aventura).
+Espero que disfruten mucho este programa, ya que con el pueden crear sus
+fantasias (es mas, es para lo que inicialmente lo programe).
+Intente hacerlo lo mas rapido y sencillo de usar, no obstante, igualmente
+demandara cierto esfuerzo crear sus primeras aventuras (con la practica se
+hacen mucho mas rapido).
+
+Requerimientos del programa:
+
+* Un PC 386 SX o superior (puede correr en un 286, pero no garantizo los
+resultados). Recomiendo un 486 DX2 o superior.
+
+* Unos 300 Kb de RAM convencional libre (unos 500 Kb recomendados)
+
+* Un DISCO RIGIDO con 500 Kb de espacio libre (para los archivos temporales,
+aqui no cuento lo que ocupa el programa).  (1000 Kb libres y SMARTDRV o un
+cache similar cargado son muy recomendables)
+
+* DOS v3.2 o superior (6.2 o superior recomendado)
+
+* Unos 1024 Kb (1 Mb) para instalar el programa en el disco rigido
+
+* Placa VGA o superior que soporte graficos de 320x200x256c (modo 13h)
+  (SVGA recomendado, aunque la resolucion sigue en 320x200, aumenta la
+   velocidad)
+
+Opcionales:
+
+* Un editor de texto capaz de salvar archivos ASCII comunes (para poder
+  editar el codigo de la aventura) (EDIT del DOS es ideal)
+
+* Un editor de graficos que pueda salvar/editar archivos PCX/BMP (para crear
+  los graficos de la aventura) (Ejemplos:PAINT, COREL, NEOPAINT, PSP, etc)
+
+                            Comenzando a usar GAI
+
+Bueno, basta de charlar sobre aspectos tecnicos, ya es tiempo de poner
+manos a la obra.
+Preconceptos que necesita para entender el texto siguiente:
+* Archivo GAI: archivo que contiene el codigo de la aventura, es decir, como
+  se desrollara la aventura. Piense en el como un "guion" de multiples
+  finales e interativo.
+
+* Archivo AGC: es un archivo GAI que fue codificado para que las demas
+  personas no puedan modificarlo. Es muy util para distribuir sus aventuras,
+  ya que ademas de no poder modificarlo, no pueden ver las soluciones, deben
+  jugarlo.
+
+* Archivo AGM: es un archivo gr fico PCX o BMP que ha sido convertido para
+  poder leerlo desde GAI. Son las pantallas que ilustran la aventura.
+  Es necesario que estos archivos esten en el mismo directorio que la
+  aventura. Para convertir un PCX o BMP a AGM, utilize DO.BAT.
+  Mas adelante se describe su funcionamiento.
+
+                             Crear un archivo GAI
+
+Lo primero que hay que hacer es crear un archivo con extension .GAI,
+donde colocara las instrucciones que haran que la aventura funcione.
+El archivo GAI debe estar hecho en texto plano (es decir ASCII tradicional,
+nada de formatos raros como .WRI, .DOC, etc; SOLO TEXTO).
+La forma mas facil de hacerlo es usando el editor EDIT que viene con MS-DOS.
+Luego de crear el archivo .GAI lo puede ejecutar escribiendo:
+GAIPLUS.EXE [archivo.GAI] <-recuerde colocar la extension .GAI
+
+                           Compilar un archivo GAI
+
+Si desea distribuirlo, debera compilarlo.
+Para compilarlo, todo lo que debe hacer es lo siguiente:
+Ejecutar COMPLUS.EXE, y el programa le pedira el nombre del archivo GAI a
+compilar.
+Al responder, la compilacion es automatica, y se genera un archivo con
+el mismo nombre pero con extension AGC (Aventura Grafica Codificada).
+
+                          Jugar a una aventura compilada
+
+Para ejecutar estos archivos AGC haga lo siguiente:
+GAIPLUS.EXE [archivo.AGC]
+
+Usted puede poner GAIPLUS solo, y el programa buscara automaticamente el
+primer archivo .AGC que encuentre.
+Esto es asi porque si usted distribuye su programa, puede renombrar GAIPLUS a
+p/ejemplo AVENTURA.EXE, por lo tanto, el futuro jugador solo debe ejecutar
+AVENTURA.EXE y automaticamente se ejecutara el .AGC que usted haya creado.
+Despues de todo, lo normal es tener solo una aventura por directorio.
+
+Recuerde que solo puede distribuir el archivo GAIPLUS.EXE con NINGUNA
+modificacion que no sea el renombrar el archivo por uno adecuado.
+Recuerde tambien que solo se permite distribuir GAIPLUS.EXE y los archivos en
+formato AGC y AGM creados por el usuario.
+Lea las "Condiciones de uso de GAI" para mas informacion.
+
+                     ¨Como hago para hacer una aventura?
+
+Primero que nada seria mejor que hojee y juegue al ejemplo que se incluye con
+este programa, y lea la lista de comandos, e intente comprender como
+funciona.
+Luego, estos consejos pueden serle utiles:
+
+* Lea detenidamente los comandos y practique primero con ejemplos sencillos
+  antes de hacer una gran aventura.
+
+* Los conocimientos de lenguaje C, PASCAL, BASIC, o cualquier lenguaje de
+  programacion ayudan mucho.
+
+* Dise¤e un gui¢n primero; la organizacion es fundamental.
+
+* Cree los graficos en formato PCX o BMP de 320x200 x 256 colores.
+  Puede crear una pantalla de presentacion, una de final y los
+  fondos de la aventura. (es solo un ejemplo, la imaginacion es el limite)
+  Luego de crearlos, conviertalos a AGM con la utilidad DO.BAT
+  (DO.BAT [archivo]; leer mas adelante para el funcionamiento)
+
+* En vez de repetir muchas veces las mismas instrucciones, cree
+  rutinas y llamelas con GOSUB, esto hara que el programa corra mas rapido,
+  tecleara menos, y ahorrara espacio en disco.
+
+* Use pocas acciones y objetos variados, es mas facil de jugar,
+  y mas facil de programar tambien.
+
+* Cuando no use mas un objeto, puede reemplazarlo por otro en la misma
+  direccion de memoria (vea comando DEFINEOBJ). Lo mismo ocurre para las
+  acciones, puede agregar o eliminar a gusto dependiendo del lugar de la
+  aventura.
+
+* Al distribuir su aventura, compilela primero en formato AGC, de esa forma,
+  es mas peque¤a, se ejecuta mas rapido y nadie puede modificarla.
+  Para distribuirla, debe copiar el archivo AGC que usted creo, el programa
+  GAIPLUS.EXE (puede renombrarlo al nombre que mas le guste, siempre que
+  conserve la extension .EXE; p/ej: AVENTURA.EXE).
+  Ademas, debe incluir todos los archivos AGM que utiliza la aventura.
+
+* Si desea que el programa un lugar especifico para sus aventuras, setee la
+  variable del DOS TEMP a ese lugar.
+  Ejemplo:
+  SET TEMP=C:\TEMPO o SET TEMP=C:\
+  La condicion es poner SET TEMP=[directorio] desde la linea de comandos del
+  DOS. Tambien puede incluirla en su AUTOEXEC.BAT (esta linea sirve tambien
+  para otros programas de otros fabricantes tales como DOSSHELL, WINDOWS,
+  etc).
+  Si no hay una variable TEMP especificada, usara C:\ como directorio
+  temporal para los archivos de intercambio.
+  La condicion es que la unidad especificada en TEMP tenga al menos 300 kb
+  libres y no este protegida contra escritura.
+
+* Pruebe detalladamente sus aventuras en busca de errores antes de
+  distribuirlas.
+
+* Practique, practique y practique hasta dominar perfectamente la
+  programacion. Es util tambien hacer lo que se denomina "programacion
+  estructurada" (en cualquier manual de programacion le explican que
+  significa, es extenso para explicarlo aqui).
+
+* No se desanime, programar aventuras es mas facil de lo que parece, solo
+  necesita practica e imaginacion..
+
+
+-- Que lo disfrute!
+                   Alvaro Gonzalez Ferrer...
+                              
+                              Lista de comandos
+
+En esta lista detallo todos los comandos de GAI, su funcion, y algun ejemplo
+para los mas complicados.
+Las palabras que aparecen entre [ ] son parametros del comando.
+Estos parametros se especifican por el usuario y son absolutamente necesarios
+para que el comando funcione.
+
+
+                            Comandos de graficos:
+
+GLOAD, [archivo]
+Abre un archivo AGM de 320x200x256; para pasar de PCX a AGM usar la
+utilidad DO.BAT - Abre tambien la paleta de colores del archivo.
+Esto sirve para poner la imagen del lugar donde estamos, portadas,
+titulos, etc.
+
+GSAVE, [archivo]
+Salva un archivo AGM de 320x200x256;
+Esto es util para restaurar luego la pantalla completa con el comando GLOAD.
+Para pantallas temporales es mejor usar GTSAVE / GTLOAD
+
+GTSAVE
+Salva la pantalla temporalmente. Es mejor usar esto que GLOAD para
+restaurar temporalmente la pantalla. (por ejemplo al presentar un mensaje)
+
+GTLOAD
+Restaura la pantalla. Antes de ejecutar esto se debe ejecutar GTSAVE.
+Cada vez que se ejecuta GTLOAD se pierde la imagen, por eso SIEMPRE
+ANTES DE CADA GTLOAD SE DEBE HABER EJECUTADO UN GTSAVE!
+
+CLS
+Limpia la pantalla y resetea el modo de video.
+
+COLOR, [n§]
+Cambia el color del texto a [n§]
+El numero puede estar entre 0 y 16, y puede variar de acuerdo a la paleta de
+colores que se halla cargado con GLOAD / GTLOAD.
+
+ANIMA, [archivo]
+Este comando ejecuta un "script" de animacion (con extension .ANM).
+Vea el apendice referido a este tema para saber como se crea el "script"
+de animacion.
+
+                        Comandos para manejo de texto
+
+PRINT, [texto]
+Escribe una linea de texto en la posicion 20,0 (y,x)
+El [texto] no puede contener comas ","
+
+LOCATE, [y], [x], [texto]
+Escribe un texto en la posicion [y],[x]
+Recordar que [x] va de 0 a 39 e [y] de 0 a 24
+
+TEXTO, [x], [y]
+{
+[texto]
+}
+Esta funcion escribe una caja de texto en la posicion [x],[y].
+El texto entre { y } puede ser de varias lineas de largo (y 40 de ancho)
+
+BOX, [x], [y], [y2], [sp]
+Hace un cuadrado vacio desde [x],[y] hasta [y2] con el ancho de [sp]
+
+MENSAJE, [X], [Y], [TICS]
+{
+[TEXTO]
+}
+Pone el texto entre { } en pantalla (pueden ser varias lineas)
+Lo situa en X,Y; espera [TICS] tics de reloj (1 seg=18 tics)
+Si [TICS] = 0 pone mensaje "Presione una tecla..." y espera una tecla...
+RESTAURA LA PANTALLA LUEGO DE LA PAUSA
+                       
+                       Comandos para manipular objetos
+
+DEFINEOBJ
+{
+[N§ OBJETO], [ESTADO], [DESCRIPCION], [DESCRIP LARGA]
+[N§ OBJETO], [ESTADO], [DESCRIPCION], [DESCRIP LARGA]
+[etc]
+}
+Esta instruccion define los objetos del juego;
+[N§ OBJETO] es el numero que identifica al objeto (1-100)
+[ESTADO] es el estado del objeto (0, desaparecido, 999 en el inventario del
+jugador, otro numero es el numero de lugar donde esta; p/ej 1= pieza 1,
+2=pieza 2, etc)
+[DESCRIPCION] nombre del objeto (hasta 40 letras)
+[DESCRIP LARGA] Hasta 40 letras que definen al objeto (descripcion que da al
+definir al objeto cuando lo ves con la instruccion VER)
+Dando el valor 0 a [ESTADO] se elimina el objeto de las listas (no esta en
+ningun lado), dando 999 lo posee el jugador.
+
+INV
+Abre una ventana con el inventario de las cosas que que lleva
+el personaje asi:
+"Llevo [objeto, objeto, etc...] "
+Usar las flechas para ver los objetos.
+Para ver la descripcion larga usar VER (1 solo obj) o VERLARGA (todos)
+
+IFON, [N§ OBJ], [<,>,=,<>,>=,<=], [NUMERO]
+{
+[instrucciones]
+}
+Compara el estado de un objeto con el numero y ejecuta el bloque entre
+los { }
+[N§ OBJ] es el numero que identifica al objeto
+[<,>,=,<>,<=,>=] son operadores logicos (mayor, menor, igual, diferente)
+[NUMERO] es un numero entero
+
+Ej: IFON, 1, =, 999 ¿
+    {               Ã  Si el jugador posee el objeto numero 1 salta a 10
+    GOTO,10         ³ (acordarse que estado 999 indica que el objeto
+    }               Ù  lo tiene el jugador)
+
+IFOO, [N§ OBJ], [<>=], [N§ OBJ]
+{
+[instrucciones]
+}
+
+Compara el estado de un objeto con el estado de otro objeto y ejecuta el
+bloque entre los { }
+[N§ OBJ] es el numero que identifica al objeto
+[<>=] son operadores logicos
+
+Ej: IFOO, 1, =, 2   ¿
+    {               Ã  Si el estado del obj 1 es igual al obj 2 salta a 10
+    GOTO, 10        ³
+    }               Ù
+
+DESC
+Escribe en pantalla los objetos que se encuentran en esa habitacion
+Los pone en un cuadro de texto desplazable con las flechas.
+Similar a INV pero con la habitacion en vez del personaje
+
+VER, [n§ objeto]
+Coloca en pantalla la descripcion larga del objeto n§.
+Solo lo hace si el objeto tiene estado 999 (lo lleva el jugador) o si
+esta en la misma habitacion que el jugador
+No restaura la pantalla, hay que hacerlo manualmente con GTSAVE, GTLOAD
+
+COGEOBJ, [N§]
+Coloca un objeto [n§] en el inventario del personaje
+
+DEJAOBJ, [N§]
+Deja un objeto [n§] en ese lugar (el marcado por una instruccion @ previa)
+
+MATAOBJ, [N§]
+El objeto [n§] pasa a estar en estado 0 (desaparecido)
+
+PONOBJ, [N§], [LUGAR]
+Pone el objeto [n§] en el [lugar]
+EL OBJETO DEBE HABER SIDO PREVIAMENTE DEFINIDO CON DEFINEOBJ!
+
+VERLARGA
+Similar a INV abre un cuadro en la pantalla con la descripcion larga
+de los objetos (de la habitacion y los que lleva).
+
+LARGA ON 
+Hace que en los cuadros de dialogo INPUT, INV, DESC, etc los objetos sean
+descriptos junto con su descripcion larga. 
+
+LARGA OFF 
+Efecto inverso de LARGA ON; pone solo el nombre del objeto.
+Por default, solo se pone el nombre del objeto.                       
+
+                       Comandos para manipular acciones
+
+INPUT
+Espera que el jugador haga una accion. Acordarse de poner esta instruccion
+en cada localidad, de lo contrario el jugador NO puede jugar.
+
+DEFINEACC
+{
+[N§ ACCION], [PARAMETROS], [DESCRIPCION], [parametros extra]
+[etc]
+}
+Esta instruccion define las acciones del juego;
+[N§ ACCION] es el numero que identifica la accion (1-100)
+
+[PARAMETROS] son los parametros que pide la accion.
+0 = nada, 1 = 1 objeto, 2 = dos objetos
+-1 = elimina la accion (la borra de las listas)
+
+[DESCRIPCION] Hasta 40 letras que definen la accion
+
+[parametro extra] Este parametro es opcional, e indica si los parametros
+requeridos seran: Cualquier objeto (0), Objetos que lleva el jugador (1) y
+objetos que hay en la habitacion (2); por default se usa el 0.
+Este parametro puede omitirse.
+
+        Ej:
+        DEFINEACC
+        {
+                1, 1, USAR   <- pide el objeto a usar
+                2, 0, NORTE
+                3, 0, SUR
+                4, 2, USAR a CON b <- pide los dos objetos a usar
+                5, 1, COMER        <- pide objeto a comer
+                6, 1, COGER, 2     <- pide un objeto que hay en la habitacion
+        }
+
+IFAC, [N§ ACC], [N§ OBJ 1], [N§ OBJ 2]
+{
+[instrucciones]
+}
+
+Se fija si se realizo la accion [ACC] con el [OBJ 1] y el [OBJ 2]
+Si es una accion que no necesita objetos, poner en [OBJ 1 y 2] 0,
+o si necesita un solo objeto, en [OBJ 2]=0
+Si desea comprobar si se realizo una accion sin importar el objeto, coloque
+en OBJ1 el valor -1 (de esa forma se ignoran los parametros de OBJ1, OBJ2)
+Util para cuando en la inst. ALTERNATE queremos saber si se realizo una
+accion sin importar el objeto, por ejemplo para responder "NO PUEDO USARLO".
+Ej:
+        IFAC, 1, 1, 0 <- se fija si se hizo la accion 1 en el objeto 1
+        {
+                CLS    <ÄÂ Si la realizo, ejecuta esto.
+                GOTO, 1<ÄÙ
+        }
+
+ALTERNATE
+{
+Instrucciones
+}
+Esto sirve cuando no se hizo ninguna accion valida realizar ciertas
+instrucciones.
+Colocarla luego de los IFAC, IFOO, etc.
+
+        Ej:
+        ALTERNATE
+        {
+                PRINT, Deberia hacer algo mejor
+        }
+                  
+                  Comandos de flujo y control de la aventura
+
+@,[numero]
+Indica el numero que identifica a este lugar del programa.
+Esto determina en que habitacion se encuentra el personaje, y delimita si los
+objetos estan o no en ella. Ejemplo:
+        @, 1
+        DEFINEOBJ
+        {
+                1, 1, Objeto 1, Este objeto esta en la pieza actual (1)
+                1, 2, Objeto 2, Este objeto no esta en la pieza actual (1)
+        }
+        @, 2
+        ;Ahora el objeto 2 esta en la pieza actual, el objeto 1 no
+
+GOTO, [n§]
+Sirve para cambiar de habitacion. El interprete continua ejecutando a partir
+de la linea marcada @, [n§]
+Ej:
+        @, 1
+        GOTO, 10
+        @, 10
+        ; continua aca
+
+
+WAIT, [n]
+Espera [n] tics de reloj. 1 segundo = 18 tics
+La espera se cancela apretando ESC
+Si [n]=0 espera hata que aprieten una tecla
+Ej:
+        ;Esperar 1 segundo
+        WAIT, 18
+
+
+SALIR
+Sale al D.O.S, no pide confirmacion.
+
+SUB, [nombre]
+Define una SUBrutina. Se llama con el comando GOSUB, [nombre]
+El [nombre] es el nombre que lo identifica. Se ignoran mayusculas/minus.
+No puede incluir numeros, caracteres especiales, {}(),; etc..
+        Ej: SUB, rutina
+
+GOSUB, [nombre]
+Pasa el control del programa a la linea SUB que coincida con [nombre]
+Ej:
+        GOSUB, rutina
+
+        SUB, rutina
+        ;Continua aqui
+
+RETURN
+Devuelve la ejecucion del programa a la linea siguiente del ultimo GOSUB
+ejecutado. Se pueden anidar un m ximo de 100 GOSUB antes de limpiarlos con
+RETURN. SIEMPRE ANTES DE UN RETURN TIENE QUE HABER UN GOSUB!
+Ej:
+        PRINT, Va a la rutina
+        WAIT, 18
+        GOSUB, rutina
+        PRINT, Volvio
+        WAIT, 0
+        SALIR
+
+        SUB, rutina
+        PRINT, Entro en la rutina
+        WAIT, 18
+        RETURN
+
+
+; [texto]
+
+Al colocar un simbolo de punto y coma al principio de una linea,
+transforma esa linea en un comentario que es ignorado por GAI.
+Es util para acordarse que hace una linea especifica.
+Ej:
+        ; Esto limpia la pantalla } esto es ignorado por GAI
+        CLS
+
+CLEAR
+Limpia el bufer de las rutinas GOSUB/RETURN
+Usar con cuidado.
+
+RESTAURA ON
+Activa la restauracion de la pantalla luego de los comandos INPUT, MENSAJE,
+INV, DESC, VERLARGA. (Por default, esto siempre se hace.)
+
+RESTAURA OFF
+Desactiva la restauracion de la pantalla luego de los comandos INPUT,
+MENSAJE, INV, DESC, VERLARGA. (Esto acelera la velocidad de ejecucion de la
+aventura.)
+
+SAVE Activa la rutina para salvar el juego (para poder seguir jugando luego)
+
+LOAD Activa la rutina para cargar un juego previamente salvado.
+
+RUN, [archivo] => continua ejecutando el archivo GAI o AGC especificado en
+[archivo]; los objetos, banderas, etc continuan como estaban definidos.
+El buffer de GOSUB/RETURN se borra.
+
+RESET Pone en blanco las variables, banderas, objetos, buffer.
+Util para empezar a jugar de nuevo, o luego de una instruccion RUN.
+                        
+                        Comandos para manejar banderas
+
+FLAG, [numero bandera], [=, +, -, *, /], [O,N,B],[numero]
+Este comando asigna un valor a una bandera (una bandera es una variable
+numerica que el usuario puede usar para guardar datos tales como puntaje, si
+realizo o no una accion ,etc.
+[numero bandera] es el numero que identifica a la bandera (0-100)
+[= + -] indica si va a ser igual, sumar, restar,multiplicar o dividir el
+        [numero] (+ suma, - resta, * multiplicar, / dividir, = igual)
+[O, N, B ] indica que [numero] es el estado de un objeto [O], o si [numero]
+       es un numero entero (N) o otro bandera [B].
+[numero] un numero que identifica a un objeto [O], bandera [B] o un numero
+Ejemplos:
+        Sumar a bandera 1 el numero 10
+        FLAG,1,+,N,10
+        Restar a bandera 2 el estado del objeto 1
+        FLAG,2,-,O,1
+        Asignar a bandera 1 el valor 100
+        FLAG,1,=,N,100
+        Asignar a bandera 1 el valor de bandera 2
+        FLAG,1,=,B,2
+
+FLAGCMP, [n§ bandera], [= > < <> >= <=], [N,O,B], [numero]
+{
+Instrucciones
+}
+Compara el valor de la bandera [n§ bandera] con [numero] y en caso de
+cumplirse la condicion, ejecuta el bloque entre { }
+[n§ bandera] numero que identifica a la bandera 0-100
+[= < > <> >= <=] operadores logicos igual, mayor, menor, diferente
+[N,O,B] indica si [numero] es un numero entero [N] o el numero
+        de un objeto [O], o una bandera [B]
+[numero] un numero entero [N],el numero de un objeto [O] o una bandera [B]
+Ejemplos:
+        Ver si la bandera 1 es igual al numero 10
+        FLAGCMP, 1, =, N, 10
+        {
+                ;instrucciones
+        }
+        Ver si la bandera 10 es mayor o igual al objeto 20
+        FLAGCMP, 10, >=, O, 20
+        {
+                ;instrucciones
+        }
+        Ver si la bandera 5 es diferente al objeto 10
+        FLAGCMP, 5, <>, O, 10
+        {
+                ;instrucciones
+        }
+        Ver si la bandera 6 es menor a la bandera 20
+        FLAGCMP, 6, <, B, 20
+        {
+                ;instrucciones
+        }
+
+PRINTFLAG, [y], [x], [bandera]
+Escribe el valor de una bandera en la posicion [y],[x]
+[bandera] numero que identifica a la bandera de 0 a 100
+Recordar que [x] va de 0 a 39 e [y] de 0 a 24
+
+                               COMANDO ESPECIAL
+
+DEBUG
+Coloque esto en alguna parte del programa para que presente las variables de
+sistema. Util para saber porque no funciona una parte del programa.
+
+                   Notas sobre la escritura de la aventura
+
+A continuacion detallo limitaciones, y reglas de la escritura de la aventura.
+Lealas porque son importantes para el correcto funcionamiento de GAI.
+El numero m ximo de objetos A LA VEZ que puede manipular GAI es 100 (1-100)
+El numero m ximo de acciones A LA VEZ que puede manipular GAI es 100 (1-100)
+La cantidad maxima de lineas entre { } de las instrucciones DEFINEACC,
+DEFINEOBJ, MENSAJE y TEXTO es 100.
+
+Usted puede anidar varias instrucciones IFAC, IFOO, ALTERNATE, etc.
+
+Ej: IFAC,10, 1, 0    <- si esta se cumple, se ejecutaran las dos de abajo
+        {
+        IFON,1,<>,999
+                {
+                PRINT, NO LO TENGO
+                WAIT,18
+                }
+
+        IFON,1,=,999
+                {
+                DEJAOBJ, 1
+                PRINT, Ok lo deje
+                WAIT,18
+                }
+        }
+
+
+Recuerde siempre cerrar los bloques { }.
+Recuerde que no puede poner el simbolo , (coma) en los textos o cualquier
+otra cosa, sirve SOLAMENTE para separar los parametros de las instrucciones.
+Tampoco use los simbolos {,}, son SOLO para marcar comienzo/fin de bloques de
+instrucciones / datos.
+El valor maximo para una bandera o el estado de un objeto es 62767, minimo
+de -62767. Todos los numeros deben ser enteros; una division decimal se
+trunca a numero entero (p/ej: 12.75 = 12)
+ 
+**NOTA** BAJO NINGUNA CIRCUNSTANCIA DEBE EXCEDER LOS 80 CARACTERES DE
+LARGO UNA LINEA EN UN ARCHIVO AGC O GAI; DE LO CONTRARIO, DEPARARA EN
+ERRORES INESPERADOS (AL COMPILAR UN ARCHIVO GAI, EL COMPILADOR AVISA
+DE ESTE ERROR.)
+REALMENTE, LAS LINEAS DE COMENTARIOS SON LAS UNICAS QUE SUELEN LLEGAR
+A PRODUCIR ESTE PROBLEMA, PROQUE LAS INSTRUCCIONES DE GAI NO REQUIEREN
+MAS DE 60 CARACTERES C/U.
+SI SE PRODUCE ESTE PROBLEMA EN UNA LINEA DE COMENTARIO (;), AJUSTELA
+PARA QUE NO SUPERE LOS 80 CARACTERES. SI SE PRODUCE EN UNA
+INSTRUCCION, QUITE LOS ESPACIOS A LA IZQUIERDA DE LA INSTRUCCION
+(COLOQUELA SOBRE EL MARGEN IZQUIERDO.)
+
+          Explicacion de concepto de objeto, accion, bandera
+
+Objeto: es todo aquello que el jugador puede manipular a traves de las
+acciones, (p/ej=vaso, cuchillo, auto, etc) Tambien son objetos los
+demas personajes. A traves del uso de los objetos se resuelve una
+aventura.
+
+Accion: es lo que realiza el jugador sobre un objeto o escenario para
+poder modificarlo y avanzar en la aventura (Ej: correr, romper, salir,
+hablar, fumar, etc)
+
+Bandera: son variables que estan a disposicion del usuario para
+controlar cosas en su programa. En el ejemplo que se incluye, se hace
+uso de banderas para ver si el jugador entrego la rosa, arreglo el
+auto, etc. Usted puede usarlas para cosas tales como el puntaje,
+limite de algo, dinero, ver si se hizo algo, etc. Consulte la aventura
+de ejemplo, y experimente; es facil!
+
+                        DO.BAT - explicacion
+
+Estos son los archivos que necesitas para pasar de un PCX/BMP a un AGM
+DO.BAT      } Programa que ejecuta la conversion
+CONVERT.EXE } Programa que hace la conversion y ajustes.
+BLOAD.EXE   } Este si queres ver el archivo AGM (BLOAD [archivo])
+BSAVE2.EXE  } Programa auxiliar de CONVERT.EXE
+
+Como convertir:
+** Recordar que el PCX/BMP debe ser de 256 colores de 320x200 pixels
+** Para hacer la conversion hacer asi:
+DO [archivo PCX/BMP]
+
+RECORDAR COLOCAR LA EXTENSION DEL ARCHIVO (PCX o BMP)
+EL ARCHIVO SE SALVA CON EL MISMO NOMBRE, PERO CON EXTENSION AGM
+PARA COMENZAR LA CONVERSION APRETAR LA <BARRA> ESPACIADORA
+Ej:
+DO FONDO.PCX
+Generara un archivo llamado FONDO.AGM y listo para usar.
+
+NOTA: A veces, la paleta de colores de un archivo grafico dificulta la
+lectura del texto (porque quedan colores muy oscuros o raros).
+
+Este problema es solucionado por el programa automaticamente colocando
+los colores mas claros para el texto, y el mas oscuro para el fondo.
+ 
+                      Archivos que se incluyen con GAI
+
+GAIPLUS.EXE  < RUN-TIME para los archivos AGC y GAI (ejecuta archivos)
+COMPLUS.EXE  < COMPILADOR que transforma un archivo GAI en uno AGC
+*.GAI,*.AGC  < Ejemplos de como usar el programa (aventuras cortitas)
+*.AGM        < Graficos necesarios para los ejemplos.
+DO.BAT       < Programa para pasar de PCX/BMP a AGM
+CONVERT.EXE  < Programa necesario por DO.BAT
+BLOAD.EXE    < Programa para ver imagenes AGM
+BSAVE2.EXE   < Programa necesario por DO.BAT
+MANUAL.TXT   < Manual del usuario (este archivo)
+FILE_ID.DIZ  < Descripcion corta del programa
+
+Nota:"*" significa TODOS.Ej: *.GAI es TODOS LOS ARCHIVOS CON EXTENSION GAI
+
+                 Como optimizar la velocidad de la aventura
+
+* Cargue un cache de disco tipo SMARTDRV o similar (consulte su manual de
+  DOS o WINDOWS).
+
+* Utilice como directorio temporal una unidad de disco rapida (como un
+  disco rigido); en realidad, se supone que la aventura es SIEMPRE
+  ejecutada desde un disco rigido, este programa NO fue dise¤ado para
+  correr desde un diskette (aunque lo haga).
+
+* Si la unidad de disco en la cual la aventura se ejecuta y escribe los
+  archivos temporales esta defragmentada (para hacer esto use DEFRAG del
+  DOS +6.2 o WIN95, o UTILIDADES de NORTON), la velocidad aumentara
+  considerablemente.
+
+* Si tiene WIN95, ejecute este programa en modo MS-DOS (se ejecuta mas
+  rapido).
+
+* Si tiene una placa de video rapida, ayudara tambien.
+
+* Si la aventura que ejecuta esta en formato AGC se ejecutara mas rapido.
+
+* Un procesador rapido tambien ayuda (recomiendo un 486 DX2 o superior)
+
+* Cuanto mas comentarios y espacios en blanco existan en un archivo GAI,
+  tanto mas tardara el interprete en ejecutar los comandos.
+
+* Las instrucciones GOTO y GOSUB demoran algunos milisegundos (a veces
+  segundos) la ejecucion del programa, ya que el interprete debe recorrer
+  todo el listado para encontrar la direccion o rutina mencionada.
+
+* El compilador COMPGAI optimiza el codigo para hacerlo mas rapido y
+  compacto, uselo frecuentemente.
+
+* Esto no afecta a la velocidad, pero es util igual; use la utilidad
+  PALETA.EXE en sus archivos AGM, de esta forma sera mas facil la lectura
+  del texto de su aventura.
+
+                  NOTA SOBRE LOS COMANDOS "SAVE" y "LOAD"
+
+Si usted tiene un juego salvado cuando ejecutaba un archivo GAI y lo carga
+con un archivo AGC, no funcionara correctamente. Debe usar las mismas
+versiones, y si usted hace modificaciones al archivo GAI, o al AGC, tampoco
+funcionara.
+Los archivos se salvan con extension SAV para los GAI y SA2 para los AGC.
+
+                        NOTA SOBRE EL COMANDO "RUN"
+
+Usted no puede ejecutar un archivo AGC cuando esta ejecutando un archivo
+GAI o viceversa.
+Al transferir el control con RUN, se dejan intactas las variables de
+objetos, banderas,etc. Si necesita que se limpien, incluya la instruccion
+RESET en el archivo a ejecutar.
+
+                         Condiciones de uso de GAI
+
+ 1. El usuario tiene derecho a usar los programas del paquete GAI
+    siempre que no los desensamble ni modifique el c¢digo ni los
+    mensajes.
+
+ 2. Alvaro Gonzalez no se hace responsable de los da¤os ocasionados por
+    el programa a causa de un uso o mal uso de ‚ste por parte del
+    usuario. No existe ningun tipo de garantias.
+
+ 3. El modulo run-time (GAIPLUS.EXE) y los codigos objetos (*.AGC)
+    generados por el compilador pueden ser distribuidos libremente sin
+    costo adicional alguno, siempre y cuando el modulo run-time no sea
+    modificado en las condiciones expresadas en el punto 1.
+
+ 4. Alvaro Gonzalez se reserva el derecho de cambiar las
+    especificaciones sin previo aviso, notific ndolo convenientemente
+    en un fichero de texto tipo "README" o similar. Asimismo, se
+    reserva el derecho de lanzar nuevas versiones de GAI, con
+    condiciones especiales de pago para los usuarios registrados y no
+    registrados.
+
+ 5. Las aventuras producidas con GAI quedan libres de toda restric-
+    ci¢n, agradeci‚ndose se cite la herramienta de produccion GAI.
+
+ 6. Si las aventuras producidas con GAI fueran vendidas, se cobrara por
+    el trabajo artistico y programacion de la aventura (O sea, lo
+    contenido en los archivos AGC y AGM creados por el usuario)
+    NO SE COBRARA POR EL RUN-TIME GAIPLUS.EXE.
+
+ 7. El unico modulo del pack GAI que puede ser copiado sin
+    restricciones es el citado run-time GAIPLUS.EXE; no pueden ser
+    distribuidos NINGUN OTRO ARCHIVO TALES COMO COMPLUS.EXE O
+    CUALQUIER OTRO ENTREGADO CON ESTE PACK.
+    LA LICENCIA DEL PUNTO 3 SE REFIERE SOLO AL PROGRAMA GAIPLUS.EXE
+    Y LAS AVENTURAS COMPILADAS EN EL FORMATO AGC.
+    EL MODULO GAIPLUS.EXE DEBE SER DISTRIBUIDO SIN NINGUNA ALTERACION,
+    SALVO EL CAMBIO DE NOMBRE DE ARCHIVO A UNO ADECUADO (P/EJ:
+    AVENTURA.EXE) SIENDO ESTE CAMBIO OPCIONAL.
+
+ 8. Al usar este programa o simplemente leer este documento, usted asume la
+    obligacion legal de respetar TODOS las condiciones indicados en el
+    presente texto y los especificados en el texto "CONTRATO DE LICENCIA
+    PARA EL USUARIO FINAL DE SOFTWARE CREADO por AGF"
+ 
+    CONTRATO DE LICENCIA PARA EL USUARIO FINAL DE SOFTWARE CREADO por AGF
+
+En el presente contrato se abreviara el nombre Alvaro D.C Gonzalez Ferrer
+como "AGF", o "AGF SOFT".
+El presente contrato afecta al producto GAI (Generador Aventuras
+Interactivas) y todos sus archivos y medios relacionados que seran llamados
+"SOFTWARE" o "PRODUCTO SOFTWARE".
+
+IMPORTANTE. LEA DETENIDAMENTE: Este Contrato de Licencia para el Usuario
+Final ("Contrato") constituye un acuerdo legal entre usted (ya sea una
+persona f¡sica o una persona jur¡dica) y AGF respecto al producto software
+indicado arriba, el que incluye software para PC y puede incluir medios
+relacionados, materiales impresos y documentacion "en pantalla" o electronica
+("PRODUCTO SOFTWARE" o "SOFTWARE"). Al instalar, copiar o, de otra manera,
+usar el PRODUCTO SOFTWARE, usted acepta quedar obligado por los t‚rminos del
+presente Contrato. Si no est  de acuerdo con los t‚rminos de este Contrato,
+no instale o use el PRODUCTO SOFTWARE; por el contrario, devu‚lvalo al lugar
+donde lo adquirio a los efectos de un reembolso total.
+
+LICENCIA DE PRODUCTO SOFTWARE
+
+El PRODUCTO SOFTWARE se encuentra protegido por leyes de derechos de autor y
+por tratados internacionales sobre derechos de autor, as¡ como por otras
+leyes y tratados sobre propiedad intelectual. El PRODUCTO SOFTWARE se concede
+bajo licencia, no se vende.
+
+1.      CONCESION DE LICENCIA:
+        Este Contrato le otorga los siguientes derechos:
+        Software: Usted podr  instalar y usar una copia del PRODUCTO SOFTWARE
+        en un £nico equipo o PC.
+
+2.      DESCRIPCION DE OTROS DERECHOS Y LIMITACIONES:
+        Limitaciones en materia de ingenier¡a inversa, descompilacion y
+        desensamblaje: Usted NO podr  utilizar t‚cnicas de ingenier¡a
+        inversa, descompilar ni desensamblar el PRODUCTO SOFTWARE.
+        Separacion de componentes. El PRODUCTO SOFTWARE se otorga bajo
+        licencia como un producto £nico.
+        Sus partes componentes NO pueden separarse para ser usadas en m s de
+        un equipo o PC.
+        Alquiler: Usted NO podr  alquilar, arrendar o prestar el PRODUCTO
+        SOFTWARE.
+        Software no para la venta: Si el PRODUCTO SOFTWARE se encuentra
+        marcado como "No para reventa" o "NPR", no obstante las otras
+        secciones de este Contrato, usted no podr  revender, o de otra
+        manera, transferir por valor alguno el PRODUCTO SOFTWARE.
+        Transferencia del software: Todos los derechos otorgados por el
+        presente Contrato solo se pueden transferir de manera permanente con
+        la condicion de que usted no retenga copia alguna, de que transfiera
+        el PRODUCTO SOFTWARE completo (incluyendo todas las partes
+        componentes, los medios y los materiales impresos, cualquier
+        actualizacion, este Contrato y si corresponde, el Certificado de
+        Autenticidad) y de que el receptor acepte los t‚rminos de este
+        Contrato.  Si el PRODUCTO SOFTWARE es una actualizacion, cualquier
+        transferencia deber  incluir todas las versiones anteriores del
+        PRODUCTO SOFTWARE.
+        Terminacion: Sin perjuicio de cualquier otro derecho, AGF puede
+        terminar este Contrato si usted no cumple con los t‚rminos y
+        condiciones del mismo. En dicho caso, usted deber  destruir todas las
+        copias del PRODUCTO SOFTWARE y todas las partes componentes.
+
+
+3.      Al usar este programa o simplemente leer este documento, usted asume
+        la obligacion legal de respetar TODOS las condiciones indicados en el
+        presente texto y los especificados en el texto "Condiciones de uso de
+        GAI"
+ 
+
+4.      DERECHOS DE AUTOR: La titularidad y derechos de autor con
+        respecto al PRODUCTO SOFTWARE (incluyendo pero no limit ndose a
+        im genes, fotograf¡as, animaciones, v¡deo, audio, m£sica, texto y
+        "applets" o subprogramas incorporados al PRODUCTO SOFTWARE), los
+        materiales impresos que lo acompa¤an y cualquier copia del PRODUCTO
+        SOFTWARE son propiedad de AGF.
+        El PRODUCTO SOFTWARE se encuentra protegido por leyes sobre derechos
+        de autor y por disposiciones de tratados internacionales.
+        Por consiguiente, deber  tratar al PRODUCTO SOFTWARE como cualquier
+        otro material sujeto a derechos de autor excepto que usted podr , ya
+        sea (a) realizar una copia del PRODUCTO SOFTWARE solamente para fines
+        de copia de seguridad (o copia de respaldo) o archivo o (b) instalar
+        el PRODUCTO SOFTWARE en un £nico equipo o PC siempre que mantenga el
+        original solamente para fines de copia de seguridad (o copia de
+        respaldo) o archivo. No podr  copiar los materiales impresos que
+        acompa¤an al PRODUCTO SOFTWARE.
+
+5.      SOFTWARE EN MEDIO DUAL:
+        Es posible que reciba el PRODUCTO SOFTWARE en m s de un medio.
+        Independientemente del tipo o tama¤o del medio que reciba, solo podr 
+        usar el medio que sea apropiado para su £nico equipo o PC. No podr 
+        usar o instalar el otro medio en otro equipo o PC. No podr  prestar,
+        alquilar, arrendar o, de otra manera, transferir el otro medio a otro
+        usuario, excepto como parte de una transferencia permanente (como se
+        dispone arriba) del PRODUCTO SOFTWARE.
+
+                                    VARIOS
+
+El presente Contrato se regir  por las leyes de la Republica Argentina.
+Si tiene alguna duda con respecto a este Contrato o si desea ponerse en
+contacto con AGF por cualquier motivo, escriba en espa¤ol a:
+
+                          Sr Alvaro Gonzalez Ferrer
+x
+x
+x
+
+                            AUSENCIA DE GARANTIAS
+
+AGF renuncia expresamente el otorgamiento de cualquier garant¡a respecto al
+PRODUCTO SOFTWARE.
+El PRODUCTO SOFTWARE y cualquier documentacion relacionada se proporcionan
+"como est n" sin garant¡a alguna, ya sea expresa o impl¡cita, inclusive, sin
+limitacion, las garant¡as impl¡citas de comercializacion, adecuacion para un
+fin particular o ausencia de infraccion.
+Usted asume todo el riesgo derivado del uso o funcionamiento del PRODUCTO
+SOFTWARE.
+
+AUSENCIA DE RESPONSABILIDAD POR DA¥OS: AGF en ning£n caso se
+responsabilizar n de cualquier da¤o, cualquiera que sea (inclusive, sin
+limitacion, da¤os por lucro cesante, interrupcion en los negocios, p‚rdida de
+informacion comercial u otra p‚rdida pecuniaria) que pudiere surgir del uso o
+de la imposibilidad de uso de este producto AGF, aun cuando se hubiera
+advertido a AGF sobre la posibilidad de dichos da¤os.
+ 
+                  Copyright, referencias, miscelanea
+
+GAI es un programa de Alvaro D.C Gonzalez Ferrer
+Copyright (c) 1998, Alvaro Gonzalez Ferrer
+Todos los derechos reservados.
+Esta prohibida la venta, distribucion, modificacion, alteracion,
+reproduccion sin consentimiento escrito del autor.
+Todas las marcas que se mencionan en este u otros archivos o programas
+incluidos en este pack son propiedad de sus respectivos due¤os.
+
+                              Acerca del autor
+
+Alvaro D.C Gonzalez Ferrer, o sea yo, naci el 30 de Abril de 1982, cuando
+mi pais combatia en la Guerra de Malvinas.
+Empeze a usar la PC a los 13 a¤os, y ahora, a los 16, hice uno de mis
+sue¤os, realizar un programa capaz de permitirme crear mis propias
+aventuras graficas (y por supuesto, usarlo para crearlas y contar mis
+historias).
+Toco la guitarra electrica en una banda llamada "El Hampa" (que en lunfardo
+significa organizacion criminal).
+Hacemos rock 'n roll y punk, y mi guitarra favorita es una Les Paul
+Standard (aunque en vivo uso una Stratocaster por el problema de los
+acoples).
+Mis bandas favoritas son Iron Maiden, AC/DC, RIFF, ATTAQUE 77, etc.
+Mi auto favorito es mi Peugeot 504 Azul modelo '70 (el primer modelo que
+salio a la venta en la Argentina).
+Otro auto que tambien me gusta es la Chevy SS coupe (mueran Falcons!), el
+famoso COBRA y por supuesto los Cadillacs (uno rosado con tapizado blanco
+seria genial) de los 50's.
+Programo en QBASIC, C, ASSEMBLER, algo de PASCAL y ASIC.
+El equipo que tengo actualmente es un 486 DX2 (lo voy a cambiar por un
+en cualquier momento, aunque le tengo cari¤o, creo que lo voy a conservar).
+Me gustan mucho los fierros (pase 2 a¤os restaurando mi 504 para dejarlo
+todo original).
+El heavy y los fierros van de la mano, es asi de sencillo.
+Bueno, creo que con eso ya es suficiente de mi vida privada...
+Una vez mas, disfruten el programa...
+
+                                 Alvaro G.F
+
+P.D: Elvis vive...
+
+-------------------------------------------------------------------------------
+Apendice referido a la animacion; comando ANIMA
+===============================================
+
+Agregado el 22 de Abril de 1999.
+
+
+El comando ANIMA ejecuta un archivo "script" que contiene informacion
+para desplegar una animacion en pantalla.
+Para crear un "script", primero cree un archivo de texto ASCII plano
+(con extension .TXT) en el cual detallara renglon por renglon los
+archivos AGM que formaran la secuencia de animacion.
+Ej: ANIMA1.TXT conteniendo:
+FR1.AGM
+FR2.AGM
+FR3.AGM
+FR4.AGM
+FR5.AGM
+
+Luego, ejecute el programa ANMCODE.EXE (incluido con G.A.I Plus!).
+Se le preguntara por el nombre del archivo TXT que contiene el script, etc.
+Responda las preguntas. 
+Se generara un archivo ANM con el mismo nombre que el TXT, pero con 
+informacion extra.
+Ahora puede usar ese archivo ANM para el comando ANIMA, [archivo]
+Ej: ANIMA, ANIMA1.ANM
+

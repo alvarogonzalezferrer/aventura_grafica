@@ -1,0 +1,12 @@
+Aqui esta el codigo fuente, y los scripts de instalacion
+
+Ademas las herramientas que se usaron para crear los juegos.
+
+y tambien los guiones de las dos aventuras originales, la demo y la aventura completa
+
+Los archivos "*.asi" compilan con ASIC BASIC para MS-DOS
+
+---
+
+Info agregada febrero 2020
+Codigo original 1998, 1999

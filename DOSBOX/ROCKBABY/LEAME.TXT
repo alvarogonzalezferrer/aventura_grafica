@@ -1,0 +1,398 @@
+                                  Rock Baby!(r)
+                                  ==== ========
+                           Copyright (c) 1998, 1999
+                        Por Alvaro D.C Gonzalez Ferrer
+                         Todos los derechos reservados
+                          Software hecho en Argentina
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+                                  Introducci¢n
+                                  ============
+Rock Baby! es una "historieta interactiva".
+Esto significa que en los sucesivos cuadros de la historieta, el jugador (usted)
+decidir  que har  el personaje.
+Existen m£ltiples historias y finales dependiendo de su elecci¢n.
+Cada cuadro representa la escena actual, y la situaci¢n en que se encuentra.
+Tambi‚n hay animaciones para ocasiones especiales (en la versi¢n Comercial
+existen muchas m s que en la versi¢n Shareware).
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+                                 Requerimientos
+                                 ==============
+Sistema operativo DOS, Win 3.x ¢ WIN 95/98, etc
+Memoria 250Kb libres de memoria RAM base
+Disco r¡gido 4 Mb versi¢n shareware, 11 Mb versi¢n completa
+             y tener al menos 2 Mb siempre libres para archivos temporales.
+Video VGA standard 320x200 y 256 colores
+Procesador: 386 DX o superior, recomiendo un 486 DX ¢ superior.
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+              Informaci¢n importante de las versiones de Rock Baby!
+              =========== ========== == === ========= == ==== =====
+
+Existen dos versiones de Rock Baby!.  Una es "shareware", y la otra es la
+versi¢n "comercial".  La versi¢n "shareware" es lanzada al publico en general
+para que la pruebe. Es una versi¢n peque¤a y gratuita, usted es libre
+de copiarla a sus amigos, BBS, etc (seria muy bueno que lo haga), siempre y
+cuando NO omita, modifique, altere, quite ¢ agregue algun archivo, es decir,
+TODOS los archivos de la version SHAREWARE deben ser copiados sin alterarse, y
+NO debe cobrarse por ella; salvo un monto NO superior a U$S 5 por el material
+usado para copiarla, (lease diskette, CD, etc).
+**IMPORTANTE** Lea Tambien el Archivo LEGAL.TXT
+La versi¢n "comercial" ¢ "completa" es el juego completo, y es ILEGAL copiarla.
+Usted puede obtener la version completa pagando por ella a Alvaro Gonzalez
+Ferrer (yo!). Para hacer eso, lea el archivo REGISTRO.TXT (incluido en la
+versi¢n shareware). La versi¢n completa SOLO puede ser vendida por Alvaro
+Gonzalez Ferrer o sus distribuidores autorizados.
+Ambas versiones estan CLARAMENTE MARCADAS en los t¡tulos y el men£.
+Si usted dispone de la versi¢n completa NO DEBE COPIARLA A NADIE O SERA
+SANCIONADO LEGALMENTE SEGUN LA LEY 11.723 (Argentina) O LEYES INTERNACIONALES
+DE COPYRIGHT Y DERECHOS DE AUTOR Y PROPIEDAD INTELECTUAL.
+Si usted tiene la versi¢n completa y NO PAGO POR ELLA A ALVARO GONZALEZ FERRER
+O SUS DISTRIBUIDORES AUTORIZADOS (es decir, si tiene una COPIA PIRATA), ESTA
+VIOLANDO LA LEY; LEGALIZA ESTA SITUACION CONTACTANDO YA A LA DIRECCION QUE
+APARECE MAS ADELANTE. OBTENDRA IMPORTANTES BENEFICIOS (MENCIONADOS EN
+REGISTRO.TXT) A UN PRECIO MAS QUE GENEROSO.
+La direcci¢n postal para contactarme es (manden franqueo para respuesta):
+                 XREDACTADO
+                 XREDACTADO
+                 XREDACTADO
+O sino al T.E XREDACTADO  <- Argentina 6pm a 10pm
+               Pais - Area  -Telefono
+**IMPORTANTE** Lea Tambien el Archivo LEGAL.TXT
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+                              Como cargar el juego
+                              ==== ====== == =====
+Si es la primera vez que ejecuta el juego, primero debe ejecutar el
+archivo SETUP.EXE. En el configurar  el programa de acuerdo a su equipo.
+
+Cada vez que quiera jugar simplemente ejecute el archivo ROCK.BAT, puede hacerlo
+desde DOS o desde WINDOWS (se ejecutara a pantalla completa debido al modo
+gr fico empleado).
+
+Consejo:
+** El programa funciona mejor si lo hace desde DOS **
+Si tiene WIN 3.1, salga de ‚l.
+Si tiene WIN 95/98 etc, reinicie ‚l equipo en modo MS-DOS.
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+                                Empezando a jugar
+                                ========= = =====
+Cuando usted ejecuta el juego, aparece una portada, y luego de presionar una
+tecla, aparece el men£ principal.
+Utilize las flechas de direcci¢n arriba y abajo para seleccionar la opci¢n
+deseada, luego presione la tecla <ENTER> para aceptar.
+
+Explicaci¢n de las opciones del men£ principal:
+VERSION COMPLETA: presenta las pantallas explicativas de los beneficios de
+conseguir la versi¢n completa del juego. Lea el archivo REGISTRO.TXT para m s
+informaci¢n. Esta opci¢n solo aparece en la versi¢n shareware del juego.
+
+Juego Nuevo: con esta opcion empezar  a jugar! Disfrutelo!
+        Recomiendo ejecutar primero la opci¢n Historia para conocer su misi¢n.
+
+Cargar juego: presenta una lista con los juegos previamente grabados.
+              Escriba el nombre del archivo que desea jugar.
+              Continuar  jugando desde el lugar que salvo el archivo.
+
+Cr‚ditos: presenta la informaci¢n de quien hizo el programa, agradecimientos,
+          algunas fotos interesantes, etc. Vale la pena probarlo.
+
+Historia: le mostrar  la historia de como empez¢ la aventura. Recomiendo
+       probarlo antes de empezar a jugar, asi se entera de cual es su misi¢n.
+
+Salir: quita el juego y lo devuelve al sistema operativo.
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+                                     Jugando
+                                     =======
+Las siguientes opciones apareceran siempre en el juego y son necesarias para
+desarrollar la aventura.
+
+Usar:
+Con esta opci¢n, puede usar alg£n objeto que usted lleve o este a su alcance.
+Al elejirla, se le preguntar  que objeto usar.
+Ej: USAR MOTO
+
+Usar OBJ1 con OBJ2:
+Es parecida a la anterior, solo que usted utiliza dos objetos en conjunto, se le
+preguntara que objetos usar;
+Ej: USAR ESCOPETA CON MATONES
+note que si quiza no funciona (le dice "NO PUEDO" o algo similar), quiza deba
+probar usarlos al reves.  Ej: USAR PARED CON BROCHA -> USAR BROCHA CON PARED
+
+Agarrar:
+Existen objetos en el juego que usted puede llevar en su inventario.
+Elija esta opcion para agarrar esos objetos e incorporarlos a su inventario.
+Ej: AGARRAR ESCOPETA
+
+Examinar:
+Este comando sirve para observar detenidamente un objeto que puede contener
+algo especial, tener alguna inscripci¢n, etc. Es conveniente examinar todos
+los objetos, suelen tener pistas o cosas importantes.
+Ej: EXAMINAR CADAVERES
+
+Hablar a...:
+Con esta opci¢n usted puede hablar a los personajes del juego.
+Es muy £til para conseguir pistas e ideas de como solucionar la aventura.
+Dialogue con todos los personajes y lea atentamente los di logos.
+Es muy £til enterarse de todo, y adem s, algunos personajes le daran objetos,
+¢ hablar con ellos habilita ciertas opciones.
+
+Descripcion General:
+Con este comando, su personaje le describir  los objetos que lleva y los que
+ve en el entorno que le rodea, asi como los personajes y un breve comentario
+de cada uno. Cuando termine de examinar esa lista, presione ESC ¢ ENTER.
+
+Salvar juego:
+A veces, es necesario salir del juego por alguna razon. Ser¡a muy aburrido
+tener que volver a jugar todo de vuelta hasta el ultimo lugar en que estuvo.
+Cuando crea que existe un riesgo de perder, o necesita salir del juego y desea
+continuar luego en el mismo lugar en que lo dejo, seleccione esta opci¢n.
+Su juego actual sera salvado en disco, y podr  reiniciar desde ese mismo
+lugar con el comando Cargar Juego.
+Al elejir este comando, una pantalla le mostrara los juegos previamente
+salvados, y le pedir  que de un nombre para salvar el juego actual.
+Luego de escribirlo, presione <ENTER>.
+
+Cargar juego:
+Presenta una lista con los juegos previamente grabados.
+Escriba el nombre del archivo que desea jugar y presione <ENTER>.
+Continuar  jugando desde el lugar que salvo el archivo.
+
+Salir del juego: sirve para finalizar el juego y volver al sistema operativo
+
+Reiniciar el juego: con esta opci¢n, el juego actual se perder , y volver  a
+la portada del juego, y luego al men£ principal.
+                              ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+                              ³ NOTAS Y CONSEJOS ³
+                              ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+Adem s de las opciones antes mencionadas, suelen aparecer otras opciones que
+usted puede seleccionar.
+Estas opciones son acciones especificas que puede tomar para determinada
+situaci¢n o lugar.
+Ejemplos:
+ENTRAR AL BA¥O, SALTAR LA CERCA, SUBIR LA ESCALERA,TOMAR REFRESCO, etc‚tera...
+Algunas aparecen al entrar a un lugar determinado, y otras luego de realizar
+cierta acci¢n, por ejemplo, luego de EXAMINAR UN CUADRO puede aparecer la
+opci¢n ROMPER CUADRO.
+Por eso, luego de realizar una acci¢n, conviene chequear todas las opciones
+posibles (busc ndolas con las flechas).
+Como las opciones son din micas, aparecen y desaparecen a medida que uno toma
+las decisiones.
+Tambi‚n es conveniente chequear la Descripci¢n General para saber que objetos
+y personajes llevamos y nos rodean.
+Algunas acciones modifican los personajes, nos agregan o quitan objetos,
+ponen otros objetos a nuestro alcance, etc.
+Tambi‚n es recomendable salvar el juego cada vez que vamos a tomar una
+decisi¢n importante, de ese modo, si perdemos, no debemos empezar a jugar
+desde el principio, y aparte, podemos probar todas las posibilidades y
+conocer todas las historias.
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+                          Detalles t‚cnicos importantes
+                          ======== ======== ===========
+ROCK BABY! fue dise¤ado para correr en casi cualquier computadora.
+Es decir, no necesita una supercomputadora extracara y llena de memoria para
+ejecutar este programa. Yo deseo que los programas sean para todos, por eso,
+los requerimientos son m¡nimos y el precio muy accesible.
+No tiene sentido realizar software para gente privilegiada
+¢ para crear un monopolio. (Poder para el pueblo! Abajo las corporaciones!)
+Muy bien, para mantener bajo el consumo de memoria RAM, utilizo archivos
+temporales en el disco r¡gido.
+Estos archivos se crean en el directorio especificado por la variable de DOS
+denominada TEMP. En caso de que esta variable no este definida, utilizo la
+variable COMSPEC, y en caso de que tampoco este definida, utilizo C:\.
+Para saber si usted tiene definidas estas variables, escriba SET en la linea
+de comandos del DOS.
+Es NECESARIO que la unidad a usarse como temporal no este protegida contra
+escritura y tenga al menos 2 megabytes libres; caso contrario se produciran
+errores inesperados.
+
+Otra cosa: existen tres par metros para ROCK BABY! (ROCKBABY.EXE):
+           /? Ayuda
+           /V versi¢n del int‚rprete GAI
+           /D[delay] retrasa ¢ acelera las animaciones y delays generales
+El par metro /D es ajustado automaticamente por SETUP.EXE al igual que la
+variable TEMP, y genera un archivo batch con los par metros adecuados.
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+                              Soluci¢n de problemas
+                              ======== == =========
+Aviso: No me hago por los resultados, uso, abuso, desuso, o cualquier otra
+cosa que pase usando estos consejos. Si bien los prob‚ y la funcionaron
+en varios equipos, son generales, yo no se su equipo y configuraci¢n, por
+lo tanto no puedo garantizar los resultados. Consulte los manuales de cada
+cosa antes de realizar modificaciones y saque copias backup de su AUTOEXEC.BAT
+y CONFIG.SYS.
+En resumen: NO GARANTIZO NI SOY RESPONSABLE DE NADA
+          NO EXISTEN GARANTIAS EXPLICITAS O IMPLICITAS
+
+Problema #1: No tengo suficiente memoria RAM
+
+Pruebe salir de WINDOWS, no cargar ningun TSR, salir de cualquier shell
+tipo DOSSHELL, NORTON, etc.
+Pruebe tambi‚n ejecutar el programa MEMMAKER del DOS, con el podr  liberar
+memoria base para sus aplicaciones. Consulte el manual del DOS primero.
+El truco consiste en no cargar casi ning£n programa en los primeros 640 Kb
+de memoria RAM. No se preocupe por programas tipo SMARTDRV, MSCDEX, etc
+
+Problema #2: Errores del tipo Archivo No existe y similares...
+
+Puede ser que le falten componentes del juego o su unidad para archivos
+temporales no sea adecuada. En el caso del segundo, lea el problema #3.
+Si sospecha que faltan componentes del juego, reinstalelo.
+Si es la version shareware, consigala de una fuente mas confiable.
+Verifique que los archivos no esten protegidos contra escritura
+o sean ocultos con el comando ATTRIB.
+En caso de serlo, ejecute el comando ATTRIB -H -R -S +A
+Tambien asegurese que el juego esta siendo ejecutado en su directorio origen, es
+decir TODOS los archivos del juego deben estar en el directorio desde
+el cual se esta ejecutando.
+Ej: Si usted ejecuta ROCK BABY! con el comando C:\ROCK\ROCK y el
+directorio actual es C:\ZZ, no funcionar . Usted debe ir primero a C:\ROCK
+(o lo que fuere) y luego ejecutar ROCK.
+
+Problema #3: Otros errores con Archivos tipo Acceso Denegado, archivo
+             no puede ser abierto, disco lleno y similares.
+
+Esto casi siempre significa que la unidad y ruta elejida para los
+archivos temporales no es valida para serlo.
+Primero verifique que la unidad temporal especificada en variable de DOS
+TEMP o COMSPEC disponga de al menos 2 Mb libres y que no este protegida
+contra escritura. En caso de que no existan tales variables, recuerde que
+el programa utilizara por default C:\ (disco rigido standard).
+Usted puede crear un archivo batch que ejecute ROCK BABY! con la
+especificacion de unidad temporal que desee usando el programa SETUP.EXE
+incluido con ROCK BABY! (ademas, regular  la velocidad de las animaciones).
+En vez de ejecutar ROCKBABY.EXE, ejecutara ROCK.BAT
+
+Problema #4: Las animaciones y/o el texto corren demasiado r pido
+Esto se debe a que su equipo es muy r pido. (FELICITACIONES!)
+Ejecute SETUP.EXE y regule la velocidad.
+Luego, cada vez que desee jugar, ejecute ROCK.BAT
+
+Problema #5: Las animaciones y/o el texto corren demasiado lento
+Esto se debe a que su equipo es muy lento o esta mal configurado.
+Ejecute SETUP.EXE y regule la velocidad.
+Luego, cada vez que desee jugar, ejecute ROCK.BAT
+Si el problema continua, pruebe ejecutar el programa SMARTDRV.EXE o un
+cach‚ de disco similar que acelere el disco desde el cual se ejecuta ROCK BABY!
+Recuerde tener tambien un buen disco veloz y defragmentado para
+los archivos temporales, y los archivos del juego.
+Consulte el manual del DOS para instalar ese programa.
+Es increible lo mucho que mejora la velocidad del programa con un
+cach‚ de disco. Lo que pasa es que ROCK BABY! lee constantemente de disco
+y hace swapping de archivos temporales muy frecuentemente.
+Tambien puede defragmentar el disco usando DEFRAG.EXE o similar (se incluyen
+con DOS 6.0 y WIN 95 o superior; lea el manual para saber como usarlo).
+Un disco defragmentado es muy r pido.
+Tambien puede probar (si tiene $$$$) cambiando su CPU por uno mas potente
+y su disco rigido por uno mas rapido. Beneficiar  sus otras aplicaciones
+tambi‚n. (Y si le sobran algunos U$S, enviemelos y me beneficia a m¡)
+
+Problema #6: Estoy trabado, no puedo avanzar en la aventura
+Pruebe alguna acci¢n que no uso, use los objetos, combinelos, lo que sea.
+En casos extremos, reinicie el juego, o cargue un archivo salvado un poco
+antes y f¡jese si no olvido agarrar algun objeto, hablar con alguien, etc.
+Cuando lo l¢gico no es la soluci¢n, lo il¢gico se vuelve la soluci¢n.
+Existen muchas soluciones, pero no debe olvidar probarlas todas, y sobre
+todo, utilize los objetos y piense con l¢gica, el juego esta dise¤ado para
+que sea dif¡cil sin llegar a ser frustrante, es decir, crece la dificultad
+a medida que avanza en el juego, pero NO es imposible ganar.
+Consulte el texto REGISTRO.TXT para averiguar como adquirir la gu¡a para
+llegar al ‚xito (escrita por mi!)
+
+Problema #7: otro problema no listado!
+Llameme por T.E al  XXXX
+                    Codigo Codigo  Tel‚fono
+                    Pa¡s    Area
+Es en Argentina. Llame de 6pm a 10pm hora argentina.
+Pregunte por Alvaro Hijo (si no, hablar  con mi padre).
+Solo contesto llamadas, yo no llamo a nadie (usted paga la llamada)
+Intentare resolverlo rapido, o sino envieme una carta y unos 7 U$S para
+poder responderle a: Sr XXX
+                 XXX
+                 XXX
+No olvide poner su direcci¢n. Cualquier duda consulte a su m‚dico...
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+                    Algo de historia sobre el juego, yo, etc
+                    ==== == ======== ===== == ==============
+
+Ok, en esta secci¢n, describir‚ algunos detalles de la producci¢n del juego.
+No son datos importantes, pero si interesantes para la gente que le gusta
+saber algo m s del "backstage" de los juegos, y un poco de humor...
+Bueno, primero que nada, la idea surgi¢ luego de jugar a una aventura
+conversacional freeware hecha en Espa¤a (ni me acuerdo el nombre).
+Al jugar a esa aventura, decid¡ crear un programa para realizar mis propias
+aventuras gr ficas; naci¢ G.A.I(r) (Generador Aventuras Interactivas(c)1998)
+Luego, empez‚ a escribir un gu¡on cortito en el cual un motoquero deb¡a
+conquistar a su chica, solo para probar GAI. El juego funcion¢ bien, y decid¡
+hacer una aventura larga de motoqueros, con todas esas cosas que se ven en las
+pel¡culas de USA, tiros, explosiones, policia, velocidad, mujeres... TODO!
+Mis amigos aportaron ideas, y surgi¢ la historia. Rock 'n roll baby!
+A medida que desarrollaba el juego, ampliaba GAI; le agreg‚ funciones, correg¡
+errores (espero haber acabado con todos, si encuentra alguno, por favor hagamelo
+saber); tambi‚n fui mejorando la calidad gr fica, es por eso que las im genes
+de los primeros lugares son algo m s toscas que las £ltimas.
+Los gr ficos fueron hechos a PURO MOUSE; no digitaliz‚ ningun boceto, ni use
+lapiz fotosensible ¢ algo parecido; todo mouse y paciencia en base a mis bocetos
+en l piz y papel; no solo dibujo, sino tambi‚n toco la guitarra el‚ctrica,
+algo de mec nica, decoro interiores y conduzco transbordadores espaciales ;)
+Solo scanee algunas fotos para combinarlas con los fondos y dar un toque
+humor¡stico; los personajes son mis amigos y yo, y el auto del final de los
+cr‚ditos es mi auto, un 504 modelo 1970 totalmente original, mi joya ;), aunque
+tambi‚n le debo cr‚dito a mi querido Chrysler Dodge 1.8 que a£nque no vuela
+porque es pich¢n, corre que se caga y nunca me dej¢ a pie... };)
+Si alguien tiene un Chrysler Barracuda, y desea regalarmelo, voy a estar muy,
+pero muy agradecido (lo mismo cualquier otra coupe de los '50-80s o cualquier
+auto vintage, onda Cadillac, Corvette, Camaro, Cobra, Fiat 600(?)<-woops!)
+La PC m¡a, en la cual program‚ e hice los dibujos es un 486 DX2 con 8 mb RAM,
+540 HD, CD 2X, SVGA y DOS 6.22 (realmente una angustia, espero juntar U$S para
+cambiarla pronto, ¢ al menos actualizarla y empezar a programar p/WIN)
+El juego fue programado al ritmo de Iron Maiden, AC/DC, Megadeth, Ramones, etc
+y tambien algo de m£sica retro como Elvis, Little Richard, Chuck Berry,
+Bill Halley & The Comets, James Brown, Chubby Checker, etc...
+Las texturas usadas fueron creadas por m¡, con sugerencias de Guillermo Cano.
+Me gustan mucho los autos, motos, rock 'n roll y todo ese ca¤erio, y eso inspiro
+todo esto, el espirit£ de rebeldia (Born to be wild!), es m s, el personaje creo
+que es no solo mi alter-ego, sino el de la mayor¡a, ese lado oscuro y reprimido,
+que el ciudadano com£n no se atreve a mostrar (porque vamos presos); quiz 
+siempre dese¢ patearle el trasero a alg£n pat n ¢ infeliz ¢ ponerle un par de
+tiros en la nuca a ese imb‚cil que siempre te arruina el d¡a, bueno, hay dos
+opciones; hagalo y pase un largo tiempo en prisi¢n, ¢ juegue mi juego y disfrute
+como un maldito psic¢pata luego de cometer un asesinato en masa, y sin
+ensuciarse ni la puntita de los dedos con una gotita de sangre (si no,mami nos
+reta). Si ten‚s la versi¢n shareware te estas perdiendo toda la mejor parte, m s
+disparos que en la guerra del Golfo, m s mujeres que en Las Vegas y m s
+velocidad que las carreras Dragster, aparte de violencia sin l¡mites, humor,
+diversi¢n, etc; y eso que me quedaron un mont¢n de ideas para ROCK BABY II
+Disfrut‚ mucho haciendo el juego, y espero que usted tambi‚n disfrute jug ndolo.
+Proximamente, ROCK BABY II (quiz  p/WIN, quiz  en CD, quiz  con video, quiz 
+con sonido, quiz  con pur‚ de papas, quiz , quiz , quiz ...)
+
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+                                    Garant¡as
+                                    =========
+**IMPORTANTE** Lea Tambien el Archivo LEGAL.TXT
+
+Bueno, no soy abogado, y en estos tiempos, hacen demandas y juicios por
+cualquier cosa. El programa fue testeado en muchas PC y funciona bien,
+no puse ningun c¢digo que pueda causar algo malo en el PC, pero en todo
+caso me veo obligado a decir que NO EXISTEN NINGUN TIPO DE GARANTIAS.
+
+EL SOFTWARE, ARCHIVOS, Y OTROS MATERIALES (INSTRUCCIONES, DISCOS, ETC) SE
+PROVEEN "COMO SON" SIN NINGUN TIPO DE GARANTIAS.
+YO NO GARANTIZO EL USO, RESULTADOS DEL USO, DESUSO, CONTENIDO, RESULTADOS DEL
+USO, RENTABILIDAD, JUGABILIDAD O CUALQUIER OTRO TIPO DE COSA.
+EL ENTERO RIESGO DE LOS RESULTADOS Y PERFORMANCE DEL SOFTWARE ES ASUMIDO
+POR USTED.
+REITERO: NO EXISTEN GARANTIAS DE NINGUN TIPO, EXPLICITAS O IMPLICITAS AUNQUE
+YO HAYA SIDO AVISADO DE ESOS POSIBLES RESULTADOS.
+YO, ALVARO GONZALEZ FERRER, NO SOY RESPONSABLE DE NADA, USTED NO TIENE
+DERECHO A RECLAMAR NADA. USELO BAJO SU PROPIO RIESGO.
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+                  Copyright, referencias, miscelanea
+
+ROCK BABY!(r) es un programa de Alvaro D.C Gonzalez Ferrer
+Copyright (c) 1998, Alvaro Gonzalez Ferrer
+Todos los derechos reservados.
+Esta prohibida la venta, distribucion, modificacion, alteracion,
+reproduccion sin consentimiento escrito del autor.
+Todas las marcas que se mencionan en este u otros archivos o programas
+incluidos en este pack son propiedad de sus respectivos due¤os.
+ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+P.D: Elvis vive! ;)

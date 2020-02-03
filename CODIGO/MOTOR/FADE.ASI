@@ -1,0 +1,159 @@
+REM RUTINA LIMPIA DEL FADE-IN
+DIM R1(255)
+DIM G1(255)
+DIM B1(255)
+
+DIM R2(255)
+DIM G2(255)
+DIM B2(255)
+DIM C2(255)
+SCREEN 13
+
+GOSUB CARGAPALETA:
+
+W = 255
+ST = 1
+C = 0
+FOR c=1 to 15
+COLOR c, 0
+PRINT "HOLA akjjdjhsdajkhdaskhjdsajkhads"
+NEXT c
+DOFADEIN:
+
+C = C + 1
+IF C > W THEN
+        C = 0
+ENDIF
+
+A = C2(C)
+R2(A) = R2(A) + ST
+G2(A) = G2(A) + ST
+B2(A) = B2(A) + ST
+
+IF R2(A) >= R1(A) THEN
+        R2(A) = R1(A)
+ENDIF
+IF G2(A) >= G1(A) THEN
+        G2(A) = G1(A)
+ENDIF
+
+IF B2(A) >= B1(A) THEN
+        B2(A) = B1(A)
+ENDIF
+
+REM ESCRIBIR
+DEFSEG = &HEXA000
+
+OUT &HEX3C8, A
+
+OUT &HEX3C9, R2(A)
+OUT &HEX3C9, G2(A)
+OUT &HEX3C9, B2(A)
+
+IF B2(A) = B1(A) THEN
+IF R2(A) = R1(A) THEN
+IF G2(A) = G1(A) THEN
+REM OPTIMIZAR
+        t = C2(W)
+        C2(W) = C2(C)
+        C2(C) = t
+        
+        t = R2(W)
+        R2(W) = R2(C)
+        R2(C) = t
+        
+        t = G2(W)
+        G2(W) = G2(C)
+        G2(C) = t
+        
+        t = B2(W)
+        B2(W) = B2(C)
+        B2(C) = t
+
+        REM SWAP R2(C), R2(W)
+        REM SWAP G2(C), G2(W)
+        REM SWAP B2(C), B2(W)
+        W = W - 1
+A = C2(C)
+ENDIF
+ENDIF
+ENDIF
+
+IF W > 0 THEN DOFADEIN:
+
+fadein=1
+pau=18
+
+fadeout:
+rem rutina que hace un fade-out 12/f/99
+rem recordar leer antes la paleta con la otra rutina
+FOR g=0 to 63
+
+FOR c=0 to 255                
+                A = C2(c)
+                R2(A) = R2(A) - fadein
+                G2(A) = G2(A) - fadein
+                B2(A) = B2(A) - fadein
+
+        IF R2(A) < 0 THEN
+                R2(A) = 0
+        ENDIF
+        IF G2(A) < 0 THEN
+                G2(A) = 0
+        ENDIF
+
+        IF B2(A) < 0 THEN
+                B2(A) = 0
+        ENDIF
+
+        REM ESCRIBIR
+        DEFSEG = &HEXA000
+
+        OUT &HEX3C8, A
+
+        OUT &HEX3C9, R2(A)
+        OUT &HEX3C9, G2(A)
+        OUT &HEX3C9, B2(A)
+
+NEXT c
+                rem pausa luego de los ciclos (opcional)
+                        T=TIMER
+                        Z=0
+                        WHILE Z<PAU
+                                D$=INKEY$
+                                T2=TIMER        
+                                Z=T2-T
+                                IF D$=ESC$ THEN
+                                        Z=PAU+1
+                                        T=T2
+                                ENDIF
+                        WEND
+        b=fadein-1
+        g=g+b
+NEXT g
+
+
+
+End
+CARGAPALETA:
+
+REM carga la paleta de pantalla en matrices de memoria
+
+FOR t = 0 TO 255
+        REM lee de memoria
+        OUT &HEX3C7, T
+        R=INP &HEX3C9
+        G=INP &HEX3C9
+        B=INP &HEX3C9
+        REM Salva los atributos       
+                REM Rojo
+                R1(t) = R
+                REM Verde
+                G1(t) = G
+                REM Azul       
+                B1(t) = B
+        
+        C2(t) = t
+NEXT t
+RETURN
+

@@ -1,0 +1,170 @@
+///////
+
+se libera este software con la LICENCIA MIT a partir de Febrero 2020
+
+
+//////////////////////////////////////////////////////////////////////////
+////// obsoleto, se mantiene por motivos historicos
+
+                     Condiciones de uso de ROCK BABY!(r)
+                     ===================================
+
+ 1. El usuario tiene derecho a usar los programas del paquete ROCK BABY!(r)
+    siempre que no los desensamble ni modifique el c¢digo ni los
+    mensajes, ni los archivos, ni ningun tipo de material o informacion
+    acompa¤ante.
+
+ 2. Alvaro Gonzalez no se hace responsable de los da¤os ocasionados por
+    el programa a causa de un uso o mal uso de ‚ste por parte del
+    usuario. No existe ningun tipo de garantias.
+
+ 3. La version shareware de ROCK BABY! pueden ser distribuidos libremente
+    sin costo adicional alguno, siempre y cuando no se alteren
+    las condiciones expresadas en el punto 1. Solo la VERSION SHAREWARE
+    puede ser distribuida en su formato original de archivo SFX como
+    es distribuido de origen.
+    Para la VERSION COMPLETA O REGISTRADA ESTA EXPRESAMENTE PROHIBIDA
+    SU DISTRIBUCION, REPRODUCCION O DIFUSION DE NINGUN TIPO!!!
+
+ 4. Alvaro Gonzalez se reserva el derecho de cambiar las
+    especificaciones sin previo aviso, notific ndolo convenientemente
+    en un fichero de texto tipo "README" o similar. Asimismo, se
+    reserva el derecho de lanzar nuevas versiones de ROCK BABY!(r), con
+    condiciones especiales de pago para los usuarios registrados y no
+    registrados.
+
+ 5. Al usar este programa o simplemente leer este documento, usted asume la
+    obligacion legal de respetar TODOS las condiciones indicados en el
+    presente texto y los especificados en el texto "CONTRATO DE LICENCIA
+    PARA EL USUARIO FINAL DE SOFTWARE CREADO por AGF"
+
+    CONTRATO DE LICENCIA PARA EL USUARIO FINAL DE SOFTWARE CREADO por AGF
+
+En el presente contrato se abreviara el nombre Alvaro D.C Gonzalez Ferrer
+como "AGF", o "AGF SOFT".
+El presente contrato afecta al producto ROCK BABY!(r) y todos sus archivos
+y medios relacionados que seran llamados "SOFTWARE" o "PRODUCTO SOFTWARE".
+
+IMPORTANTE. LEA DETENIDAMENTE: Este Contrato de Licencia para el Usuario
+Final ("Contrato") constituye un acuerdo legal entre usted (ya sea una
+persona f¡sica o una persona jur¡dica) y AGF respecto al producto software
+indicado arriba, el que incluye software para PC y puede incluir medios
+relacionados, materiales impresos y documentacion "en pantalla" o electronica
+("PRODUCTO SOFTWARE" o "SOFTWARE"). Al instalar, copiar o, de otra manera,
+usar el PRODUCTO SOFTWARE, usted acepta quedar obligado por los t‚rminos del
+presente Contrato. Si no est  de acuerdo con los t‚rminos de este Contrato,
+no instale o use el PRODUCTO SOFTWARE; por el contrario, devu‚lvalo al lugar
+donde lo adquirio a los efectos de un reembolso total.
+
+LICENCIA DE PRODUCTO SOFTWARE
+
+El PRODUCTO SOFTWARE se encuentra protegido por leyes de derechos de autor y
+por tratados internacionales sobre derechos de autor, as¡ como por otras
+leyes y tratados sobre propiedad intelectual. El PRODUCTO SOFTWARE se concede
+bajo licencia, no se vende.
+
+1.      CONCESION DE LICENCIA:
+        Este Contrato le otorga los siguientes derechos:
+        Software: Usted podr  instalar y usar una copia del PRODUCTO SOFTWARE
+        en un £nico equipo o PC.
+
+2.      DESCRIPCION DE OTROS DERECHOS Y LIMITACIONES:
+        Limitaciones en materia de ingenier¡a inversa, descompilacion y
+        desensamblaje: Usted NO podr  utilizar t‚cnicas de ingenier¡a
+        inversa, descompilar ni desensamblar el PRODUCTO SOFTWARE.
+        Separacion de componentes. El PRODUCTO SOFTWARE se otorga bajo
+        licencia como un producto £nico.
+        Sus partes componentes NO pueden separarse para ser usadas en m s de
+        un equipo o PC.
+        Alquiler: Usted NO podr  alquilar, arrendar o prestar el PRODUCTO
+        SOFTWARE.
+        Software no para la venta: Si el PRODUCTO SOFTWARE se encuentra
+        marcado como "No para reventa" o "NPR", no obstante las otras
+        secciones de este Contrato, usted no podr  revender, o de otra
+        manera, transferir por valor alguno el PRODUCTO SOFTWARE.
+        Transferencia del software: Todos los derechos otorgados por el
+        presente Contrato solo se pueden transferir de manera permanente con
+        la condicion de que usted no retenga copia alguna, de que transfiera
+        el PRODUCTO SOFTWARE completo (incluyendo todas las partes
+        componentes, los medios y los materiales impresos, cualquier
+        actualizacion, este Contrato y si corresponde, el Certificado de
+        Autenticidad) y de que el receptor acepte los t‚rminos de este
+        Contrato.  Si el PRODUCTO SOFTWARE es una actualizacion, cualquier
+        transferencia deber  incluir todas las versiones anteriores del
+        PRODUCTO SOFTWARE.
+        Terminacion: Sin perjuicio de cualquier otro derecho, AGF puede
+        terminar este Contrato si usted no cumple con los t‚rminos y
+        condiciones del mismo. En dicho caso, usted deber  destruir todas las
+        copias del PRODUCTO SOFTWARE y todas las partes componentes.
+
+
+3.      Al usar este programa o simplemente leer este documento, usted asume
+        la obligacion legal de respetar TODOS las condiciones indicados en el
+        presente texto y los especificados en el texto "Condiciones de uso de
+        ROCK BABY!(r)"
+
+
+4.      DERECHOS DE AUTOR: La titularidad y derechos de autor con
+        respecto al PRODUCTO SOFTWARE (incluyendo pero no limit ndose a
+        im genes, fotograf¡as, animaciones, v¡deo, audio, m£sica, texto y
+        "applets" o subprogramas incorporados al PRODUCTO SOFTWARE), los
+        materiales impresos que lo acompa¤an y cualquier copia del PRODUCTO
+        SOFTWARE son propiedad de AGF.
+        El PRODUCTO SOFTWARE se encuentra protegido por leyes sobre derechos
+        de autor y por disposiciones de tratados internacionales.
+        Por consiguiente, deber  tratar al PRODUCTO SOFTWARE como cualquier
+        otro material sujeto a derechos de autor excepto que usted podr , ya
+        sea (a) realizar una copia del PRODUCTO SOFTWARE solamente para fines
+        de copia de seguridad (o copia de respaldo) o archivo o (b) instalar
+        el PRODUCTO SOFTWARE en un £nico equipo o PC siempre que mantenga el
+        original solamente para fines de copia de seguridad (o copia de
+        respaldo) o archivo. No podr  copiar los materiales impresos que
+        acompa¤an al PRODUCTO SOFTWARE.
+
+5.      SOFTWARE EN MEDIO DUAL:
+        Es posible que reciba el PRODUCTO SOFTWARE en m s de un medio.
+        Independientemente del tipo o tama¤o del medio que reciba, solo podr 
+        usar el medio que sea apropiado para su £nico equipo o PC. No podr 
+        usar o instalar el otro medio en otro equipo o PC. No podr  prestar,
+        alquilar, arrendar o, de otra manera, transferir el otro medio a otro
+        usuario, excepto como parte de una transferencia permanente (como se
+        dispone arriba) del PRODUCTO SOFTWARE.
+
+                                    VARIOS
+
+El presente Contrato se regir  por las leyes de la Republica Argentina.
+Si tiene alguna duda con respecto a este Contrato o si desea ponerse en
+contacto con AGF por cualquier motivo, escriba en espa¤ol a:
+
+                          Sr Alvaro Gonzalez Ferrer
+          x
+          x
+          x
+
+                            AUSENCIA DE GARANTIAS
+
+AGF renuncia expresamente el otorgamiento de cualquier garant¡a respecto al
+PRODUCTO SOFTWARE.
+El PRODUCTO SOFTWARE y cualquier documentacion relacionada se proporcionan
+"como est n" sin garant¡a alguna, ya sea expresa o impl¡cita, inclusive, sin
+limitacion, las garant¡as impl¡citas de comercializacion, adecuacion para un
+fin particular o ausencia de infraccion.
+Usted asume todo el riesgo derivado del uso o funcionamiento del PRODUCTO
+SOFTWARE.
+
+AUSENCIA DE RESPONSABILIDAD POR DA¥OS: AGF en ning£n caso se
+responsabilizar n de cualquier da¤o, cualquiera que sea (inclusive, sin
+limitacion, da¤os por lucro cesante, interrupcion en los negocios, p‚rdida de
+informacion comercial u otra p‚rdida pecuniaria) que pudiere surgir del uso o
+de la imposibilidad de uso de este producto AGF, aun cuando se hubiera
+advertido a AGF sobre la posibilidad de dichos da¤os.
+
+                  Copyright, referencias, miscelanea
+
+ROCK BABY!(r) es un programa de Alvaro D.C Gonzalez Ferrer
+Copyright (c) 1998, Alvaro Gonzalez Ferrer
+Todos los derechos reservados.
+Esta prohibida la venta, distribucion, modificacion, alteracion,
+reproduccion sin consentimiento escrito del autor.
+Todas las marcas que se mencionan en este u otros archivos o programas
+incluidos en este pack son propiedad de sus respectivos due¤os.

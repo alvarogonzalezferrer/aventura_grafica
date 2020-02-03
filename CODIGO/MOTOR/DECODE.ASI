@@ -1,0 +1,115 @@
+REM DECodificador de archivos GAI
+REM Por Alvaro D.C Gonzalez Ferrer
+REM (c) 1998, AGF SOFT - 25/11/1998 (d/m/a) - 23:44PM
+REM ASIC 5.00
+
+CLS
+COLOR 15, 0
+PRINT "DEcodificador de archivos AGC (AVENTURAS GRAFICAS CODIFICADAS)"
+PRINT "Por Alvaro D.C Gonzalez Ferrer"
+PRINT "(c) 1998"
+PRINT
+REM CODIGO ESTANDAR
+CODI=82
+
+print "Escriba el nombre del archivo AGC a convertir:"
+PRINT "EL ARCHIVO SE SALVA CON EXTENSION .BAK, POR SI YA EXISTE EL .GAI"
+input arch1$
+
+if arch1$="" then 
+        end
+endif
+a=instr(arch1$,".")
+if a=0 then
+        arch1$=arch1$ + ".AGC"
+endif
+
+a=instr(arch1$,".")
+ARCH2$=LEFT$(ARCH1$,A)
+ARCH2$=ARCH2$ + "BAK"
+
+CLS
+PRINT "Convirtiendo..."
+PRINT ARCH1$
+PRINT ARCH2$
+REM Formato es asi:
+REM CADA LINEA TERMINA EN CARACTER NULO
+REM SUMA EL NUMERO CODI AL REM CODIGO ASCII. (ES LA RUTINA DE CODIFICACION)
+REM LAS LINEAS SE LEEN AL REVES! (DE 79 A 0)
+
+OPEN "I",1,ARCH1$
+if error>0 then
+   color 14,0
+   print "Ocurrio un error."
+   beep
+   print "Lo mas probable es que el archivo NO EXISTA, o ESTE PROTEGIDO."
+   print "Analize la situacion y si lo desea, intente de nuevo. :-)"
+   color 7,0
+   print
+   close 1
+   end
+endif
+
+OPEN "O",2,ARCH2$
+if error>0 then
+   color 14,0
+   print "Ocurrio un error."
+   beep
+   print "Lo mas probable es que el DISCO ESTE PROTEGIDO O LLENO."
+   print "Analize la situacion y si lo desea, intente de nuevo. :-)"
+   color 7,0
+   print
+   close 1
+   end
+endif
+
+E=ERROR
+IF E>0 THEN
+        PRINT "ERROR ";
+        PRINT ERROR
+        END
+ENDIF
+
+WHILE E=0
+        INPUT# 1, A$
+        OK=1
+        E=ERROR
+A$=LTRIM$(A$)
+A$=RTRIM$(A$)
+
+L=LEN(A$)
+IF L>79 THEN
+        A$=LEFT$(A$,79)
+        L=79
+ENDIF
+                REM DECODIFICA
+                Z=LEN(A$)
+                C$=""
+                WHILE Z>1
+                        K$ = MID$(A$,Z,1)
+                        R = ASC(K$)
+                        R = R - CODI
+                        IF R < 0 THEN
+                                R = R + 255
+                        ENDIF
+                        K$ = CHR$(R)
+                        C$ = C$ + K$
+                        Z=Z-1
+                WEND
+D$=CHR$(13)
+C$=C$+D$
+D$=CHR$(10)
+C$=C$+D$
+PRINT #2, C$  NONULL
+LINEA=LINEA+1
+WEND
+
+PRINT "Se DEcompilaron ";
+PRINT LINEA;
+PRINT " lineas"
+PRINT
+PRINT "Listo..."
+
+CLOSE 1
+CLOSE 2
+END

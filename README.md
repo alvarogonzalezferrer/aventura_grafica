@@ -36,3 +36,25 @@ Se comprime con UPX para MS DOS
 El instalador se hizo con RAR 2.5
 
 Todas herramientas para MS DOS
+
+## Screenshoots
+
+Jugando en DOSBOX sobre Linux
+
+![Captura #1](SCREENSHOOT/captura-3.jpg)
+
+![Captura #1](SCREENSHOOT/captura-4.jpg)
+
+![Captura #1](SCREENSHOOT/captura-5.jpg)
+
+![Captura #1](SCREENSHOOT/captura-6.jpg)
+
+![Captura #1](SCREENSHOOT/captura-7.jpg)
+
+![Captura #1](SCREENSHOOT/captura-8.jpg)
+
+![Captura #1](SCREENSHOOT/captura-9.jpg)
+
+![Captura #1](SCREENSHOOT/captura-10.jpg)
+
+![Captura #1](SCREENSHOOT/captura-11.jpg)
